@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataLayer.Migrations
 {
-    [DbContext(typeof(OrderDbContext))]
-    [Migration("20230705083857_ReverseSecurePassword")]
-    partial class ReverseSecurePassword
+    [DbContext(typeof(ManagerDbContext))]
+    [Migration("20230705102536_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

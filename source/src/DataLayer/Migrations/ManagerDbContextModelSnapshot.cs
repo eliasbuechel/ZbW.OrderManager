@@ -3,19 +3,16 @@ using DataLayer.Base.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
 namespace DataLayer.Migrations
 {
-    [DbContext(typeof(OrderDbContext))]
-    [Migration("20230705083625_SecurePassword")]
-    partial class SecurePassword
+    [DbContext(typeof(ManagerDbContext))]
+    partial class ManagerDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
