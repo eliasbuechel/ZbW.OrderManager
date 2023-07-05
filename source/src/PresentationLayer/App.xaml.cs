@@ -21,13 +21,13 @@ namespace PresentationLayer
         private readonly Manager _manager;
         private readonly ManagerStore _managerStore;
         private readonly NavigationStore _navigationStore;
-        private readonly OrderDbContextFactory _orderDbContextFactory;
+        private readonly ManagerDbContextFactory _orderDbContextFactory;
         private readonly NavigationService _dashboardViewModelNavigationService;
         private readonly NavigationService _customerListingViewModelNavigationService;
 
         public App()
         {
-            _orderDbContextFactory = new OrderDbContextFactory(CONNECTION_STRING);
+            _orderDbContextFactory = new ManagerDbContextFactory(CONNECTION_STRING);
 
             ICustomerProvider customerProvider = new DatabaseCustomerProvider(_orderDbContextFactory);
             ICustomerCreator customerCreator = new DatabaseCustomerCreator(_orderDbContextFactory);
@@ -46,7 +46,7 @@ namespace PresentationLayer
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            using OrderDbContext dbContext = _orderDbContextFactory.CreateDbContext();
+            using ManagerDbContext dbContext = _orderDbContextFactory.CreateDbContext();
             dbContext.Database.Migrate();
 
             _navigationStore.CurrentViewModel = CreateCustomerListingViewModel();

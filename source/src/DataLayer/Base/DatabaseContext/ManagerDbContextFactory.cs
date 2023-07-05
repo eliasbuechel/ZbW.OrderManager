@@ -2,20 +2,20 @@
 
 namespace DataLayer.Base.DatabaseContext
 {
-    public class OrderDbContextFactory
+    public class ManagerDbContextFactory
     {
         private readonly string _connectionString;
 
-        public OrderDbContextFactory(string connectionString)
+        public ManagerDbContextFactory(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        public OrderDbContext CreateDbContext()
+        public ManagerDbContext CreateDbContext()
         {
             DbContextOptions options = new DbContextOptionsBuilder().UseSqlServer(_connectionString).Options;
 
-            return new OrderDbContext(options);
+            return new ManagerDbContext(options);
         }
     }
 }

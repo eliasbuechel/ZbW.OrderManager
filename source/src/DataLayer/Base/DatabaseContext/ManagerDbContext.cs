@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.Base.DatabaseContext
 {
-    public class OrderDbContext : DbContext
+    public class ManagerDbContext : DbContext
     {
-        public OrderDbContext(DbContextOptions options) : base(options)
+        public ManagerDbContext(DbContextOptions options) : base(options)
         {
         }
 

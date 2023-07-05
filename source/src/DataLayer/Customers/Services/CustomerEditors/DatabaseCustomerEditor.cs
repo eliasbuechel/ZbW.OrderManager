@@ -8,14 +8,14 @@ namespace DataLayer.Customers.Services.CustomerEditors
 {
     public class DatabaseCustomerEditor : ICustomerEditor
     {
-        public DatabaseCustomerEditor(OrderDbContextFactory orderDbContextFactory)
+        public DatabaseCustomerEditor(ManagerDbContextFactory orderDbContextFactory)
         {
             _orderDbContextFactory = orderDbContextFactory;
         }
 
         public async Task EditCustomer(Customer initialCustomer, Customer editedCustomer)
         {
-            OrderDbContext dbContext = _orderDbContextFactory.CreateDbContext();
+            ManagerDbContext dbContext = _orderDbContextFactory.CreateDbContext();
             CustomerDTO? customerDTO = await dbContext.Customers.Include(c => c.Address).Where(c =>
                 c.FirstName == initialCustomer.FirstName &&
                 c.LastName == initialCustomer.LastName &&
@@ -48,6 +48,6 @@ namespace DataLayer.Customers.Services.CustomerEditors
             customerDTO.Password = editedCustomer.Password;
         }
 
-        private readonly OrderDbContextFactory _orderDbContextFactory;
+        private readonly ManagerDbContextFactory _orderDbContextFactory;
     }
 }

@@ -7,14 +7,14 @@ namespace DataLayer.Customers.Services.CustomerCreators
 {
     public class DatabaseCustomerCreator : ICustomerCreator
     {
-        public DatabaseCustomerCreator(OrderDbContextFactory dbContextFactory)
+        public DatabaseCustomerCreator(ManagerDbContextFactory dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
         }
 
         public async Task CreateCustomer(Customer customer)
         {
-            using OrderDbContext context = _dbContextFactory.CreateDbContext();
+            using ManagerDbContext context = _dbContextFactory.CreateDbContext();
             CustomerDTO customerDTO = ToCustomerDTO(customer);
 
             context.Customers.Add(customerDTO);
@@ -23,7 +23,7 @@ namespace DataLayer.Customers.Services.CustomerCreators
 
         public async Task<int> GetNextFreeCustomerIdAsync()
         {
-            using OrderDbContext context = _dbContextFactory.CreateDbContext();
+            using ManagerDbContext context = _dbContextFactory.CreateDbContext();
 
             int maxId = 0;
             if (await context.Customers.CountAsync() != 0)
@@ -52,6 +52,6 @@ namespace DataLayer.Customers.Services.CustomerCreators
             };
         }
 
-        private readonly OrderDbContextFactory _dbContextFactory;
+        private readonly ManagerDbContextFactory _dbContextFactory;
     }
 }

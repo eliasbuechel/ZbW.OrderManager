@@ -7,16 +7,16 @@ namespace DataLayer.Customers.Services.CustomerProviders
 {
     public class DatabaseCustomerProvider : ICustomerProvider
     {
-        private readonly OrderDbContextFactory _dbContextFactory;
+        private readonly ManagerDbContextFactory _dbContextFactory;
 
-        public DatabaseCustomerProvider(OrderDbContextFactory dbContextFactory)
+        public DatabaseCustomerProvider(ManagerDbContextFactory dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
         }
 
         public async Task<IEnumerable<Customer>> GetAllCustomers()
         {
-            using OrderDbContext context = _dbContextFactory.CreateDbContext();
+            using ManagerDbContext context = _dbContextFactory.CreateDbContext();
             IEnumerable<CustomerDTO> customerDTOs = await context.Customers.Include(c => c.Address).ToListAsync();
 
             return customerDTOs.Select(c => ToCustomer(c));
