@@ -1,4 +1,4 @@
-﻿namespace BusinessLayer.Base.Command
+﻿namespace BusinessLayer.Base.Commands
 {
     public abstract class BaseAsyncCommand : BaseCommand
     {
@@ -20,7 +20,6 @@
         {
             return !IsExecuting && base.CanExecute(parameter);
         }
-
         public override async void Execute(object? parameter)
         {
             IsExecuting = true;
@@ -35,7 +34,6 @@
             }
             IsExecuting = false;
         }
-
         public abstract Task ExecuteAsync(object? parameter);
     }
 }

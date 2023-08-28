@@ -20,7 +20,6 @@ namespace DataLayer.Customers.Services.CustomerCreators
             context.Customers.Add(customerDTO);
             await context.SaveChangesAsync();
         }
-
         public async Task<int> GetNextFreeCustomerIdAsync()
         {
             using ManagerDbContext context = _dbContextFactory.CreateDbContext();

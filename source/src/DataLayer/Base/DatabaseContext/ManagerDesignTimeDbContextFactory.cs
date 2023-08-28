@@ -7,7 +7,7 @@ namespace DataLayer.Base.DatabaseContext
     {
         ManagerDbContext IDesignTimeDbContextFactory<ManagerDbContext>.CreateDbContext(string[] args)
         {
-            DbContextOptions options = new DbContextOptionsBuilder().UseSqlServer("Server=.\\SQLSERVER_EB;Database=OrderManagerTestV2;Trusted_Connection=True;MultipleActiveResultSets=True;Encrypt=False;").Options;
+            DbContextOptions options = new DbContextOptionsBuilder().UseSqlServer("Server=.;Database=OrderManagerTestV2;Trusted_Connection=True;MultipleActiveResultSets=True;Encrypt=False;").Options;
 
             return new ManagerDbContext(options);
         }

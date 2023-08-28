@@ -1,4 +1,4 @@
-﻿using BusinessLayer.Base.Command;
+﻿using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using BusinessLayer.Base.ViewModels;
@@ -16,8 +16,8 @@ namespace BusinessLayer.Customers.ViewModels
             _customers = new ObservableCollection<CustomerViewModel>();
             _errorMessage = string.Empty;
 
-            _navigationStore = navigationStore;
             _managerStore = managerStore;
+            _navigationStore = navigationStore;
             _managerStore.CustomerCreated += OnCustomerCreated;
             _managerStore.CustomerDeleted += OnCustomerDeleted;
 
@@ -51,7 +51,7 @@ namespace BusinessLayer.Customers.ViewModels
             set
             {
                 _errorMessage = value;
-                OnPropertyChanged(nameof(ErrorMessage));
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(HasErrorMessage));
             }
         }

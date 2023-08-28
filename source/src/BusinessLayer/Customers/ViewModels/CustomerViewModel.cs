@@ -1,4 +1,4 @@
-﻿using BusinessLayer.Base.Command;
+﻿using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using BusinessLayer.Customers.Commands;
@@ -24,12 +24,7 @@ namespace BusinessLayer.Customers.ViewModels
 
         public bool RepresentsCustomer(Customer customer)
         {
-            return object.ReferenceEquals(_customer, customer);
-        }
-
-        public override string ToString()
-        {
-            return Name;
+            return ReferenceEquals(_customer, customer);
         }
 
         private readonly Customer _customer;

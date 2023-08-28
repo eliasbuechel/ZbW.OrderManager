@@ -1,4 +1,4 @@
-﻿using BusinessLayer.Base.Command;
+﻿using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using BusinessLayer.Customers.ViewModels;
@@ -23,13 +23,6 @@ namespace BusinessLayer.Customers.Commands
         {
             return !_createCustomerViewModel.HasErrors && base.CanExecute(parameter);
         }
-
-        public void OnHasCustomerPropertyErrorChanged(object? sender, DataErrorsChangedEventArgs e)
-        {
-            OnCanExecuteChanged();
-        }
-
-
         public async override Task ExecuteAsync(object? parameter)
         {
             try
@@ -55,6 +48,11 @@ namespace BusinessLayer.Customers.Commands
             }
 
             _customerListingViewModelNavigationService.Navigate();
+        }
+        
+        private void OnHasCustomerPropertyErrorChanged(object? sender, DataErrorsChangedEventArgs e)
+        {
+            OnCanExecuteChanged();
         }
 
         private readonly ManagerStore _managerStore;

@@ -4,8 +4,12 @@
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:dashboard="clr-namespace:PresentationLayer.Dashboard"
              xmlns:customers="clr-namespace:PresentationLayer.Customers"
+             xmlns:articleGroups="clr-namespace:PresentationLayer.ArticleGroups"
              xmlns:BusinessLayer.Dashboard="clr-namespace:BusinessLayer.Dashboard.ViewModels;assembly=BusinessLayer"
              xmlns:BusinessLayer.Customers="clr-namespace:BusinessLayer.Customers.ViewModels;assembly=BusinessLayer"
+             xmlns:BusinessLayer.ArticleGroups="clr-namespace:BusinessLayer.ArticleGroups.ViewModels;assembly=BusinessLayer"
+             xmlns:BusinessLayer.Articles="clr-namespace:BusinessLayer.Articles.ViewModels;assembly=BusinessLayer"
+             xmlns:articles="clr-namespace:PresentationLayer.Article"
              Background="{ui:ThemeResource ApplicationBackgroundBrush}"
              ExtendsContentIntoTitleBar="True"
              WindowBackdropType="Mica"
@@ -36,6 +40,14 @@
                     <ui:NavigationItem Content="Customers"
                                        Icon="Person24"
                                        Command="{Binding NavigateToCustomerListingViewCommand}"
+                                       PageTag="listingView" />
+                    <ui:NavigationItem Content="Art. Groups"
+                                       Icon="Group24"
+                                       Command="{Binding NavigateToArticleGroupListingViewCommand}"
+                                       PageTag="listingView" />
+                    <ui:NavigationItem Content="Articles"
+                                       Icon="Balloon24"
+                                       Command="{Binding NavigateToArticleListingViewCommand}"
                                        PageTag="listingView" />
                 </ui:NavigationStore.Items>
             </ui:NavigationStore>
@@ -69,6 +81,21 @@
                             </DataTemplate>
                             <DataTemplate DataType="{x:Type BusinessLayer.Customers:EditCustomerViewModel}">
                                 <customers:EditCustomerView />
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type BusinessLayer.ArticleGroups:ArticleGroupListingViewModel}">
+                                <articleGroups:ArticleCroupListingView />
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type BusinessLayer.ArticleGroups:CreateArticleGroupViewModel}">
+                                <articleGroups:CreateArticleGroupView />
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type BusinessLayer.Articles:ArticleListingViewModel}">
+                                <articles:ArticleListingView />
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type BusinessLayer.Articles:CreateArticleViewModel}">
+                                <articles:CreateArticleView />
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type BusinessLayer.Articles:EditArticleViewModel}">
+                                <articles:EditArticleView />
                             </DataTemplate>
                         </Grid.Resources>
                     </Grid>

@@ -27,6 +27,24 @@ namespace DataLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ArticleGroups",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    SuperiorArticleGroupId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ArticleGroups", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ArticleGroups_ArticleGroups_SuperiorArticleGroupId",
+                        column: x => x.SuperiorArticleGroupId,
+                        principalTable: "ArticleGroups",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Customers",
                 columns: table => new
                 {
@@ -49,6 +67,35 @@ namespace DataLayer.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Articles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ArticleGroupId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Articles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Articles_ArticleGroups_ArticleGroupId",
+                        column: x => x.ArticleGroupId,
+                        principalTable: "ArticleGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArticleGroups_SuperiorArticleGroupId",
+                table: "ArticleGroups",
+                column: "SuperiorArticleGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Articles_ArticleGroupId",
+                table: "Articles",
+                column: "ArticleGroupId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_AddressId",
                 table: "Customers",
@@ -59,7 +106,13 @@ namespace DataLayer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Articles");
+
+            migrationBuilder.DropTable(
                 name: "Customers");
+
+            migrationBuilder.DropTable(
+                name: "ArticleGroups");
 
             migrationBuilder.DropTable(
                 name: "Address");

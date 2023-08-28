@@ -1,4 +1,4 @@
-﻿using BusinessLayer.Base.Command;
+﻿using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using BusinessLayer.Customers.ViewModels;

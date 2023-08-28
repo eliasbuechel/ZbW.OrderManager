@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace BusinessLayer.Base.Command
+namespace BusinessLayer.Base.Commands
 {
     public abstract class BaseCommand : ICommand
     {

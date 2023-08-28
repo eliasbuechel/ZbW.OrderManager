@@ -70,59 +70,6 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <!--<ui:VirtualizingGridView ItemsSource="{Binding Customers}"
-                                         Orientation="Horizontal">
-                    <ui:VirtualizingGridView.View>
-                        <GridView>
-                            <GridViewColumn>
-                                <GridViewColumn.Header>
-                                    <GridViewColumnHeader Content="Id" />
-                                </GridViewColumn.Header>
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Id}"
-                                                   MinWidth="50" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumn.Header>
-                                    <GridViewColumnHeader Content="Name" />
-                                </GridViewColumn.Header>
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Name}"
-                                                   MinWidth="100" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumn.Header>
-                                    <GridViewColumnHeader Content="Location" />
-                                </GridViewColumn.Header>
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Location}"
-                                                   MinWidth="150" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumn.Header>
-                                    <GridViewColumnHeader Content="Actions" />
-                                </GridViewColumn.Header>
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Button Command="{Binding NavigateToEditCustomerCommand}" />
-                                            <Button Command="{Binding DeleteCustomerCommand}" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ui:VirtualizingGridView.View>
-                </ui:VirtualizingGridView>-->
             </Grid>
         </Grid>
     </Grid>

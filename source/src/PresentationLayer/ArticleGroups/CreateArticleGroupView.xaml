@@ -1,0 +1,82 @@
+﻿<UserControl x:Class="PresentationLayer.ArticleGroups.CreateArticleGroupView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             mc:Ignorable="d"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Label Content="Create article group"
+               FontSize="20" />
+        <StackPanel Grid.Row="2"
+                   Orientation="Vertical"
+                   HorizontalAlignment="Center"
+                   Width="200">
+            <ui:TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                        PlaceholderText="Name"
+                        Icon="Pen20"
+                        Margin="10" />
+            <CheckBox Content="Create as root element"
+                      IsChecked="{Binding CreateAsRootElement}"
+                      HorizontalAlignment="Center"/>
+        </StackPanel>
+        <Grid Grid.Row="4"
+              IsEnabled="{Binding CreateAsRootElement}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <ui:TextBox Text="{Binding ArticleGroup.Name, Mode=OneWay}"
+                            Icon="Group20"
+                            MinWidth="200"
+                            IsReadOnly="True"
+                            ClearButtonEnabled="False"
+                            Margin="10 0 0 0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            PlaceholderText="Superior article group" />
+            </StackPanel>
+            <TreeView Grid.Column="2"
+                      ItemsSource="{Binding ArticleGroups}"
+                      Name="ArticleGroupTreeView"
+                      FontSize="14"
+                      FontWeight="Bold"
+                      SelectedItemChanged="ArticleGroupTreeView_SelectedItemChanged"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Top"
+                      IsEnabled="{Binding CreateAsRootElement}">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding SubordinateArticleGroups}"
+                                              DataType="x:Type Model:ArticleGroup">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+        </Grid>
+        <StackPanel Grid.Row="6"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+            <ui:Button Content="Create"
+                       Command="{Binding CreateArticleCommand}"
+                       Margin="0 0 10 0" />
+            <ui:Button Content="Cancel"
+                       Command="{Binding CancelCreateArticleCommand}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

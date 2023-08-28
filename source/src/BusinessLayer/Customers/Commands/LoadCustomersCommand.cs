@@ -1,4 +1,4 @@
-﻿using BusinessLayer.Base.Command;
+﻿using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Stores;
 using BusinessLayer.Customers.ViewModels;
 
@@ -19,6 +19,7 @@ namespace BusinessLayer.Customers.Commands
         {
             _customerListingViewModel.ErrorMessage = string.Empty;
             _customerListingViewModel.IsLoading = true;
+
             try
             {
                 await _managerStore.Load();
@@ -33,7 +34,6 @@ namespace BusinessLayer.Customers.Commands
             {
                 _customerListingViewModel.IsLoading = false;
             }
-
         }
     }
 }

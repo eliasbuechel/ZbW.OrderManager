@@ -10,12 +10,10 @@ namespace DataLayer.Customers.Exceptions
         {
             customer = lookingForCutomer;
         }
-
         public NotContainingCustomerInDatabaseException(string? message, Customer lookingForCutomer) : base(message)
         {
             customer = lookingForCutomer;
         }
-
         public NotContainingCustomerInDatabaseException(string? message, Exception? innerException, Customer lookingForCutomer) : base(message, innerException)
         {
             customer = lookingForCutomer;

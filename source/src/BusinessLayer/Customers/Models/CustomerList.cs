@@ -1,9 +1,10 @@
-﻿using DataLayer.Customers.Services.CustomerCreators;
+﻿using DataLayer.Customers.Models;
+using DataLayer.Customers.Services.CustomerCreators;
 using DataLayer.Customers.Services.CustomerDeletors;
 using DataLayer.Customers.Services.CustomerEditors;
 using DataLayer.Customers.Services.CustomerProviders;
 
-namespace DataLayer.Customers.Models
+namespace BusinessLayer.Customers.Models
 {
     public class CustomerList
     {
@@ -19,22 +20,18 @@ namespace DataLayer.Customers.Models
         {
             return await _customerProvider.GetAllCustomers();
         }
-
         public async Task CreateCustomer(Customer customer)
         {
             await _customerCreator.CreateCustomer(customer);
         }
-
         public async Task<int> GetNextFreeCustomerIdAsync()
         {
             return await _customerCreator.GetNextFreeCustomerIdAsync();
         }
-
         public async Task DeleteCustomer(Customer customer)
         {
             await _customerDeletor.DeleteCustomer(customer);
         }
-
         public async Task EditCustomer(Customer initialCustomer, Customer editedCustomer)
         {
             await _customerEditor.EditCustomer(initialCustomer, editedCustomer);

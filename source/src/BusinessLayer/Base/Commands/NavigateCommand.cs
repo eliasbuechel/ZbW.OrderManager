@@ -1,6 +1,6 @@
 ﻿using BusinessLayer.Base.Services;
 
-namespace BusinessLayer.Base.Command
+namespace BusinessLayer.Base.Commands
 {
     public class NavigateCommand : BaseCommand
     {
