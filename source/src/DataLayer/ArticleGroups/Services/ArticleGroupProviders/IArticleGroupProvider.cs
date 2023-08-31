@@ -1,9 +1,9 @@
-﻿using DataLayer.ArticleGroups.Models;
+﻿using DataLayer.ArticleGroups.DTOs;
 
 namespace DataLayer.ArticleGroups.Services.ArticleGroupProviders
 {
     public interface IArticleGroupProvider
     {
-        Task<IEnumerable<ArticleGroup>> GetAllArticleGroups();
+        Task<IEnumerable<ArticleGroupDTO>> GetAllArticleGroups();
     }
 }

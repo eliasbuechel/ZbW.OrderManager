@@ -1,12 +1,12 @@
 ﻿using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Stores;
-using DataLayer.Customers.Models;
+using DataLayer.Customers.DTOs;
 
 namespace BusinessLayer.Customers.Commands
 {
     class DeleteCustomeCommand : BaseAsyncCommand
     {
-        public DeleteCustomeCommand(ManagerStore managerStore, Customer customer)
+        public DeleteCustomeCommand(ManagerStore managerStore, CustomerDTO customer)
         {
             _managerStore = managerStore;
             _customer = customer;
@@ -18,6 +18,6 @@ namespace BusinessLayer.Customers.Commands
         }
 
         private readonly ManagerStore _managerStore;
-        private readonly Customer _customer;
+        private readonly CustomerDTO _customer;
     }
 }

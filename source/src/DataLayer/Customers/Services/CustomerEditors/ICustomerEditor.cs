@@ -1,9 +1,9 @@
-﻿using DataLayer.Customers.Models;
+﻿using DataLayer.Customers.DTOs;
 
 namespace DataLayer.Customers.Services.CustomerEditors
 {
     public interface ICustomerEditor
     {
-        public Task EditCustomer(Customer initialCustomer, Customer editedCustomer);
+        public Task EditCustomer(CustomerDTO initialCustomer, CustomerDTO editedCustomer);
     }
 }

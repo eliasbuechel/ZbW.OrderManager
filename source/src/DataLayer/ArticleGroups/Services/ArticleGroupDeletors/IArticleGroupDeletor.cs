@@ -1,9 +1,9 @@
-﻿using DataLayer.ArticleGroups.Models;
+﻿using DataLayer.ArticleGroups.DTOs;
 
 namespace DataLayer.ArticleGroups.Services.ArticleGroupDeletors
 {
     public interface IArticleGroupDeletor
     {
-        Task DeleteArticleGroup(ArticleGroup articleGroup);
+        Task DeleteArticleGroup(ArticleGroupDTO articleGroup);
     }
 }

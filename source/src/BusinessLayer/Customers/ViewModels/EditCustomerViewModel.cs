@@ -2,14 +2,14 @@
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using BusinessLayer.Customers.Commands;
-using DataLayer.Customers.Models;
+using DataLayer.Customers.DTOs;
 using System.Windows.Input;
 
 namespace BusinessLayer.Customers.ViewModels
 {
-    public class EditCustomerViewModel : BaseCustomerFieldsViewModel
+    public class EditCustomerViewModel : BaseCustomerListingViewModel
     {
-        public EditCustomerViewModel(ManagerStore managerStore, Customer customer, NavigationService createCustomerListingViewModelNavigationService)
+        public EditCustomerViewModel(ManagerStore managerStore, CustomerDTO customer, NavigationService createCustomerListingViewModelNavigationService)
         {
             SaveChangedToCustomerCommand = new SaveChangesToCustomerCommand(managerStore, customer, this, createCustomerListingViewModelNavigationService);
             CancelEditCustomerCommand = new NavigateCommand(createCustomerListingViewModelNavigationService);

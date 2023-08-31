@@ -1,20 +1,19 @@
-﻿namespace DataLayer.ArticleGroups.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DataLayer.ArticleGroups.Models
 {
     public class ArticleGroup
     {
-        public ArticleGroup(int id, string name, ICollection<ArticleGroup> subordinateArticleGroups)
-        {
-            Id = id;
-            Name = name;
-            SubordinateArticleGroups = subordinateArticleGroups;
-        }
-        public ArticleGroup(int id, string name)
-            : this(id, name, new List<ArticleGroup>())
-        {
-        }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int Id { get; set; }
 
-        public int Id { get; }
-        public string Name { get; }
-        public ICollection<ArticleGroup> SubordinateArticleGroups { get; }
+        [Required]
+        [MaxLength(100)]
+        public string Name { get; set; }
+
+        public virtual ArticleGroup? SuperiorArticleGroup { get; set; }
+
+        public virtual ICollection<ArticleGroup> SubordinateArticleGroups { get; set; } = new List<ArticleGroup>();
     }
 }

@@ -7,32 +7,50 @@ namespace DataLayer.ArticleGroups.Services.ArticleGroupProviders
 {
     public class DatabaseArticleGroupProviders : IArticleGroupProvider
     {
-        private readonly ManagerDbContextFactory _dbContextFactory;
-
         public DatabaseArticleGroupProviders(ManagerDbContextFactory dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
         }
 
-        public async Task<IEnumerable<ArticleGroup>> GetAllArticleGroups()
+        public async Task<IEnumerable<ArticleGroupDTO>> GetAllArticleGroups()
         {
             using ManagerDbContext context = _dbContextFactory.CreateDbContext();
 
-            var articleGroups = await context.ArticleGroups
-                    .Where(a => a.SuperiorArticleGroup == null)
-                    .Include(a => a.SubordinateArticleGroups)
-                    .Select(a => new ArticleGroup(a.Id, a.Name, GetSubordinateArticleGroupRecursive(context, a)))
-                    .ToListAsync();
+            IEnumerable<ArticleGroupDTO> articleGroupsDTOs = await context.ArticleGroups
+                                                                        .Where(a => a.SuperiorArticleGroup == null)
+                                                                        .Select(a => new ArticleGroupDTO(a.Id, a.Name))
+                                                                        .ToListAsync();
 
-            return articleGroups;
+            foreach (var articleGroupDTO in articleGroupsDTOs)
+                AddSubordinateArticleGroupRec(context, articleGroupDTO);
+
+            return articleGroupsDTOs;
         }
 
-        private static ICollection<ArticleGroup> GetSubordinateArticleGroupRecursive(ManagerDbContext context, ArticleGroupDTO parent)
+        private static IEnumerable<ArticleGroup> IncludeArticleGroupRec(ArticleGroup articleGroup)
         {
-            return context.ArticleGroups
-                .Where(a => a.SuperiorArticleGroup.Id == parent.Id)
-                .Select(a => new ArticleGroup(a.Id, a.Name, GetSubordinateArticleGroupRecursive(context, a)))
-                .ToList();
+            IEnumerable<ArticleGroup> subordinateArticleGroups = articleGroup.SubordinateArticleGroups;
+            
+            foreach (ArticleGroup subordinateArticleGroup in subordinateArticleGroups)
+            {
+                IncludeArticleGroupRec(subordinateArticleGroup);
+            }
+
+            return subordinateArticleGroups;
         }
+
+        private static void AddSubordinateArticleGroupRec(ManagerDbContext context, ArticleGroupDTO articleGroup)
+        {
+            IEnumerable<ArticleGroup> subordinateArticleGroups = context.ArticleGroups.Where(a => a.SuperiorArticleGroup != null && a.SuperiorArticleGroup.Id == articleGroup.Id).ToList();
+
+            foreach (ArticleGroup subordinateArticleGroup in subordinateArticleGroups)
+            {
+                ArticleGroupDTO subordinateArticleGroupDTO = new ArticleGroupDTO(subordinateArticleGroup.Id, subordinateArticleGroup.Name);
+                articleGroup.AddSubordinateArticleGroup(subordinateArticleGroupDTO);
+                AddSubordinateArticleGroupRec(context, subordinateArticleGroupDTO);
+            }
+        }
+
+        private readonly ManagerDbContextFactory _dbContextFactory;
     }
 }

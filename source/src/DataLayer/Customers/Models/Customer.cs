@@ -1,30 +1,34 @@
-﻿namespace DataLayer.Customers.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DataLayer.Customers.Models
 {
     public class Customer
     {
-        public int Id { get; }
-        public string FirstName { get; }
-        public string LastName { get; }
-        public string StreetName { get; }
-        public string HouseNumber { get; }
-        public string City { get; }
-        public string PostalCode { get; }
-        public string EmailAddress { get; }
-        public string WebsiteURL { get; }
-        public string Password { get; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int Id { get; set; }
 
-        public Customer(int id, string firstName, string lastName, string streetName, string houseNumber, string city, string postalCode, string emailAddress, string websiteURL, string password)
-        {
-            Id = id;
-            FirstName = firstName;
-            LastName = lastName;
-            StreetName = streetName;
-            HouseNumber = houseNumber;
-            City = city;
-            PostalCode = postalCode;
-            EmailAddress = emailAddress;
-            WebsiteURL = websiteURL;
-            Password = password;
-        }
+        [Required]
+        [MaxLength(100)]
+        public string FirstName { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string LastName { get; set; }
+
+        [Required]
+        public virtual Address Address { get; set; }
+
+        [Required]
+        [MaxLength(200)]
+        public string EmailAddress { get; set; }
+
+        [Required]
+        [MaxLength(255)]
+        public string WebsiteURL { get; set; }
+
+        [Required]
+        [MaxLength(255)]
+        public string Password { get; set; }
     }
 }

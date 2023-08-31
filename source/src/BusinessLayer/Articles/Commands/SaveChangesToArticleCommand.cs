@@ -2,14 +2,14 @@
 using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
-using DataLayer.Articles.Models;
+using DataLayer.Articles.DTOs;
 using System.ComponentModel;
 
 namespace BusinessLayer.Articles.Commands
 {
     public class SaveChangesToArticleCommand : BaseAsyncCommand
     {
-        public SaveChangesToArticleCommand(ManagerStore managerStore, Article initialArticle, EditArticleViewModel editArticleViewModel, NavigationService articleListingViewModelNavigationService)
+        public SaveChangesToArticleCommand(ManagerStore managerStore, ArticleDTO initialArticle, EditArticleViewModel editArticleViewModel, NavigationService articleListingViewModelNavigationService)
         {
             _managerStore = managerStore;
             _initialArticle = initialArticle;
@@ -32,7 +32,7 @@ namespace BusinessLayer.Articles.Commands
             if (_editArticleViewModel.ArticleGroup == null)
                 return;
 
-            Article editedArticle = new Article(
+            ArticleDTO editedArticle = new ArticleDTO(
                 _initialArticle.Id,
                 _editArticleViewModel.Name,
                 _editArticleViewModel.ArticleGroup
@@ -57,7 +57,7 @@ namespace BusinessLayer.Articles.Commands
         }
 
         private readonly ManagerStore _managerStore;
-        private readonly Article _initialArticle;
+        private readonly ArticleDTO _initialArticle;
         private readonly EditArticleViewModel _editArticleViewModel;
         private readonly NavigationService _articleListingViewModelNavigationService;
     }

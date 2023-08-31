@@ -1,4 +1,4 @@
-﻿using DataLayer.Customers.Models;
+﻿using DataLayer.Customers.DTOs;
 using DataLayer.Customers.Services.CustomerCreators;
 using DataLayer.Customers.Services.CustomerDeletors;
 using DataLayer.Customers.Services.CustomerEditors;
@@ -16,11 +16,11 @@ namespace BusinessLayer.Customers.Models
             _customerEditor = customerEditor;
         }
 
-        public async Task<IEnumerable<Customer>> GetAllCustomers()
+        public async Task<IEnumerable<CustomerDTO>> GetAllCustomers()
         {
             return await _customerProvider.GetAllCustomers();
         }
-        public async Task CreateCustomer(Customer customer)
+        public async Task CreateCustomer(CustomerDTO customer)
         {
             await _customerCreator.CreateCustomer(customer);
         }
@@ -28,11 +28,11 @@ namespace BusinessLayer.Customers.Models
         {
             return await _customerCreator.GetNextFreeCustomerIdAsync();
         }
-        public async Task DeleteCustomer(Customer customer)
+        public async Task DeleteCustomer(CustomerDTO customer)
         {
             await _customerDeletor.DeleteCustomer(customer);
         }
-        public async Task EditCustomer(Customer initialCustomer, Customer editedCustomer)
+        public async Task EditCustomer(CustomerDTO initialCustomer, CustomerDTO editedCustomer)
         {
             await _customerEditor.EditCustomer(initialCustomer, editedCustomer);
         }

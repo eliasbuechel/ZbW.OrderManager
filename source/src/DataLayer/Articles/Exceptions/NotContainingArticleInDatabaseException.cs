@@ -1,22 +1,22 @@
-﻿using DataLayer.Articles.Models;
+﻿using DataLayer.Articles.DTOs;
 
 namespace DataLayer.Articles.Exceptions
 {
     public class NotContainingArticleInDatabaseException : Exception
     {
-        public NotContainingArticleInDatabaseException(Article article)
+        public NotContainingArticleInDatabaseException(ArticleDTO article)
         {
             _article = article;
         }
-        public NotContainingArticleInDatabaseException(string? message, Article article) : base(message)
+        public NotContainingArticleInDatabaseException(string? message, ArticleDTO article) : base(message)
         {
             _article = article;
         }
-        public NotContainingArticleInDatabaseException(string? message, Exception? innerException, Article article) : base(message, innerException)
+        public NotContainingArticleInDatabaseException(string? message, Exception? innerException, ArticleDTO article) : base(message, innerException)
         {
             _article = article;
         }
 
-        private readonly Article _article;
+        private readonly ArticleDTO _article;
     }
 }

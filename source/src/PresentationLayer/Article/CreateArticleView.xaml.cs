@@ -1,5 +1,5 @@
 ﻿using BusinessLayer.Articles.ViewModels;
-using DataLayer.ArticleGroups.Models;
+using DataLayer.ArticleGroups.DTOs;
 using System.Windows.Controls;
 
 namespace PresentationLayer.Article
@@ -15,7 +15,7 @@ namespace PresentationLayer.Article
         {
             CreateArticleViewModel viewModel = (CreateArticleViewModel)DataContext;
 
-            ArticleGroup? articleGroup = ArticleGroupTreeView.SelectedItem as ArticleGroup;
+            ArticleGroupDTO? articleGroup = ArticleGroupTreeView.SelectedItem as ArticleGroupDTO;
 
             if (articleGroup == null)
                 return;

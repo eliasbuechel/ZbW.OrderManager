@@ -3,7 +3,7 @@ using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using DataLayer.ArticleGroups.Exceptions;
-using DataLayer.Articles.Models;
+using DataLayer.Articles.DTOs;
 using System.ComponentModel;
 
 namespace BusinessLayer.Articles.Commands
@@ -29,7 +29,7 @@ namespace BusinessLayer.Articles.Commands
         {
             try
             {
-                Article article = new Article(await _managerStore.GetNextFreeArticleIdAsync(), _createArticleViewModel.Name, _createArticleViewModel.ArticleGroup);
+                ArticleDTO article = new ArticleDTO(await _managerStore.GetNextFreeArticleIdAsync(), _createArticleViewModel.Name, _createArticleViewModel.ArticleGroup);
                 await _managerStore.CreateArticleAsync(article);
             }
             catch (NotContainingArticleGroupInDatabaseException e)

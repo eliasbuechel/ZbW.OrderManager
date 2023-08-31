@@ -1,5 +1,6 @@
 ﻿using DataLayer.ArticleGroups.DTOs;
 using DataLayer.ArticleGroups.Models;
+using DataLayer.Articles.DTOs;
 using DataLayer.Articles.Models;
 using DataLayer.Base.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
@@ -8,32 +9,27 @@ namespace DataLayer.Articles.Services.ArticleProviders
 {
     public class DatabaseArticleProvider : IArticleProvider
     {
-        private readonly ManagerDbContextFactory _dbContextFactory;
-
         public DatabaseArticleProvider(ManagerDbContextFactory dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
         }
-        public async Task<IEnumerable<Article>> GetAllArticlesAsync()
+        public async Task<IEnumerable<ArticleDTO>> GetAllArticlesAsync()
         {
             using ManagerDbContext context = _dbContextFactory.CreateDbContext();
 
-            IEnumerable<Article> articles = await context
-                .Articles
-                .Include(a => a.ArticleGroup)
-                .Select(a => new Article(a.Id, a.Name, new ArticleGroup(a.Id, a.ArticleGroup.Name, GetSubordinateArticleGroupRecursive(context, a.ArticleGroup))))
-                .ToListAsync();
+            ICollection<Article> articles = await context.Articles.Include(a => a.ArticleGroup).ToListAsync();
+            ICollection<ArticleDTO> articleDTOs = new List<ArticleDTO>();
 
-            return articles;
+            foreach (Article a in articles)
+            {
+                ArticleDTO articleDTO = new ArticleDTO(a.Id, a.Name, new ArticleGroupDTO(a.ArticleGroup.Id, a.ArticleGroup.Name));
+
+                articleDTOs.Add(articleDTO);
+            }
+
+            return articleDTOs;
         }
 
-        private static ICollection<ArticleGroup> GetSubordinateArticleGroupRecursive(ManagerDbContext context, ArticleGroupDTO parent)
-        {
-            return context.ArticleGroups
-                .Where(a => a.SuperiorArticleGroup.Id == parent.Id)
-                .Select(a => new ArticleGroup(a.Id, a.Name, GetSubordinateArticleGroupRecursive(context, a)))
-                .ToList();
-        }
-
+        private readonly ManagerDbContextFactory _dbContextFactory;
     }
 }

@@ -1,10 +1,10 @@
-﻿using DataLayer.Customers.Models;
+﻿using DataLayer.Customers.DTOs;
 
 namespace DataLayer.Customers.Services.CustomerCreators
 {
     public interface ICustomerCreator
     {
-        Task CreateCustomer(Customer customer);
+        Task CreateCustomer(CustomerDTO customer);
         Task<int> GetNextFreeCustomerIdAsync();
     }
 }

@@ -12,10 +12,10 @@ namespace DataLayer.Customers.Services.CustomerCreators
             _dbContextFactory = dbContextFactory;
         }
 
-        public async Task CreateCustomer(Customer customer)
+        public async Task CreateCustomer(CustomerDTO customer)
         {
             using ManagerDbContext context = _dbContextFactory.CreateDbContext();
-            CustomerDTO customerDTO = ToCustomerDTO(customer);
+            Customer customerDTO = ToCustomerDTO(customer);
 
             context.Customers.Add(customerDTO);
             await context.SaveChangesAsync();
@@ -31,14 +31,14 @@ namespace DataLayer.Customers.Services.CustomerCreators
             return maxId + 1;
         }
 
-        private static CustomerDTO ToCustomerDTO(Customer customer)
+        private static Customer ToCustomerDTO(CustomerDTO customer)
         {
-            return new CustomerDTO()
+            return new Customer()
             {
                 Id = customer.Id,
                 FirstName = customer.FirstName,
                 LastName = customer.LastName,
-                Address = new AddressDTO()
+                Address = new Address()
                 {
                     StreetName = customer.StreetName,
                     HouseNumber = customer.HouseNumber,

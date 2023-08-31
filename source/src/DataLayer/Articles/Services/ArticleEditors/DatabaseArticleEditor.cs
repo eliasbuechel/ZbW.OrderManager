@@ -1,5 +1,5 @@
-﻿using DataLayer.ArticleGroups.DTOs;
-using DataLayer.ArticleGroups.Exceptions;
+﻿using DataLayer.ArticleGroups.Exceptions;
+using DataLayer.ArticleGroups.Models;
 using DataLayer.Articles.DTOs;
 using DataLayer.Articles.Exceptions;
 using DataLayer.Articles.Models;
@@ -17,18 +17,18 @@ namespace DataLayer.Articles.Services.ArticleEditors
         {
             _managerDbContextFactory = managerDbContextFactory;
         }
-        public async Task SaveChangesToArticleAsync(Article initialArticle, Article editedArticle)
+        public async Task SaveChangesToArticleAsync(ArticleDTO initialArticle, ArticleDTO editedArticle)
         {
             ManagerDbContext context = _managerDbContextFactory.CreateDbContext();
 
-            ArticleDTO? articleDTO = await context.Articles.Where(a => a.Id == initialArticle.Id).FirstOrDefaultAsync();
+            Article? articleDTO = await context.Articles.Where(a => a.Id == initialArticle.Id).FirstOrDefaultAsync();
 
             if (articleDTO == null)
                 throw new NotContainingArticleInDatabaseException(initialArticle);
 
             articleDTO.Name = editedArticle.Name;
 
-            ArticleGroupDTO? articleGroupDTO = await context.ArticleGroups.Where(ag => ag.Id == editedArticle.ArticleGroup.Id).FirstOrDefaultAsync();
+            ArticleGroup? articleGroupDTO = await context.ArticleGroups.Where(ag => ag.Id == editedArticle.ArticleGroup.Id).FirstOrDefaultAsync();
             if (articleGroupDTO == null)
                 throw new NotContainingArticleGroupInDatabaseException(editedArticle.ArticleGroup);
 

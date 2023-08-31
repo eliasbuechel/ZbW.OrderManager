@@ -1,5 +1,5 @@
-﻿using DataLayer.ArticleGroups.DTOs;
-using DataLayer.ArticleGroups.Exceptions;
+﻿using DataLayer.ArticleGroups.Exceptions;
+using DataLayer.ArticleGroups.Models;
 using DataLayer.Articles.DTOs;
 using DataLayer.Articles.Models;
 using DataLayer.Base.DatabaseContext;
@@ -15,18 +15,18 @@ namespace DataLayer.Articles.Services.ArticleCreator
         {
             _managerDbContextFactory = managerDbContextFactory;
         }
-        public async Task CreateArticleAsync(Article article)
+        public async Task CreateArticleAsync(ArticleDTO article)
         {
             ManagerDbContext context = _managerDbContextFactory.CreateDbContext();
 
-            ArticleGroupDTO? articleGroupDTO = await context.ArticleGroups.Where(ag => ag.Id == article.ArticleGroup.Id).FirstOrDefaultAsync();
+            ArticleGroup? articleGroupDTO = await context.ArticleGroups.Where(ag => ag.Id == article.ArticleGroup.Id).FirstOrDefaultAsync();
 
             if (articleGroupDTO == null)
             {
                 throw new NotContainingArticleGroupInDatabaseException("Database does not contain ArticleGroup reffered by the Article", article.ArticleGroup);
             }
 
-            ArticleDTO articleDto = new ArticleDTO()
+            Article articleDto = new Article()
             {
                 Id = article.Id,
                 Name = article.Name,

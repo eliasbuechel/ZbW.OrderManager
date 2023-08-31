@@ -2,7 +2,7 @@
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using BusinessLayer.Customers.ViewModels;
-using DataLayer.Customers.Models;
+using DataLayer.Customers.DTOs;
 using System.ComponentModel;
 
 namespace BusinessLayer.Customers.Commands
@@ -10,7 +10,7 @@ namespace BusinessLayer.Customers.Commands
     internal class SaveChangesToCustomerCommand : BaseAsyncCommand
     {
 
-        public SaveChangesToCustomerCommand(ManagerStore managerStore, Customer initialCustomer, EditCustomerViewModel editCustomerViewModel, NavigationService customerListingViewModelNavigationService)
+        public SaveChangesToCustomerCommand(ManagerStore managerStore, CustomerDTO initialCustomer, EditCustomerViewModel editCustomerViewModel, NavigationService customerListingViewModelNavigationService)
         {
             _managerStore = managerStore;
             _initialCustomer = initialCustomer;
@@ -32,7 +32,7 @@ namespace BusinessLayer.Customers.Commands
 
         public async override Task ExecuteAsync(object? parameter)
         {
-            Customer editedCustomer = new Customer(
+            CustomerDTO editedCustomer = new CustomerDTO(
                 _initialCustomer.Id,
                 _editedCustomerViewModel.FirstName,
                 _editedCustomerViewModel.LastName,
@@ -64,7 +64,7 @@ namespace BusinessLayer.Customers.Commands
 
         }
 
-        private readonly Customer _initialCustomer;
+        private readonly CustomerDTO _initialCustomer;
         private readonly ManagerStore _managerStore;
         private readonly NavigationService _customerListingViewModelNavigationService;
         private readonly EditCustomerViewModel _editedCustomerViewModel;

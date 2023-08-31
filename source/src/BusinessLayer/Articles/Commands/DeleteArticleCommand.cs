@@ -1,15 +1,15 @@
 ﻿using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Stores;
-using DataLayer.Articles.Models;
+using DataLayer.Articles.DTOs;
 
 namespace BusinessLayer.Articles.Commands
 {
     public class DeleteArticleCommand : BaseAsyncCommand
     {
         private readonly ManagerStore _managerStore;
-        private readonly Article _article;
+        private readonly ArticleDTO _article;
 
-        public DeleteArticleCommand(ManagerStore managerStore, Article article)
+        public DeleteArticleCommand(ManagerStore managerStore, ArticleDTO article)
         {
             _managerStore = managerStore;
             _article = article;

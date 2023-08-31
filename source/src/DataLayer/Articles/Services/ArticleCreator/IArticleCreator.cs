@@ -1,10 +1,10 @@
-﻿using DataLayer.Articles.Models;
+﻿using DataLayer.Articles.DTOs;
 
 namespace DataLayer.Articles.Services.ArticleCreator
 {
     public interface IArticleCreator
     {
-        Task CreateArticleAsync(Article article);
+        Task CreateArticleAsync(ArticleDTO article);
         Task<int> GetNextFreeArticleIdAsync();
     }
 }

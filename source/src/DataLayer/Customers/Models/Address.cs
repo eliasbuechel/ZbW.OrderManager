@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DataLayer.Customers.DTOs
+namespace DataLayer.Customers.Models
 {
-    public class AddressDTO
+    public class Address
     {
         public int Id { get; set; }
 

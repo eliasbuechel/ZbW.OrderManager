@@ -1,14 +1,14 @@
 ﻿using BusinessLayer.ArticleGroups.ViewModels;
 using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Stores;
-using DataLayer.ArticleGroups.Models;
+using DataLayer.ArticleGroups.DTOs;
 using System.ComponentModel;
 
 namespace BusinessLayer.ArticleGroups.Commands
 {
     public class DeleteArticleGroupCommand : BaseAsyncCommand
     {
-        public DeleteArticleGroupCommand(ManagerStore managerStore, ArticleGroup articleGroup, ArticleGroupViewModel articleGroupViewModel)
+        public DeleteArticleGroupCommand(ManagerStore managerStore, ArticleGroupDTO articleGroup, ArticleGroupViewModel articleGroupViewModel)
         {
             _managerStore = managerStore;
             _articleGroup = articleGroup;
@@ -33,7 +33,7 @@ namespace BusinessLayer.ArticleGroups.Commands
         }
 
         private readonly ManagerStore _managerStore;
-        private readonly ArticleGroup _articleGroup;
+        private readonly ArticleGroupDTO _articleGroup;
         private readonly ArticleGroupViewModel _articleGroupViewModel;
     }
 }

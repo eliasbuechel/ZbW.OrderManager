@@ -14,17 +14,17 @@ namespace DataLayer.Customers.Services.CustomerProviders
             _dbContextFactory = dbContextFactory;
         }
 
-        public async Task<IEnumerable<Customer>> GetAllCustomers()
+        public async Task<IEnumerable<CustomerDTO>> GetAllCustomers()
         {
             using ManagerDbContext context = _dbContextFactory.CreateDbContext();
-            IEnumerable<CustomerDTO> customerDTOs = await context.Customers.Include(c => c.Address).ToListAsync();
+            IEnumerable<Customer> customerDTOs = await context.Customers.Include(c => c.Address).ToListAsync();
 
             return customerDTOs.Select(c => ToCustomer(c));
         }
 
-        private static Customer ToCustomer(CustomerDTO c)
+        private static CustomerDTO ToCustomer(Customer c)
         {
-            Customer customer = new Customer(c.Id, c.FirstName, c.LastName, c.Address.StreetName, c.Address.HouseNumber, c.Address.City, c.Address.PostalCode, c.EmailAddress, c.WebsiteURL, c.Password);
+            CustomerDTO customer = new CustomerDTO(c.Id, c.FirstName, c.LastName, c.Address.StreetName, c.Address.HouseNumber, c.Address.City, c.Address.PostalCode, c.EmailAddress, c.WebsiteURL, c.Password);
             return customer;
         }
     }

@@ -13,10 +13,10 @@ namespace DataLayer.Customers.Services.CustomerEditors
             _orderDbContextFactory = orderDbContextFactory;
         }
 
-        public async Task EditCustomer(Customer initialCustomer, Customer editedCustomer)
+        public async Task EditCustomer(CustomerDTO initialCustomer, CustomerDTO editedCustomer)
         {
             ManagerDbContext dbContext = _orderDbContextFactory.CreateDbContext();
-            CustomerDTO? customerDTO = await dbContext.Customers.Include(c => c.Address).Where(c =>
+            Customer? customerDTO = await dbContext.Customers.Include(c => c.Address).Where(c =>
                 c.FirstName == initialCustomer.FirstName &&
                 c.LastName == initialCustomer.LastName &&
                 c.Address.StreetName == initialCustomer.StreetName &&
@@ -35,7 +35,7 @@ namespace DataLayer.Customers.Services.CustomerEditors
             await dbContext.SaveChangesAsync();
         }
 
-        private static void EditCustomer(Customer editedCustomer, CustomerDTO customerDTO)
+        private static void EditCustomer(CustomerDTO editedCustomer, Customer customerDTO)
         {
             customerDTO.FirstName = editedCustomer.FirstName;
             customerDTO.LastName = editedCustomer.LastName;

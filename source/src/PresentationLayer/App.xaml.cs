@@ -12,6 +12,7 @@ using BusinessLayer.Dashboard.ViewModels;
 using DataLayer.ArticleGroups.Services.ArticleGroupCreators;
 using DataLayer.ArticleGroups.Services.ArticleGroupDeletors;
 using DataLayer.ArticleGroups.Services.ArticleGroupProviders;
+using DataLayer.ArticleGroups.Services.ArticleGroupUpdator;
 using DataLayer.Articles.Services.ArticleCreator;
 using DataLayer.Articles.Services.ArticleDeletors;
 using DataLayer.Articles.Services.ArticleEditors;
@@ -28,7 +29,7 @@ namespace PresentationLayer
 {
     public partial class App : Application
     {
-        private const string CONNECTION_STRING = "Server=LAPTOP-4T2LGAB8;Database=OrderManagerTestV2;Trusted_Connection=True;MultipleActiveResultSets=True;Encrypt=False;";
+        private const string CONNECTION_STRING = "Server=.;Database=OrderManagerTestV2;Trusted_Connection=True;MultipleActiveResultSets=True;Encrypt=False;";
         private readonly Manager _manager;
         private readonly ManagerStore _managerStore;
         private readonly ManagerDbContextFactory _orderDbContextFactory;
@@ -36,8 +37,11 @@ namespace PresentationLayer
         private readonly NavigationStore _navigationStore;
         private readonly NavigationService _dashboardViewModelNavigationService;
         private readonly NavigationService _customerListingViewModelNavigationService;
+        private readonly NavigationService _createCustomerViewModelNavigationService;
         private readonly NavigationService _articleGroupListingViewModelNavigationService;
+        private readonly NavigationService _createArticleGroupViewModelNavigationService;
         private readonly NavigationService _articleListingViewModelNavigationService;
+        private readonly NavigationService _createArticleViewModelNavigationService;
 
         public App()
         {
@@ -51,6 +55,7 @@ namespace PresentationLayer
             IArticleGroupProvider articleGroupProvider = new DatabaseArticleGroupProviders(_orderDbContextFactory);
             IArticleGroupCreator articleGroupCreator = new DatabaseArticleGroupCreator(_orderDbContextFactory);
             IArticleGroupDeletor articleGroupDeletor = new DatabaseArticleGroupDeletor(_orderDbContextFactory);
+            IArticleGroupUpdator articleGroupUpdator = new DatabaseArticleGroupUpdator(_orderDbContextFactory);
 
             IArticleProvider articleProvider = new DatabaseArticleProvider(_orderDbContextFactory);
             IArticleCreator articleCreator = new DatabaseArticleCreator(_orderDbContextFactory);
@@ -58,7 +63,7 @@ namespace PresentationLayer
             IArticleEditor articleEditor = new DatabaseArticleEditor(_orderDbContextFactory);
 
             CustomerList customerList = new CustomerList(customerProvider, customerCreator, cusotmerDeletor, customerEditor);
-            ArticleGroupList articleGroupList = new ArticleGroupList(articleGroupProvider, articleGroupCreator, articleGroupDeletor);
+            ArticleGroupList articleGroupList = new ArticleGroupList(articleGroupProvider, articleGroupCreator, articleGroupDeletor, articleGroupUpdator);
             ArticleList articleList = new ArticleList(articleProvider, articleCreator, articleDeletor, articleEditor);
 
             _manager = new Manager(customerList, articleGroupList, articleList);
@@ -67,8 +72,11 @@ namespace PresentationLayer
 
             _dashboardViewModelNavigationService = new NavigationService(_navigationStore, CreateDashboardViewModel);
             _customerListingViewModelNavigationService = new NavigationService(_navigationStore, CreateCustomerListingViewModel);
+            _createCustomerViewModelNavigationService = new NavigationService(_navigationStore, CreateCreateCustomerViewModel);
             _articleGroupListingViewModelNavigationService = new NavigationService(_navigationStore, CreateArticleGroupListingViewModel);
+            _createArticleGroupViewModelNavigationService = new NavigationService(_navigationStore, CreateCreateArticleGroupViewModel);
             _articleListingViewModelNavigationService = new NavigationService(_navigationStore, CreateArticleListingViewModel);
+            _createArticleViewModelNavigationService = new NavigationService(_navigationStore, CreateCreateArticleViewModel);
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -93,7 +101,7 @@ namespace PresentationLayer
         }
         private CustomerListingViewModel CreateCustomerListingViewModel()
         {
-            return CustomerListingViewModel.LoadViewModel(_managerStore, _navigationStore, new NavigationService(_navigationStore, CreateCreateCustomerViewModel), _customerListingViewModelNavigationService);
+            return CustomerListingViewModel.LoadViewModel(_managerStore, _navigationStore, _createCustomerViewModelNavigationService, _customerListingViewModelNavigationService);
         }
         private CreateCustomerViewModel CreateCreateCustomerViewModel()
         {
@@ -101,13 +109,17 @@ namespace PresentationLayer
         }
         private ArticleGroupListingViewModel CreateArticleGroupListingViewModel()
         {
-            return ArticleGroupListingViewModel.LoadViewModel(_managerStore);
+            return ArticleGroupListingViewModel.LoadViewModel(_managerStore, _navigationStore, _articleGroupListingViewModelNavigationService, _createArticleGroupViewModelNavigationService);
+        }
+        private CreateArticleGroupViewModel CreateCreateArticleGroupViewModel()
+        {
+            return CreateArticleGroupViewModel.LoadViewModel(_managerStore, _articleGroupListingViewModelNavigationService);
         }
         private ArticleListingViewModel CreateArticleListingViewModel()
         {
-            return ArticleListingViewModel.LoadViewModel(_managerStore, _navigationStore, new NavigationService(_navigationStore, CreateArticleListingViewModel), new NavigationService(_navigationStore, CreateCreateArticleListingViewModel));
+            return ArticleListingViewModel.LoadViewModel(_managerStore, _navigationStore, _articleListingViewModelNavigationService, _createArticleViewModelNavigationService);
         }
-        private CreateArticleViewModel CreateCreateArticleListingViewModel()
+        private CreateArticleViewModel CreateCreateArticleViewModel()
         {
             return CreateArticleViewModel.LoadViewModel(_managerStore, _articleListingViewModelNavigationService);
         }

@@ -1,9 +1,9 @@
-﻿using DataLayer.Customers.Models;
+﻿using DataLayer.Customers.DTOs;
 
 namespace DataLayer.Customers.Services.CustomerDeletors
 {
     public interface ICustomerDeletor
     {
-        Task DeleteCustomer(Customer customer);
+        Task DeleteCustomer(CustomerDTO customer);
     }
 }

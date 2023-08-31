@@ -2,7 +2,7 @@
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using BusinessLayer.Customers.ViewModels;
-using DataLayer.Customers.Models;
+using DataLayer.Customers.DTOs;
 using System.ComponentModel;
 
 
@@ -27,7 +27,7 @@ namespace BusinessLayer.Customers.Commands
         {
             try
             {
-                Customer customer = new Customer(
+                CustomerDTO customer = new CustomerDTO(
                     await _managerStore.GetNextFreeCustomerIdAsync(),
                     _createCustomerViewModel.FirstName,
                     _createCustomerViewModel.LastName,
@@ -44,7 +44,7 @@ namespace BusinessLayer.Customers.Commands
             }
             catch (Exception e)
             {
-                //MessageBox.Show("Failed to Create Customer.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                _createCustomerViewModel.ErrorMessage = $"Failed to create customer! {e.Message}";
             }
 
             _customerListingViewModelNavigationService.Navigate();

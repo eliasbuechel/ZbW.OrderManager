@@ -1,11 +1,10 @@
-﻿using DataLayer.ArticleGroups.Models;
+﻿using BusinessLayer.Base.ViewModels;
+using DataLayer.ArticleGroups.DTOs;
 
 namespace BusinessLayer.Articles.ViewModels
 {
-    public interface IArticleGroupUpdatable
+    public interface IArticleGroupUpdatable : ILoadable, IErrorInfo
     {
-        void UpdateArticleGroups(IEnumerable<ArticleGroup> articleGroups);
-        string ErrorMessage { set; }
-        bool IsLoading { set; }
+        void UpdateArticleGroups(IEnumerable<ArticleGroupDTO> articleGroups);
     }
 }

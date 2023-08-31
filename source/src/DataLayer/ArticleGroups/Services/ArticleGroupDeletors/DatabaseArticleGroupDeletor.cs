@@ -1,4 +1,4 @@
-﻿using DataLayer.ArticleGroups.Models;
+﻿using DataLayer.ArticleGroups.DTOs;
 using DataLayer.Base.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +13,7 @@ namespace DataLayer.ArticleGroups.Services.ArticleGroupDeletors
             _managerDbContextFactory = managerDbContextFactory;
         }
 
-        public async Task DeleteArticleGroup(ArticleGroup articleGroup)
+        public async Task DeleteArticleGroup(ArticleGroupDTO articleGroup)
         {
             ManagerDbContext context = _managerDbContextFactory.CreateDbContext();
             await context.ArticleGroups.Where(a => a.Id == articleGroup.Id).ExecuteDeleteAsync();

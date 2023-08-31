@@ -1,4 +1,5 @@
-﻿using DataLayer.Articles.Models;
+﻿using DataLayer.ArticleGroups.Models;
+using DataLayer.Articles.DTOs;
 using DataLayer.Articles.Services.ArticleCreator;
 using DataLayer.Articles.Services.ArticleDeletors;
 using DataLayer.Articles.Services.ArticleEditors;
@@ -16,11 +17,11 @@ namespace BusinessLayer.Articles.Models
             _articleEditor = articleEditor;
         }
 
-        public async Task<IEnumerable<Article>> GetAllArticlesAsync()
+        public async Task<IEnumerable<ArticleDTO>> GetAllArticlesAsync()
         {
             return await _articleProvider.GetAllArticlesAsync();
         }
-        public async Task CreateArticleAsync(Article article)
+        public async Task CreateArticleAsync(ArticleDTO article)
         {
             await _articleCreator.CreateArticleAsync(article);
         }
@@ -28,11 +29,11 @@ namespace BusinessLayer.Articles.Models
         {
             return await _articleCreator.GetNextFreeArticleIdAsync();
         }
-        public async Task DeleteArticleAsync(Article article)
+        public async Task DeleteArticleAsync(ArticleDTO article)
         {
             await _articleDeletor.DeleteArticleAsync(article);
         }
-        public async Task SaveChangesToArticleAsync(Article initialArticle, Article editedArticle)
+        public async Task SaveChangesToArticleAsync(ArticleDTO initialArticle, ArticleDTO editedArticle)
         {
             await _articleEditor.SaveChangesToArticleAsync(initialArticle, editedArticle);
         }

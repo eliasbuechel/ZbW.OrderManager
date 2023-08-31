@@ -8,11 +8,11 @@ namespace DataLayer.Customers.Services.CustomerDeletors
 {
     public class DatabaseCustomerDeletor : ICustomerDeletor
     {
-        public async Task DeleteCustomer(Customer customer)
+        public async Task DeleteCustomer(CustomerDTO customer)
         {
             ManagerDbContext context = _dbContextFactory.CreateDbContext();
 
-            CustomerDTO? toDeleteCustomer = await context.Customers.Include(c => c.Address).SingleOrDefaultAsync(c =>
+            Customer? toDeleteCustomer = await context.Customers.Include(c => c.Address).SingleOrDefaultAsync(c =>
                 c.FirstName == customer.FirstName &&
                 c.LastName == customer.LastName &&
                 c.Address.StreetName == customer.StreetName &&

@@ -1,9 +1,9 @@
-﻿using DataLayer.Articles.Models;
+﻿using DataLayer.Articles.DTOs;
 
 namespace DataLayer.Articles.Services.ArticleDeletors
 {
     public interface IArticleDeletor
     {
-        Task DeleteArticleAsync(Article article);
+        Task DeleteArticleAsync(ArticleDTO article);
     }
 }

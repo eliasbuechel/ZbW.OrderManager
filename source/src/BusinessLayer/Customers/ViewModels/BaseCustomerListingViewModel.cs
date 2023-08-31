@@ -1,14 +1,27 @@
 ﻿using BusinessLayer.Base.ViewModels;
-using System.Collections;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using System.Net.Mail;
 
 namespace BusinessLayer.Customers.ViewModels
 {
 
-    public class BaseCustomerFieldsViewModel : BaseViewModel, INotifyDataErrorInfo
+    public class BaseCustomerListingViewModel : BaseErrorHandlingViewModel
     {
-        private string _firstName;
+        public BaseCustomerListingViewModel()
+            : this(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty)
+        {}
+        public BaseCustomerListingViewModel(string firstName, string lastName, string streetName, string houseNumber, string city, string postalCode, string emailAddress, string websiteUrl, string password)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            StreetName = streetName;
+            HouseNumber = houseNumber;
+            City = city;
+            PostalCode = postalCode;
+            EmailAddress = emailAddress;
+            WebsiteUrl = websiteUrl;
+            Password = password;
+        }
+
         public string FirstName
         {
             get
@@ -29,8 +42,6 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(ToLongErrorMessage(maxCharacterSize));
             }
         }
-
-        private string _lastName;
         public string LastName
         {
             get
@@ -51,8 +62,6 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(ToLongErrorMessage(maxCharacterSize));
             }
         }
-
-        private string _streetName;
         public string StreetName
         {
             get
@@ -73,8 +82,6 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(ToLongErrorMessage(maxCharacterSize));
             }
         }
-
-        private string _houseNumber;
         public string HouseNumber
         {
             get
@@ -95,8 +102,6 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(ToLongErrorMessage(maxCharacterSize));
             }
         }
-
-        private string _city;
         public string City
         {
             get
@@ -117,8 +122,6 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(ToLongErrorMessage(maxCharacterSize));
             }
         }
-
-        private string _postalCode;
         public string PostalCode
         {
             get
@@ -139,8 +142,6 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(ToLongErrorMessage(maxCharacterSize));
             }
         }
-
-        private string _emailAddress;
         public string EmailAddress
         {
             get
@@ -161,8 +162,6 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(ToLongErrorMessage(maxCharacterSize));
             }
         }
-
-        private string _websiteUrl;
         public string WebsiteUrl
         {
             get
@@ -183,8 +182,6 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(ToLongErrorMessage(maxCharacterSize));
             }
         }
-
-        private string _password;
         public string Password
         {
             get
@@ -206,42 +203,14 @@ namespace BusinessLayer.Customers.ViewModels
             }
         }
 
-        private void AddError(string errorMessage, [CallerMemberName] string propertyName = null)
-        {
-            if (!_propertyNameToErrorsDictionary.ContainsKey(propertyName))
-                _propertyNameToErrorsDictionary.Add(propertyName, new List<string>());
-
-            _propertyNameToErrorsDictionary[propertyName].Add(errorMessage);
-            OnErrorsChanged(propertyName);
-        }
-        private void OnErrorsChanged(string propertyName)
-        {
-            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-        }
-        private void ClearErrors([CallerMemberName] string propertyName = null)
-        {
-            _propertyNameToErrorsDictionary.Remove(propertyName);
-            OnErrorsChanged(propertyName);
-        }
-
-        private readonly Dictionary<string, List<string>> _propertyNameToErrorsDictionary = new Dictionary<string, List<string>>();
-        public bool HasErrors => _propertyNameToErrorsDictionary.Any();
-
-        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
-
-        public IEnumerable GetErrors(string? propertyName)
-        {
-            if (propertyName == null)
-                return new List<string>();
-
-            return _propertyNameToErrorsDictionary.GetValueOrDefault(propertyName, new List<string>());
-        }
-
-        private string ToLongErrorMessage(int maxSize)
-        {
-            return $"Cannot be larger than {maxSize.ToString()} characters.";
-        }
-
-        private const string EMPTY_MESSAGE = "Cannot be empty.";
+        private string _firstName = string.Empty;
+        private string _lastName = string.Empty;
+        private string _streetName = string.Empty;
+        private string _houseNumber = string.Empty;
+        private string _city = string.Empty;
+        private string _postalCode = string.Empty;
+        private string _emailAddress = string.Empty;
+        private string _websiteUrl = string.Empty;
+        private string _password = string.Empty;
     }
 }

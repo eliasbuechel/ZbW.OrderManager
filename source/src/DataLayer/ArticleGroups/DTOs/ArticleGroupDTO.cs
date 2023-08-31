@@ -1,19 +1,69 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace DataLayer.ArticleGroups.DTOs
+﻿namespace DataLayer.ArticleGroups.DTOs
 {
     public class ArticleGroupDTO
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int Id { get; set; }
+        public ArticleGroupDTO(int id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
 
-        [Required]
-        [MaxLength(100)]
-        public string Name { get; set; }
+        public int Id { get; }
+        public string Name
+        {
+            get => _name;
+            private set
+            {
+                if (_name == value)
+                    return;
 
-        public virtual ArticleGroupDTO? SuperiorArticleGroup { get; set; }
+                _name = value;
+            }
+        }
+        public ArticleGroupDTO? SuperiorArticleGroup
+        {
+            get => _superiorArticleGroup;
+            set
+            {
+                if (AreSame(_superiorArticleGroup, value))
+                    return;
 
-        public virtual ICollection<ArticleGroupDTO> SubordinateArticleGroups { get; set; } = new List<ArticleGroupDTO>();
+                _superiorArticleGroup?._subordinateArticleGroups.Remove(this);
+                value?._subordinateArticleGroups.Add(this);
+
+                _superiorArticleGroup = value;
+            }
+        }
+        public ICollection<ArticleGroupDTO> SubordinateArticleGroups => _subordinateArticleGroups;
+        public void Update(CreatedOrUpdatedArticleGroupDTO modifyedArticleGroup)
+        {
+            if (Id != modifyedArticleGroup.Id)
+                return;
+
+            Name = modifyedArticleGroup.Name;
+            SuperiorArticleGroup = modifyedArticleGroup.SuperiorArticleGroup;
+        }
+        public void AddSubordinateArticleGroup(ArticleGroupDTO articleGroup)
+        {
+            articleGroup._superiorArticleGroup = this;
+            _subordinateArticleGroups.Add(articleGroup);
+        }
+
+        private static bool AreSame(ArticleGroupDTO? a, ArticleGroupDTO? b)
+        {
+            if (a == null)
+            {
+                return b == null;
+            }
+
+            if (b == null)
+                return false;
+
+            return a.Id == b.Id;
+        }
+
+        private string _name = string.Empty;
+        private ArticleGroupDTO? _superiorArticleGroup;
+        private readonly ICollection<ArticleGroupDTO> _subordinateArticleGroups = new List<ArticleGroupDTO>();
     }
 }

@@ -1,20 +1,20 @@
-﻿using DataLayer.ArticleGroups.Models;
+﻿using DataLayer.ArticleGroups.DTOs;
 
 namespace DataLayer.ArticleGroups.Exceptions
 {
     public class NotContainingCreatingArticleGroupInDatabaseException : Exception
     {
-        public CreatingArticleGroup CreatingArticleGroup { get; }
+        public CreatedOrUpdatedArticleGroupDTO CreatingArticleGroup { get; }
 
-        public NotContainingCreatingArticleGroupInDatabaseException(CreatingArticleGroup lookingForCreatingArticleGroup)
+        public NotContainingCreatingArticleGroupInDatabaseException(CreatedOrUpdatedArticleGroupDTO lookingForCreatingArticleGroup)
         {
             CreatingArticleGroup = lookingForCreatingArticleGroup;
         }
-        public NotContainingCreatingArticleGroupInDatabaseException(string? message, CreatingArticleGroup lookingForCreatingArticleGroup) : base(message)
+        public NotContainingCreatingArticleGroupInDatabaseException(string? message, CreatedOrUpdatedArticleGroupDTO lookingForCreatingArticleGroup) : base(message)
         {
             CreatingArticleGroup = lookingForCreatingArticleGroup;
         }
-        public NotContainingCreatingArticleGroupInDatabaseException(string? message, Exception? innerException, CreatingArticleGroup lookingForCreatingArticleGroup) : base(message, innerException)
+        public NotContainingCreatingArticleGroupInDatabaseException(string? message, Exception? innerException, CreatedOrUpdatedArticleGroupDTO lookingForCreatingArticleGroup) : base(message, innerException)
         {
             CreatingArticleGroup = lookingForCreatingArticleGroup;
         }

@@ -4,9 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:converters="clr-namespace:PresentationLayer.Base.Converters"
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -20,63 +26,68 @@
         <Label Content="Create article group"
                FontSize="20" />
         <StackPanel Grid.Row="2"
-                   Orientation="Vertical"
-                   HorizontalAlignment="Center"
-                   Width="200">
+                    Orientation="Vertical"
+                    HorizontalAlignment="Center"
+                    Width="200">
             <ui:TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
                         PlaceholderText="Name"
                         Icon="Pen20"
                         Margin="10" />
-            <CheckBox Content="Create as root element"
-                      IsChecked="{Binding CreateAsRootElement}"
-                      HorizontalAlignment="Center"/>
+            <CheckBox Content="As root element"
+                      IsChecked="{Binding IsRootElement}"
+                      HorizontalAlignment="Center" />
         </StackPanel>
         <Grid Grid.Row="4"
-              IsEnabled="{Binding CreateAsRootElement}">
+              Visibility="{Binding IsRootElement, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="20" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-            <StackPanel>
-                <ui:TextBox Text="{Binding ArticleGroup.Name, Mode=OneWay}"
-                            Icon="Group20"
-                            MinWidth="200"
-                            IsReadOnly="True"
-                            ClearButtonEnabled="False"
-                            Margin="10 0 0 0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            PlaceholderText="Superior article group" />
-            </StackPanel>
-            <TreeView Grid.Column="2"
-                      ItemsSource="{Binding ArticleGroups}"
-                      Name="ArticleGroupTreeView"
-                      FontSize="14"
-                      FontWeight="Bold"
-                      SelectedItemChanged="ArticleGroupTreeView_SelectedItemChanged"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Top"
-                      IsEnabled="{Binding CreateAsRootElement}">
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding SubordinateArticleGroups}"
-                                              DataType="x:Type Model:ArticleGroup">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Name}"
-                                       VerticalAlignment="Center" />
-                        </StackPanel>
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>
-            </TreeView>
+            <ui:TextBox Text="{Binding SuperiorArticleGroup.Name, Mode=OneWay}"
+                        Icon="Group20"
+                        MinWidth="200"
+                        IsReadOnly="True"
+                        ClearButtonEnabled="False"
+                        Margin="10 0 0 0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        PlaceholderText="Superior article group" />
+            <Grid Grid.Column="2">
+                <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      VerticalAlignment="Center"
+                      HorizontalAlignment="Center">
+                    <ui:LoadingScreen />
+                </Grid>
+                <TreeView ItemsSource="{Binding ArticleGroups}"
+                          Name="ArticleGroupTreeView"
+                          FontSize="14"
+                          FontWeight="Bold"
+                          SelectedItemChanged="ArticleGroupTreeView_SelectedItemChanged"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Top"
+                          Visibility="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}">
+                    <TreeView.ItemTemplate>
+
+                        <HierarchicalDataTemplate ItemsSource="{Binding SubordinateArticleGroups}"
+                                                  DataType="x:Type Model:ArticleGroup">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Name}"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </Grid>
         </Grid>
         <StackPanel Grid.Row="6"
                     Orientation="Horizontal"
                     HorizontalAlignment="Center">
             <ui:Button Content="Create"
-                       Command="{Binding CreateArticleCommand}"
+                       Command="{Binding CreateArticleGroupCommand}"
                        Margin="0 0 10 0" />
             <ui:Button Content="Cancel"
-                       Command="{Binding CancelCreateArticleCommand}" />
+                       Command="{Binding CancelCreateArticleGroupCommand}" />
         </StackPanel>
     </Grid>
 </UserControl>

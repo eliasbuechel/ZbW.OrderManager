@@ -1,9 +1,9 @@
-﻿using DataLayer.Customers.Models;
+﻿using DataLayer.Customers.DTOs;
 
 namespace DataLayer.Customers.Services.CustomerProviders
 {
     public interface ICustomerProvider
     {
-        Task<IEnumerable<Customer>> GetAllCustomers();
+        Task<IEnumerable<CustomerDTO>> GetAllCustomers();
     }
 }

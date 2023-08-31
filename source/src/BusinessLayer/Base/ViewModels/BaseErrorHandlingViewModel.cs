@@ -1,10 +1,11 @@
-﻿using System.Collections;
+﻿using Microsoft.IdentityModel.Tokens;
+using System.Collections;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace BusinessLayer.Base.ViewModels
 {
-    public class BaseViewModelWithErrorHandling : BaseViewModel, INotifyDataErrorInfo
+    public abstract class BaseErrorHandlingViewModel : BaseViewModel, INotifyDataErrorInfo, IErrorInfo
     {
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
@@ -34,13 +35,26 @@ namespace BusinessLayer.Base.ViewModels
             _propertyNameToErrorsDictionary.Remove(propertyName);
             OnErrorsChanged(propertyName);
         }
-
-        protected const string EMPTY_MESSAGE = "Cannot be empty.";
-        protected string ToLongErrorMessage(int maxSize)
+        public bool HasErrorMessage => ErrorMessage.IsNullOrEmpty();
+        public string ErrorMessage
         {
-            return $"Cannot be larger than {maxSize.ToString()} characters.";
+            get => _errorMessage;
+            set
+            {
+                _errorMessage = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HasErrorMessage));
+            }
         }
 
+        protected static string ToLongErrorMessage(int maxSize)
+        {
+            return $"Cannot be larger than {maxSize} characters.";
+        }
+
+        protected const string EMPTY_MESSAGE = "Cannot be empty.";
+
+        private string _errorMessage = string.Empty;
         private readonly Dictionary<string, List<string>> _propertyNameToErrorsDictionary = new Dictionary<string, List<string>>();
     }
 }

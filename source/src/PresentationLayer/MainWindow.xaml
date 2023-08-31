@@ -88,6 +88,9 @@
                             <DataTemplate DataType="{x:Type BusinessLayer.ArticleGroups:CreateArticleGroupViewModel}">
                                 <articleGroups:CreateArticleGroupView />
                             </DataTemplate>
+                            <DataTemplate DataType="{x:Type BusinessLayer.ArticleGroups:EditArticleGroupViewModel}">
+                                <articleGroups:EditArticleGroupView />
+                            </DataTemplate>
                             <DataTemplate DataType="{x:Type BusinessLayer.Articles:ArticleListingViewModel}">
                                 <articles:ArticleListingView />
                             </DataTemplate>

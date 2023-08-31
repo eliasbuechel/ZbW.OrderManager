@@ -1,6 +1,5 @@
 ﻿using BusinessLayer.ArticleGroups.ViewModels;
-using BusinessLayer.Articles.ViewModels;
-using DataLayer.ArticleGroups.Models;
+using DataLayer.ArticleGroups.DTOs;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -17,12 +16,10 @@ namespace PresentationLayer.ArticleGroups
         {
             CreateArticleGroupViewModel viewModel = (CreateArticleGroupViewModel)DataContext;
 
-            ArticleGroup? articleGroup = ArticleGroupTreeView.SelectedItem as ArticleGroup;
-
-            if (articleGroup == null)
+            if (ArticleGroupTreeView.SelectedItem is not ArticleGroupDTO articleGroup)
                 return;
 
-            viewModel.ArticleGroup = articleGroup;
+            viewModel.SuperiorArticleGroup = articleGroup;
         }
     }
 }

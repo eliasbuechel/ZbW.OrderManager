@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(ManagerDbContext))]
-    [Migration("20230823174202_Initial")]
+    [Migration("20230830175113_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace DataLayer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("DataLayer.ArticleGroups.DTOs.ArticleGroupDTO", b =>
+            modelBuilder.Entity("DataLayer.ArticleGroups.Models.ArticleGroup", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -45,7 +45,7 @@ namespace DataLayer.Migrations
                     b.ToTable("ArticleGroups");
                 });
 
-            modelBuilder.Entity("DataLayer.Articles.DTOs.ArticleDTO", b =>
+            modelBuilder.Entity("DataLayer.Articles.Models.Article", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -138,18 +138,18 @@ namespace DataLayer.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("DataLayer.ArticleGroups.DTOs.ArticleGroupDTO", b =>
+            modelBuilder.Entity("DataLayer.ArticleGroups.Models.ArticleGroup", b =>
                 {
-                    b.HasOne("DataLayer.ArticleGroups.DTOs.ArticleGroupDTO", "SuperiorArticleGroup")
+                    b.HasOne("DataLayer.ArticleGroups.Models.ArticleGroup", "SuperiorArticleGroup")
                         .WithMany("SubordinateArticleGroups")
                         .HasForeignKey("SuperiorArticleGroupId");
 
                     b.Navigation("SuperiorArticleGroup");
                 });
 
-            modelBuilder.Entity("DataLayer.Articles.DTOs.ArticleDTO", b =>
+            modelBuilder.Entity("DataLayer.Articles.Models.Article", b =>
                 {
-                    b.HasOne("DataLayer.ArticleGroups.DTOs.ArticleGroupDTO", "ArticleGroup")
+                    b.HasOne("DataLayer.ArticleGroups.Models.ArticleGroup", "ArticleGroup")
                         .WithMany()
                         .HasForeignKey("ArticleGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -169,7 +169,7 @@ namespace DataLayer.Migrations
                     b.Navigation("Address");
                 });
 
-            modelBuilder.Entity("DataLayer.ArticleGroups.DTOs.ArticleGroupDTO", b =>
+            modelBuilder.Entity("DataLayer.ArticleGroups.Models.ArticleGroup", b =>
                 {
                     b.Navigation("SubordinateArticleGroups");
                 });

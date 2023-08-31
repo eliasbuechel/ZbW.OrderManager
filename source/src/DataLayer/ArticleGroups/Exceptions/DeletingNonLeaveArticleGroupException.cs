@@ -1,22 +1,22 @@
-﻿using DataLayer.ArticleGroups.Models;
+﻿using DataLayer.ArticleGroups.DTOs;
 
 namespace DataLayer.ArticleGroups.Exceptions
 {
     public class DeletingNonLeaveArticleGroupException : Exception
     {
-        public DeletingNonLeaveArticleGroupException(ArticleGroup articleGroup)
+        public DeletingNonLeaveArticleGroupException(ArticleGroupDTO articleGroup)
         {
             ArticleGroup = articleGroup;
         }
-        public DeletingNonLeaveArticleGroupException(string? message, ArticleGroup articleGroup) : base(message)
+        public DeletingNonLeaveArticleGroupException(string? message, ArticleGroupDTO articleGroup) : base(message)
         {
             ArticleGroup = articleGroup;
         }
-        public DeletingNonLeaveArticleGroupException(string? message, Exception? innerException, ArticleGroup articleGroup) : base(message, innerException)
+        public DeletingNonLeaveArticleGroupException(string? message, Exception? innerException, ArticleGroupDTO articleGroup) : base(message, innerException)
         {
             ArticleGroup = articleGroup;
         }
 
-        public ArticleGroup ArticleGroup { get; }
+        public ArticleGroupDTO ArticleGroup { get; }
     }
 }

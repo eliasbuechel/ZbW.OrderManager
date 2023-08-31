@@ -15,13 +15,13 @@ namespace DataLayer.ArticleGroups.Services.ArticleGroupCreators
             _dbContextFactory = dbContextFactory;
         }
 
-        public async Task CreateArticleGroup(CreatingArticleGroup creatingArticleGroup)
+        public async Task CreateArticleGroup(CreatedOrUpdatedArticleGroupDTO creatingArticleGroup)
         {
             ManagerDbContext context = _dbContextFactory.CreateDbContext();
 
             if (creatingArticleGroup.SuperiorArticleGroup == null)
             {
-                ArticleGroupDTO creatingRootArticleGroupDTO = new ArticleGroupDTO()
+                ArticleGroup creatingRootArticleGroupDTO = new ArticleGroup()
                 {
                     Id = creatingArticleGroup.Id,
                     Name = creatingArticleGroup.Name
@@ -32,11 +32,11 @@ namespace DataLayer.ArticleGroups.Services.ArticleGroupCreators
                 return;
             }
 
-            ArticleGroupDTO? superiorArticleGroupDTO = await context.ArticleGroups.Where(a => a.Id == creatingArticleGroup.SuperiorArticleGroup.Id).SingleOrDefaultAsync();
+            ArticleGroup? superiorArticleGroupDTO = await context.ArticleGroups.Where(a => a.Id == creatingArticleGroup.SuperiorArticleGroup.Id).SingleOrDefaultAsync();
             if (superiorArticleGroupDTO == null)
                 throw new NotContainingCreatingArticleGroupInDatabaseException(creatingArticleGroup);
 
-            ArticleGroupDTO creatingArticleGroupDTO = new ArticleGroupDTO()
+            ArticleGroup creatingArticleGroupDTO = new ArticleGroup()
             {
                 Id = creatingArticleGroup.Id,
                 Name = creatingArticleGroup.Name,

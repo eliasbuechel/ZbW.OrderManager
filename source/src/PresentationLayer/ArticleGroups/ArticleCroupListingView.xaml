@@ -27,16 +27,10 @@
                    FontSize="20" />
             <StackPanel Orientation="Horizontal"
                         Grid.Column="1">
-                <ui:TextBox PlaceholderText="Name of to adding article group ..."
-                            Text="{Binding NameOfToAddingArticleGroup, UpdateSourceTrigger=PropertyChanged}"/>
-                <ui:Button Content="Create as root element"
+                <ui:Button Content="Create article group"
                            Icon="Add12"
-                           Command="{Binding CreateRootArticleGroupCommand}"
-                            Margin="10 0 0 0"/>
-                <ui:ToggleSwitch Content="Enable editing"
-                                 IsChecked="{Binding IsEditingEnabled}"
-                                 Grid.Column="1"
-                                 Margin="30 0 0 0"/>
+                           Command="{Binding NavigateToCreateArticleGroup}"
+                           Margin="10 0 0 0" />
             </StackPanel>
         </Grid>
         <Grid Grid.Row="2"
@@ -63,24 +57,19 @@
                                                   DataType="x:Type Model:ArticleGroup">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding Name}"
-                                           VerticalAlignment="Center"
-                                           Visibility="{Binding IsEditingEnabled, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
-                                <ui:TextBox Text="{Binding Name}"
-                                            VerticalAlignment="Center"
-                                            Visibility="{Binding IsEditingEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                           VerticalAlignment="Center" />
                                 <StackPanel Orientation="Horizontal"
-                                            Visibility="{Binding IsEditingEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
                                             Margin="30 0 0 0">
                                     <ui:Button Icon="Edit16"
                                                IconForeground="#757de8"
-                                               Command="{Binding RenameArticleGroupCommand}"
+                                               Command="{Binding EditArticleGroupCommand}"
                                                VerticalAlignment="Center"
                                                Padding="5"
                                                Background="Transparent"
-                                               BorderThickness="0"/>
+                                               BorderThickness="0" />
                                     <ui:Button Icon="Add16"
                                                IconForeground="LawnGreen"
-                                               Command="{Binding CreateSubordinateArticleGroupCommand}"
+                                               Command="{Binding CreateArticleGroupCommand}"
                                                VerticalAlignment="Center"
                                                Margin="5 0 0 0"
                                                Padding="5"

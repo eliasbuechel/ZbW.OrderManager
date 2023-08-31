@@ -1,24 +1,24 @@
-﻿using DataLayer.ArticleGroups.Models;
+﻿using DataLayer.ArticleGroups.DTOs;
 
 namespace DataLayer.ArticleGroups.Exceptions
 {
     public class NotContainingArticleGroupInDatabaseException : Exception
     {
-        public NotContainingArticleGroupInDatabaseException(ArticleGroup articleGroup)
+        public NotContainingArticleGroupInDatabaseException(ArticleGroupDTO articleGroup)
         {
             ArticleGroup = articleGroup;
         }
 
-        public NotContainingArticleGroupInDatabaseException(string? message, ArticleGroup articleGroup) : base(message)
+        public NotContainingArticleGroupInDatabaseException(string? message, ArticleGroupDTO articleGroup) : base(message)
         {
             ArticleGroup = articleGroup;
         }
 
-        public NotContainingArticleGroupInDatabaseException(string? message, Exception? innerException, ArticleGroup articleGroup) : base(message, innerException)
+        public NotContainingArticleGroupInDatabaseException(string? message, Exception? innerException, ArticleGroupDTO articleGroup) : base(message, innerException)
         {
             ArticleGroup = articleGroup;
         }
 
-        public ArticleGroup ArticleGroup { get; }
+        public ArticleGroupDTO ArticleGroup { get; }
     }
 }

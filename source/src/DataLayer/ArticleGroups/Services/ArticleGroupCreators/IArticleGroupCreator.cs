@@ -1,10 +1,10 @@
-﻿using DataLayer.ArticleGroups.Models;
+﻿using DataLayer.ArticleGroups.DTOs;
 
 namespace DataLayer.ArticleGroups.Services.ArticleGroupCreators
 {
     public interface IArticleGroupCreator
     {
-        Task CreateArticleGroup(CreatingArticleGroup creatingArticleGroup);
+        Task CreateArticleGroup(CreatedOrUpdatedArticleGroupDTO creatingArticleGroup);
         Task<int> GetNextFreeArticleGroupIdAsync();
     }
 }

@@ -1,27 +1,28 @@
 ﻿using BusinessLayer.ArticleGroups.Commands;
+using BusinessLayer.Base.Commands;
+using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using BusinessLayer.Base.ViewModels;
-using DataLayer.ArticleGroups.Models;
+using DataLayer.ArticleGroups.DTOs;
 using System.Windows.Input;
 
 namespace BusinessLayer.ArticleGroups.ViewModels
 {
     public class ArticleGroupViewModel : BaseViewModel
     {
-        public ArticleGroupViewModel(ManagerStore managerStore, ArticleGroupListingViewModel articleGroupListingViewModel, ArticleGroup articleGroup)
+        public ArticleGroupViewModel(ManagerStore managerStore, ArticleGroupDTO articleGroup, NavigationStore navigationStore, NavigationService articleGroupListingViewModelNavigationService)
         {
             _managerStore = managerStore;
             _managerStore.SubordinateArticleGroupCreated += OnSubordinateArticleGroupCreated;
             _managerStore.SubordinateArticleGroupDeleted += OnSubordinateArticleGroupDeleted;
 
-            _articleGroupListingViewModel = articleGroupListingViewModel;
-            _articleGroupListingViewModel.IsEditingEnabledChanged += OnIsEditingEnabledChanged;
-            
+
             _articleGroup = articleGroup;
+            _navigationStore = navigationStore;
+            _articleGroupListingViewModelNavigationService = articleGroupListingViewModelNavigationService;
 
-            Name = _articleGroup.Name;
-
-            CreateSubordinateArticleGroupCommand = new CreateSubordinateArticleGroupCommand(_managerStore, _articleGroupListingViewModel, this);
+            EditArticleGroupCommand = new NavigateCommand(CreateEditArticleGroupNavigationService());
+            CreateArticleGroupCommand = new NavigateCommand(CreateCreateArticleGroupNavigationService());
             DeleteArticleGroupCommand = new DeleteArticleGroupCommand(_managerStore, _articleGroup, this);
         }
         public override void Dispose()
@@ -29,50 +30,41 @@ namespace BusinessLayer.ArticleGroups.ViewModels
             _managerStore.SubordinateArticleGroupCreated -= OnSubordinateArticleGroupCreated;
             _managerStore.SubordinateArticleGroupDeleted -= OnSubordinateArticleGroupDeleted;
 
-            _articleGroupListingViewModel.IsEditingEnabledChanged -= OnIsEditingEnabledChanged;
             base.Dispose();
         }
 
-        public string Name
-        {
-            get => _name;
-            set
-            {
-                _name = value;
-                OnPropertyChanged();
-            }
-        }
-        public IEnumerable<ArticleGroupViewModel> SubordinateArticleGroups => _articleGroup.SubordinateArticleGroups.Select(a =>  new ArticleGroupViewModel(_managerStore, _articleGroupListingViewModel, a)).ToList();
-        public bool IsEditingEnabled => _articleGroupListingViewModel.IsEditingEnabled;
-        public ICommand CreateSubordinateArticleGroupCommand { get; }
+        public string Name => _articleGroup.Name;
+        public IEnumerable<ArticleGroupViewModel> SubordinateArticleGroups => _articleGroup.SubordinateArticleGroups.Select(a =>  new ArticleGroupViewModel(_managerStore, a, _navigationStore, _articleGroupListingViewModelNavigationService)).ToList();
+        public ICommand EditArticleGroupCommand { get; }
+        public ICommand CreateArticleGroupCommand { get; }
         public ICommand DeleteArticleGroupCommand { get; }
-        public ICommand RenameArticleGroupCommand { get; }
 
-        public void OnIsEditingEnabledChanged()
-        {
-            OnPropertyChanged(nameof(IsEditingEnabled));
-
-            if (!IsEditingEnabled)
-                Name = _articleGroup.Name;
-        }
-        public ArticleGroup GetArticleGroup()
+        public ArticleGroupDTO GetArticleGroup()
         {
             return _articleGroup;
         }
 
-        private void OnSubordinateArticleGroupCreated(ArticleGroup createdArticleGroup, ArticleGroup superiorArticleGroup)
+        private void OnSubordinateArticleGroupCreated(ArticleGroupDTO createdArticleGroup, ArticleGroupDTO superiorArticleGroup)
         {
             if (superiorArticleGroup.Id == _articleGroup.Id)
                 OnPropertyChanged(nameof(SubordinateArticleGroups));
         }
-        private void OnSubordinateArticleGroupDeleted(ArticleGroup articleGroup, ArticleGroup superiorArticleGroup)
+        private void OnSubordinateArticleGroupDeleted(ArticleGroupDTO articleGroup, ArticleGroupDTO superiorArticleGroup)
         {
             OnPropertyChanged(nameof(SubordinateArticleGroups));
         }
+        private NavigationService CreateCreateArticleGroupNavigationService()
+        {
+            return new NavigationService(_navigationStore, () => CreateArticleGroupViewModel.LoadViewModel(_managerStore, _articleGroupListingViewModelNavigationService, _articleGroup));
+        }
+        private NavigationService CreateEditArticleGroupNavigationService()
+        {
+            return new NavigationService(_navigationStore, () => EditArticleGroupViewModel.LoadViewModel(_managerStore, _articleGroup, _articleGroupListingViewModelNavigationService));
+        }
 
         private readonly ManagerStore _managerStore;
-        private readonly ArticleGroupListingViewModel _articleGroupListingViewModel;
-        private readonly ArticleGroup _articleGroup;
-        private string _name;
+        private readonly ArticleGroupDTO _articleGroup;
+        private readonly NavigationStore _navigationStore;
+        private readonly NavigationService _articleGroupListingViewModelNavigationService;
     }
 }
