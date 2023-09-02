@@ -1,14 +1,16 @@
 ﻿using BusinessLayer.ArticleGroups.ViewModels;
 using BusinessLayer.Base.Stores;
 using DataLayer.ArticleGroups.DTOs;
+using DataLayer.Articles.Validation;
 
 namespace BusinessLayer.Articles.ViewModels
 {
     public class BaseCreateEditArticleViewModel : ContainingArticleGroupViewModel
     {
-        protected BaseCreateEditArticleViewModel(ManagerStore managerStore, string name, ArticleGroupDTO? articleGroup = null)
+        protected BaseCreateEditArticleViewModel(ManagerStore managerStore, IArticleValidator articleValidator, string name, ArticleGroupDTO? articleGroup = null)
             : base(managerStore)
         {
+            _articleValidator = articleValidator;
             Name = name;
             ArticleGroup = articleGroup;
         }
@@ -31,6 +33,8 @@ namespace BusinessLayer.Articles.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (Name.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
+                if (_articleValidator.ValidateName(Name))
+                    AddError(ValidationErrorMessage());
             }
         }
         public ArticleGroupDTO? ArticleGroup
@@ -52,5 +56,6 @@ namespace BusinessLayer.Articles.ViewModels
 
         private string _name = string.Empty;
         private ArticleGroupDTO? _articleGroup;
+        private readonly IArticleValidator _articleValidator;
     }
 }

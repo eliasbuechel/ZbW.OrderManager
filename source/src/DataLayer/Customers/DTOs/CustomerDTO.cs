@@ -1,6 +1,8 @@
-﻿namespace DataLayer.Customers.DTOs
+﻿using DataLayer.Customers.Validation;
+
+namespace DataLayer.Customers.DTOs
 {
-    public class CustomerDTO
+    public class CustomerDTO : IValidatableCustomer
     {
         public int Id { get; }
         public string FirstName { get; }

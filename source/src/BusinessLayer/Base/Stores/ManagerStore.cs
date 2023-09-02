@@ -78,47 +78,57 @@ namespace BusinessLayer.Base.Stores
             _articleGroups.Add(createdArticleGroup);
             OnRootArticleGroupCreated(createdArticleGroup);
         }
+
         public async Task CreateSubordinateArticleGroupAsync(CreatedOrUpdatedArticleGroupDTO articleGroup)
         {
             await _manager.CreateArticleGroupAsync(articleGroup);
 
-
-
-            ArticleGroupDTO superiorAticleGroup = articleGroup.SuperiorArticleGroup;
+            ArticleGroupDTO superiorAticleGroup = articleGroup.SuperiorArticleGroup ?? throw new ArgumentException("Cannot create subordinate article group without a superior article group!");
             ArticleGroupDTO createdArticleGroup = new ArticleGroupDTO(articleGroup.Id, articleGroup.Name);
 
-            superiorAticleGroup.SubordinateArticleGroups.Add(createdArticleGroup);
+            superiorAticleGroup.AddSubordinateArticleGroup(createdArticleGroup);
             OnSubordinateArticleGroupCreated(createdArticleGroup, superiorAticleGroup);
         }
         public async Task<int> GetNextFreeArticleGroupIdAsync()
         {
             return await _manager.GetNextFreeArticleGroupIdAsync();
         }
-        public async Task DeleteArticleGroup(ArticleGroupDTO articleGroup)
+        public async Task DeleteArticleGroupAsync(ArticleGroupDTO articleGroup)
         {
             if (articleGroup.SubordinateArticleGroups.Count > 0)
                 throw new DeletingNonLeaveArticleGroupException(articleGroup);
 
-            await _manager.DeleteArticleGroup(articleGroup);
+            await _manager.DeleteArticleGroupAsync(articleGroup);
 
-            foreach (ArticleGroupDTO rootArticleGroup in _articleGroups)
+            if (articleGroup.SuperiorArticleGroup == null)
             {
-                if (rootArticleGroup.Id == articleGroup.Id)
-                {
-                    _articleGroups.Remove(articleGroup);
-                    OnRootArticleGroupDeleted(articleGroup);
-                    return;
-                }
-
-                ArticleGroupDTO? superiorArticleGroup = GetSuperiorArticleGroupRecursive(rootArticleGroup, articleGroup);
-
-                if (superiorArticleGroup != null)
-                {
-                    superiorArticleGroup.SubordinateArticleGroups.Remove(articleGroup);
-                    OnSubordinateArticleGroupDeleted(articleGroup, superiorArticleGroup);
-                    return;
-                }
+                _articleGroups.Remove(articleGroup);
+                OnRootArticleGroupDeleted(articleGroup);
+                return;
             }
+
+            ArticleGroupDTO superiorArticleGroup = articleGroup.SuperiorArticleGroup;
+            articleGroup.SuperiorArticleGroup = null;
+            OnSubordinateArticleGroupDeleted(articleGroup, superiorArticleGroup);
+
+            //foreach (ArticleGroupDTO rootArticleGroup in _articleGroups)
+            //{
+            //    if (rootArticleGroup.Id == articleGroup.Id)
+            //    {
+            //        _articleGroups.Remove(articleGroup);
+            //        OnRootArticleGroupDeleted(articleGroup);
+            //        return;
+            //    }
+
+            //    ArticleGroupDTO? superiorArticleGroup = GetSuperiorArticleGroupRecursive(rootArticleGroup, articleGroup);
+
+            //    if (superiorArticleGroup != null)
+            //    {
+            //        superiorArticleGroup.SubordinateArticleGroups.Remove(articleGroup);
+            //        OnSubordinateArticleGroupDeleted(articleGroup, superiorArticleGroup);
+            //        return;
+            //    }
+            //}
         }
         public async Task UpdateArticleGroupAsync(CreatedOrUpdatedArticleGroupDTO modifiedArticleGroup, ArticleGroupDTO initialArticleGroup)
         {
@@ -252,7 +262,6 @@ namespace BusinessLayer.Base.Stores
 
 
         private Lazy<Task> _inizializeLazy;
-
         private readonly Manager _manager;
         private readonly List<CustomerDTO> _customers;
         private readonly List<ArticleGroupDTO> _articleGroups;

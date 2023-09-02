@@ -1,6 +1,8 @@
-﻿namespace DataLayer.ArticleGroups.DTOs
+﻿using DataLayer.ArticleGroups.Validation;
+
+namespace DataLayer.ArticleGroups.DTOs
 {
-    public class CreatedOrUpdatedArticleGroupDTO
+    public class CreatedOrUpdatedArticleGroupDTO : IValidatableArticleGroup
     {
         public CreatedOrUpdatedArticleGroupDTO(int id, string name, ArticleGroupDTO? superiorArticleGroup)
         {
@@ -8,7 +10,6 @@
             Name = name;
             SuperiorArticleGroup = superiorArticleGroup;
         }
-
         public CreatedOrUpdatedArticleGroupDTO(int id, string name) : this(id, name, null)
         { }
 

@@ -1,6 +1,6 @@
 ﻿using DataLayer.Articles.DTOs;
 
-namespace DataLayer.Articles.Services.ArticleCreator
+namespace DataLayer.Articles.Services.ArticleCreators
 {
     public interface IArticleCreator
     {

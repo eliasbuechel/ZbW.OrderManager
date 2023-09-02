@@ -1,8 +1,9 @@
 ﻿using DataLayer.ArticleGroups.DTOs;
+using DataLayer.Articles.Validation;
 
 namespace DataLayer.Articles.DTOs
 {
-    public class ArticleDTO
+    public class ArticleDTO : IValidatableArticle
     {
         public int Id { get; }
         public string Name { get; }

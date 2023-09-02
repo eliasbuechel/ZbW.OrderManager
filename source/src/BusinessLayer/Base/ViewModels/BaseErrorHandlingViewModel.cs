@@ -49,10 +49,14 @@ namespace BusinessLayer.Base.ViewModels
 
         protected static string ToLongErrorMessage(int maxSize)
         {
-            return $"Cannot be larger than {maxSize} characters.";
+            return $"Cannot be larger than {maxSize} characters!";
+        }
+        protected static string ValidationErrorMessage([CallerMemberName] string propertyName = null)
+        {
+            return $"{propertyName} has validation error!";
         }
 
-        protected const string EMPTY_MESSAGE = "Cannot be empty.";
+        protected const string EMPTY_MESSAGE = "Cannot be empty!";
 
         private string _errorMessage = string.Empty;
         private readonly Dictionary<string, List<string>> _propertyNameToErrorsDictionary = new Dictionary<string, List<string>>();

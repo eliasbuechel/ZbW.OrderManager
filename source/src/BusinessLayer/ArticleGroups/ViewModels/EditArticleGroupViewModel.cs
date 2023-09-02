@@ -3,23 +3,28 @@ using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using DataLayer.ArticleGroups.DTOs;
+using DataLayer.ArticleGroups.Validation;
 using System.Windows.Input;
 
 namespace BusinessLayer.ArticleGroups.ViewModels
 {
     public class EditArticleGroupViewModel : BaseCreateAndDeleteArticleGroupViewModel
     {
-        public static EditArticleGroupViewModel LoadViewModel(ManagerStore managerStore, ArticleGroupDTO initialArticleGroup, NavigationService articleGroupListingViewModelNavigationService)
+        public static EditArticleGroupViewModel LoadViewModel(ManagerStore managerStore, ArticleGroupDTO initialArticleGroup, NavigationService articleGroupListingViewModelNavigationService, IArticleGroupValidator articleGroupValidator)
         {
-            EditArticleGroupViewModel viewModel = new EditArticleGroupViewModel(managerStore, initialArticleGroup, articleGroupListingViewModelNavigationService);
+            EditArticleGroupViewModel viewModel = new EditArticleGroupViewModel(managerStore, initialArticleGroup, articleGroupListingViewModelNavigationService, articleGroupValidator);
             viewModel.LoadArticleGroupsCommand?.Execute(null);
             return viewModel;
         }
 
-        private EditArticleGroupViewModel(ManagerStore managerStore, ArticleGroupDTO initialArticleGroup, NavigationService articleGroupListingViewModelNavigationService)
-            : base(managerStore, initialArticleGroup.Name, initialArticleGroup.SuperiorArticleGroup)
+        private EditArticleGroupViewModel(ManagerStore managerStore, ArticleGroupDTO initialArticleGroup, NavigationService articleGroupListingViewModelNavigationService, IArticleGroupValidator articleGroupValidator)
+            : base(managerStore, articleGroupValidator)
         {
             _initialArticleGroup = initialArticleGroup;
+
+            Name = initialArticleGroup.Name;
+            SuperiorArticleGroup = initialArticleGroup.SuperiorArticleGroup;
+            IsRootElement = SuperiorArticleGroup == null;
 
             SaveChangesToArticleGroupCommand = new UpdateArticleGroupCommand(managerStore, this, initialArticleGroup, articleGroupListingViewModelNavigationService);
             CancelEdtiArticleGroupCommand = new NavigateCommand(articleGroupListingViewModelNavigationService);

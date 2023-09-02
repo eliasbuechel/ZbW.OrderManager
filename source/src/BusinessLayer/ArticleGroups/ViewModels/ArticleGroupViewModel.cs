@@ -4,13 +4,14 @@ using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using BusinessLayer.Base.ViewModels;
 using DataLayer.ArticleGroups.DTOs;
+using DataLayer.ArticleGroups.Validation;
 using System.Windows.Input;
 
 namespace BusinessLayer.ArticleGroups.ViewModels
 {
     public class ArticleGroupViewModel : BaseViewModel
     {
-        public ArticleGroupViewModel(ManagerStore managerStore, ArticleGroupDTO articleGroup, NavigationStore navigationStore, NavigationService articleGroupListingViewModelNavigationService)
+        public ArticleGroupViewModel(ManagerStore managerStore, ArticleGroupDTO articleGroup, NavigationStore navigationStore, NavigationService articleGroupListingViewModelNavigationService, IArticleGroupValidator articleGroupValidator)
         {
             _managerStore = managerStore;
             _managerStore.SubordinateArticleGroupCreated += OnSubordinateArticleGroupCreated;
@@ -20,7 +21,7 @@ namespace BusinessLayer.ArticleGroups.ViewModels
             _articleGroup = articleGroup;
             _navigationStore = navigationStore;
             _articleGroupListingViewModelNavigationService = articleGroupListingViewModelNavigationService;
-
+            _articleGroupValidator = articleGroupValidator;
             EditArticleGroupCommand = new NavigateCommand(CreateEditArticleGroupNavigationService());
             CreateArticleGroupCommand = new NavigateCommand(CreateCreateArticleGroupNavigationService());
             DeleteArticleGroupCommand = new DeleteArticleGroupCommand(_managerStore, _articleGroup, this);
@@ -34,7 +35,7 @@ namespace BusinessLayer.ArticleGroups.ViewModels
         }
 
         public string Name => _articleGroup.Name;
-        public IEnumerable<ArticleGroupViewModel> SubordinateArticleGroups => _articleGroup.SubordinateArticleGroups.Select(a =>  new ArticleGroupViewModel(_managerStore, a, _navigationStore, _articleGroupListingViewModelNavigationService)).ToList();
+        public IEnumerable<ArticleGroupViewModel> SubordinateArticleGroups => _articleGroup.SubordinateArticleGroups.Select(a =>  new ArticleGroupViewModel(_managerStore, a, _navigationStore, _articleGroupListingViewModelNavigationService, _articleGroupValidator)).ToList();
         public ICommand EditArticleGroupCommand { get; }
         public ICommand CreateArticleGroupCommand { get; }
         public ICommand DeleteArticleGroupCommand { get; }
@@ -51,20 +52,22 @@ namespace BusinessLayer.ArticleGroups.ViewModels
         }
         private void OnSubordinateArticleGroupDeleted(ArticleGroupDTO articleGroup, ArticleGroupDTO superiorArticleGroup)
         {
-            OnPropertyChanged(nameof(SubordinateArticleGroups));
+            if (_articleGroup.Id == superiorArticleGroup.Id)
+                OnPropertyChanged(nameof(SubordinateArticleGroups));
         }
         private NavigationService CreateCreateArticleGroupNavigationService()
         {
-            return new NavigationService(_navigationStore, () => CreateArticleGroupViewModel.LoadViewModel(_managerStore, _articleGroupListingViewModelNavigationService, _articleGroup));
+            return new NavigationService(_navigationStore, () => CreateArticleGroupViewModel.LoadViewModel(_managerStore, _articleGroupListingViewModelNavigationService, _articleGroupValidator, _articleGroup));
         }
         private NavigationService CreateEditArticleGroupNavigationService()
         {
-            return new NavigationService(_navigationStore, () => EditArticleGroupViewModel.LoadViewModel(_managerStore, _articleGroup, _articleGroupListingViewModelNavigationService));
+            return new NavigationService(_navigationStore, () => EditArticleGroupViewModel.LoadViewModel(_managerStore, _articleGroup, _articleGroupListingViewModelNavigationService, _articleGroupValidator));
         }
 
         private readonly ManagerStore _managerStore;
         private readonly ArticleGroupDTO _articleGroup;
         private readonly NavigationStore _navigationStore;
         private readonly NavigationService _articleGroupListingViewModelNavigationService;
+        private readonly IArticleGroupValidator _articleGroupValidator;
     }
 }

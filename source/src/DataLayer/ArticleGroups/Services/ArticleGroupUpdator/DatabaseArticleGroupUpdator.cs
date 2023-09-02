@@ -1,21 +1,26 @@
 ﻿using DataLayer.ArticleGroups.DTOs;
 using DataLayer.ArticleGroups.Exceptions;
 using DataLayer.ArticleGroups.Models;
+using DataLayer.ArticleGroups.Validation;
 using DataLayer.Base.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataLayer.ArticleGroups.Services.ArticleGroupUpdator
 {
     public class DatabaseArticleGroupUpdator : IArticleGroupUpdator
     {
-        public DatabaseArticleGroupUpdator(ManagerDbContextFactory managerDbContextFactory)
+        public DatabaseArticleGroupUpdator(ManagerDbContextFactory managerDbContextFactory, IArticleGroupValidator articleGroupValidator)
         {
             _managerDbContextFactory = managerDbContextFactory;
+            _articleGroupValidator = articleGroupValidator;
         }
 
         public async Task UpdateArticleGroupAsync(CreatedOrUpdatedArticleGroupDTO updatingArticleGroup)
         {
             ManagerDbContext context = _managerDbContextFactory.CreateDbContext();
+
+            ValidateArticleGroup(updatingArticleGroup);
 
             ArticleGroup? databseArticleGroup =
                 await context.ArticleGroups
@@ -32,6 +37,11 @@ namespace DataLayer.ArticleGroups.Services.ArticleGroupUpdator
             await context.SaveChangesAsync();
         }
 
+        private void ValidateArticleGroup(CreatedOrUpdatedArticleGroupDTO updatingArticleGroup)
+        {
+            if (!_articleGroupValidator.Validate(updatingArticleGroup))
+                throw new ValidationException();
+        }
         private static bool HasDataChanged(ArticleGroup databaseArticleGroup, CreatedOrUpdatedArticleGroupDTO updatedArticleGroup)
         {
             if (databaseArticleGroup.Name != updatedArticleGroup.Name)
@@ -84,5 +94,6 @@ namespace DataLayer.ArticleGroups.Services.ArticleGroupUpdator
         }
 
         private readonly ManagerDbContextFactory _managerDbContextFactory;
+        private readonly IArticleGroupValidator _articleGroupValidator;
     }
 }

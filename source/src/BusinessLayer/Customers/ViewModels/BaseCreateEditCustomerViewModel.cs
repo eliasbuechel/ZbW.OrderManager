@@ -1,25 +1,24 @@
 ﻿using BusinessLayer.Base.ViewModels;
+using DataLayer.Customers.Validation;
 using System.Net.Mail;
 
 namespace BusinessLayer.Customers.ViewModels
 {
 
-    public class BaseCustomerListingViewModel : BaseErrorHandlingViewModel
+    public class BaseCreateEditCustomerViewModel : BaseErrorHandlingViewModel
     {
-        public BaseCustomerListingViewModel()
-            : this(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty)
-        {}
-        public BaseCustomerListingViewModel(string firstName, string lastName, string streetName, string houseNumber, string city, string postalCode, string emailAddress, string websiteUrl, string password)
+        public BaseCreateEditCustomerViewModel(ICustomerValidator customerValidator)
         {
-            FirstName = firstName;
-            LastName = lastName;
-            StreetName = streetName;
-            HouseNumber = houseNumber;
-            City = city;
-            PostalCode = postalCode;
-            EmailAddress = emailAddress;
-            WebsiteUrl = websiteUrl;
-            Password = password;
+            _customerValidator = customerValidator;
+            FirstName = string.Empty;
+            LastName = string.Empty;
+            StreetName = string.Empty;
+            HouseNumber = string.Empty;
+            City = string.Empty;
+            PostalCode = string.Empty;
+            EmailAddress = string.Empty;
+            WebsiteUrl = string.Empty;
+            Password = string.Empty;
         }
 
         public string FirstName
@@ -40,6 +39,8 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (FirstName.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
+                if (_customerValidator.ValidateFirstName(FirstName))
+                    AddError(ValidationErrorMessage());
             }
         }
         public string LastName
@@ -60,6 +61,8 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (LastName.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
+                if (_customerValidator.ValidateLastName(LastName))
+                    AddError(ValidationErrorMessage());
             }
         }
         public string StreetName
@@ -80,6 +83,8 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (StreetName.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
+                if (_customerValidator.ValidateStreetName(StreetName))
+                    AddError(ValidationErrorMessage());
             }
         }
         public string HouseNumber
@@ -100,6 +105,8 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (HouseNumber.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
+                if (_customerValidator.ValidateHouseNumer(HouseNumber))
+                    AddError(ValidationErrorMessage());
             }
         }
         public string City
@@ -120,6 +127,8 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (City.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
+                if (_customerValidator.ValidateCity(City))
+                    AddError(ValidationErrorMessage());
             }
         }
         public string PostalCode
@@ -140,6 +149,8 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (PostalCode.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
+                if (_customerValidator.ValidatePostalCode(PostalCode))
+                    AddError(ValidationErrorMessage());
             }
         }
         public string EmailAddress
@@ -160,6 +171,8 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (EmailAddress.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
+                if (_customerValidator.ValidateEmailAddress(EmailAddress))
+                    AddError(ValidationErrorMessage());
             }
         }
         public string WebsiteUrl
@@ -180,6 +193,8 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (WebsiteUrl.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
+                if (_customerValidator.ValidateWebsiteUrl(WebsiteUrl))
+                    AddError(ValidationErrorMessage());
             }
         }
         public string Password
@@ -200,6 +215,8 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (Password.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
+                if (_customerValidator.ValidatePassword(Password))
+                    AddError(ValidationErrorMessage());
             }
         }
 
@@ -212,5 +229,7 @@ namespace BusinessLayer.Customers.ViewModels
         private string _emailAddress = string.Empty;
         private string _websiteUrl = string.Empty;
         private string _password = string.Empty;
+
+        private readonly ICustomerValidator _customerValidator;
     }
 }

@@ -27,18 +27,26 @@ namespace BusinessLayer.Articles.Commands
         }
         public override async Task ExecuteAsync(object? parameter)
         {
+            if (_createArticleViewModel.ArticleGroup == null)
+            {
+                _createArticleViewModel.ErrorMessage = "Not able to create article with no article group seledted!";
+                return;
+            }
+
+            ArticleDTO article = new ArticleDTO(
+                await _managerStore.GetNextFreeArticleIdAsync(),
+                _createArticleViewModel.Name,
+                _createArticleViewModel.ArticleGroup
+                );
+
             try
             {
-                ArticleDTO article = new ArticleDTO(await _managerStore.GetNextFreeArticleIdAsync(), _createArticleViewModel.Name, _createArticleViewModel.ArticleGroup);
                 await _managerStore.CreateArticleAsync(article);
             }
             catch (NotContainingArticleGroupInDatabaseException e)
             {
-                // error handling
-            }
-            finally
-            {
-
+                _createArticleViewModel.ErrorMessage = $"Not able to create article! {e.Message}";
+                return;
             }
 
             _articleListingViewMoelNavigationService.Navigate();

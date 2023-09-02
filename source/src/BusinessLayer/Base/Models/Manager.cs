@@ -39,7 +39,7 @@ namespace BusinessLayer.Base.Models
 
         public async Task CreateArticleGroupAsync(CreatedOrUpdatedArticleGroupDTO creatingArticleGroup)
         {
-            await _articleGroupList.CreateArticleGroup(creatingArticleGroup);
+            await _articleGroupList.CreateArticleGroupAsync(creatingArticleGroup);
         }
         public async Task<int> GetNextFreeArticleGroupIdAsync()
         {
@@ -49,9 +49,9 @@ namespace BusinessLayer.Base.Models
         {
             return await _articleGroupList.GetAllArticleGroups();
         }
-        public async Task DeleteArticleGroup(ArticleGroupDTO articleGroup)
+        public async Task DeleteArticleGroupAsync(ArticleGroupDTO articleGroup)
         {
-            await _articleGroupList.DeleteArticleGroup(articleGroup);
+            await _articleGroupList.DeleteArticleGroupAsync(articleGroup);
         }
         public async Task UpdateArticleGroupAsync(CreatedOrUpdatedArticleGroupDTO articleGroup)
         {

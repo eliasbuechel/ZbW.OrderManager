@@ -3,7 +3,9 @@ using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using DataLayer.ArticleGroups.DTOs;
+using DataLayer.ArticleGroups.Exceptions;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace BusinessLayer.ArticleGroups.Commands
 {
@@ -23,13 +25,31 @@ namespace BusinessLayer.ArticleGroups.Commands
         {
             return base.CanExecute(parameter) && !_createArticleGroupViewModel.HasErrors;
         }
+
         public override async Task ExecuteAsync(object? parameter)
         {
-            if (_createArticleGroupViewModel.IsRootElement)
-                await CreateRootArticleGroupAsync();
-            else
+            try
             {
-                await CreateSubordinateArticleGroupAsync();
+                if (_createArticleGroupViewModel.IsRootElement)
+                    await CreateRootArticleGroupAsync();
+                else
+                    await CreateSubordinateArticleGroupAsync();
+            }
+            catch (NotContainingArticleGroupInDatabaseException e)
+            {
+                _createArticleGroupViewModel.ErrorMessage = $"Not able to create article group! {e.Message}";
+            }
+            catch (InvalidDataException e)
+            {
+                _createArticleGroupViewModel.ErrorMessage = $"Not able to create article group! {e.Message}";
+            }
+            catch (ValidationException e)
+            {
+                _createArticleGroupViewModel.ErrorMessage = $"Not able to create article group! {e.Message}";
+            }
+            catch (Exception e)
+            {
+                _createArticleGroupViewModel.ErrorMessage = $"Not able to create article group! {e.Message}";
             }
 
             _articleGroupListingViewModelNavigationService.Navigate();
@@ -60,7 +80,7 @@ namespace BusinessLayer.ArticleGroups.Commands
             OnCanExecuteChanged();
         }
 
-        void IDisposable.Dispose()
+        public void Dispose()
         {
             _createArticleGroupViewModel.ErrorsChanged -= OnCreateArticleGroupViewModelHasErrorsChanged;
         }

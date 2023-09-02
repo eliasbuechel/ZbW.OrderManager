@@ -1,20 +1,25 @@
 ﻿using DataLayer.Base.DatabaseContext;
 using DataLayer.Customers.DTOs;
 using DataLayer.Customers.Models;
+using DataLayer.Customers.Validation;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataLayer.Customers.Services.CustomerCreators
 {
     public class DatabaseCustomerCreator : ICustomerCreator
     {
-        public DatabaseCustomerCreator(ManagerDbContextFactory dbContextFactory)
+        public DatabaseCustomerCreator(ManagerDbContextFactory dbContextFactory, ICustomerValidator customerValidator)
         {
             _dbContextFactory = dbContextFactory;
+            _customerValidator = customerValidator;
         }
 
         public async Task CreateCustomer(CustomerDTO customer)
         {
             using ManagerDbContext context = _dbContextFactory.CreateDbContext();
+
+            ValidateCustomer(customer);
             Customer customerDTO = ToCustomerDTO(customer);
 
             context.Customers.Add(customerDTO);
@@ -25,12 +30,17 @@ namespace DataLayer.Customers.Services.CustomerCreators
             using ManagerDbContext context = _dbContextFactory.CreateDbContext();
 
             int maxId = 0;
-            if (await context.Customers.CountAsync() != 0)
+            if (await context.Customers.AnyAsync())
                 maxId = await context.Customers.MaxAsync(x => x.Id);
 
             return maxId + 1;
         }
 
+        private void ValidateCustomer(CustomerDTO customer)
+        {
+            if (!_customerValidator.Validate(customer))
+                throw new ValidationException();
+        }
         private static Customer ToCustomerDTO(CustomerDTO customer)
         {
             return new Customer()
@@ -52,5 +62,6 @@ namespace DataLayer.Customers.Services.CustomerCreators
         }
 
         private readonly ManagerDbContextFactory _dbContextFactory;
+        private readonly ICustomerValidator _customerValidator;
     }
 }

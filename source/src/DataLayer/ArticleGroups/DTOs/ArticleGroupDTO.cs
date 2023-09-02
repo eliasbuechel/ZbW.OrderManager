@@ -1,6 +1,8 @@
-﻿namespace DataLayer.ArticleGroups.DTOs
+﻿using DataLayer.ArticleGroups.Validation;
+
+namespace DataLayer.ArticleGroups.DTOs
 {
-    public class ArticleGroupDTO
+    public class ArticleGroupDTO : IValidatableArticleGroup
     {
         public ArticleGroupDTO(int id, string name)
         {

@@ -1,7 +1,10 @@
 ﻿using BusinessLayer.ArticleGroups.ViewModels;
 using BusinessLayer.Base.Commands;
+using BusinessLayer.Base.Models;
 using BusinessLayer.Base.Stores;
 using DataLayer.ArticleGroups.DTOs;
+using DataLayer.ArticleGroups.Exceptions;
+using DataLayer.ArticleGroups.Models;
 using System.ComponentModel;
 
 namespace BusinessLayer.ArticleGroups.Commands
@@ -23,7 +26,22 @@ namespace BusinessLayer.ArticleGroups.Commands
         }
         public async override Task ExecuteAsync(object? parameter)
         {
-            await _managerStore.DeleteArticleGroup(_articleGroup);
+            try
+            {
+                await _managerStore.DeleteArticleGroupAsync(_articleGroup);
+            }
+            catch (DeletingNonLeaveArticleGroupException e)
+            {
+                throw new NotImplementedException();
+            }
+            catch (NotContainingArticleGroupInDatabaseException e)
+            {
+                throw new NotImplementedException();
+            }
+            catch (Exception e)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         private void OnArticleGroupViewModelPropertyChanged(object? sender, PropertyChangedEventArgs propertyChangedEventArgs)

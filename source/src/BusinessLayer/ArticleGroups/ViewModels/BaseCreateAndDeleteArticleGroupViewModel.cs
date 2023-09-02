@@ -1,21 +1,16 @@
-﻿using BusinessLayer.ArticleGroups.Commands;
-using BusinessLayer.Articles.ViewModels;
+﻿using BusinessLayer.Articles.ViewModels;
 using BusinessLayer.Base.Stores;
-using BusinessLayer.Base.ViewModels;
 using DataLayer.ArticleGroups.DTOs;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
+using DataLayer.ArticleGroups.Validation;
 
 namespace BusinessLayer.ArticleGroups.ViewModels
 {
     public abstract class BaseCreateAndDeleteArticleGroupViewModel : ContainingArticleGroupViewModel, IArticleGroupUpdatable
     {
-        protected BaseCreateAndDeleteArticleGroupViewModel(ManagerStore managerStore, string name, ArticleGroupDTO? superiorArticleGroup)
+        protected BaseCreateAndDeleteArticleGroupViewModel(ManagerStore managerStore, IArticleGroupValidator articleGroupValidator)
             : base(managerStore)
         {
-            Name = name;
-            SuperiorArticleGroup = superiorArticleGroup;
-            IsRootElement = superiorArticleGroup == null;
+            _articleGroupValidator = articleGroupValidator;
         }
 
         public string Name
@@ -36,6 +31,8 @@ namespace BusinessLayer.ArticleGroups.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (Name.Length > maxPropertyLength)
                     AddError(ToLongErrorMessage(maxPropertyLength));
+                if (_articleGroupValidator.ValidateName(Name))
+                    AddError(ValidationErrorMessage());
             }
         }
         public ArticleGroupDTO? SuperiorArticleGroup
@@ -73,11 +70,11 @@ namespace BusinessLayer.ArticleGroups.ViewModels
         }
 
         protected virtual void FurtherValidateSuperiorArticleGroup(string propertyName)
-        {
-        }
+        {}
 
         private bool _isRootElement;
         private string _name = string.Empty;
         private ArticleGroupDTO? _superiorArticleGroup = null;
+        private readonly IArticleGroupValidator _articleGroupValidator;
     }
 }
