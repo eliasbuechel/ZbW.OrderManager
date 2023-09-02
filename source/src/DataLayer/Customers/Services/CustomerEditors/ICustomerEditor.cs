@@ -4,6 +4,6 @@ namespace DataLayer.Customers.Services.CustomerEditors
 {
     public interface ICustomerEditor
     {
-        public Task EditCustomer(CustomerDTO initialCustomer, CustomerDTO editedCustomer);
+        public Task EditCustomerAsync(CustomerDTO initialCustomer, CustomerDTO editedCustomer);
     }
 }

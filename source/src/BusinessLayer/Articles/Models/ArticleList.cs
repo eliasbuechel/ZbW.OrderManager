@@ -42,6 +42,7 @@ namespace BusinessLayer.Articles.Models
             ValidateArticle(editedArticle);
             await _articleEditor.SaveChangesToArticleAsync(initialArticle, editedArticle);
         }
+        
         private void ValidateArticle(ArticleDTO article)
         {
             if (!_articleValidator.Validate(article))

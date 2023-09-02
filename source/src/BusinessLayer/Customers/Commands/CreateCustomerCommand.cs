@@ -40,7 +40,7 @@ namespace BusinessLayer.Customers.Commands
                     _createCustomerViewModel.Password
                     );
 
-                await _managerStore.CreateCustomer(customer);
+                await _managerStore.CreateCustomerAsync(customer);
             }
             catch (Exception e)
             {

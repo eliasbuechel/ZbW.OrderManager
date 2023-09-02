@@ -16,25 +16,25 @@ namespace BusinessLayer.Base.Models
             _articleList = articleList;
         }
 
-        public async Task<IEnumerable<CustomerDTO>> GetAllCustomers()
+        public async Task<IEnumerable<CustomerDTO>> GetAllCustomersAsync()
         {
-            return await _customerList.GetAllCustomers();
+            return await _customerList.GetAllCustomersAsync();
         }
-        public async Task CreateCustomer(CustomerDTO customer)
+        public async Task CreateCustomerAsync(CustomerDTO customer)
         {
-            await _customerList.CreateCustomer(customer);
+            await _customerList.CreateCustomerAsync(customer);
         }
         public async Task<int> GetNextFreeCustomerIdAsync()
         {
             return await _customerList.GetNextFreeCustomerIdAsync();
         }
-        public async Task DeleteCustomer(CustomerDTO customer)
+        public async Task DeleteCustomerAsync(CustomerDTO customer)
         {
-            await _customerList.DeleteCustomer(customer);
+            await _customerList.DeleteCustomerAsync(customer);
         }
-        public async Task EditCustomer(CustomerDTO initialCustomer, CustomerDTO editedCustomer)
+        public async Task EditCustomerAsync(CustomerDTO initialCustomer, CustomerDTO editedCustomer)
         {
-            await _customerList.EditCustomer(initialCustomer, editedCustomer);
+            await _customerList.EditCustomerAsync(initialCustomer, editedCustomer);
         }
 
         public async Task CreateArticleGroupAsync(CreatedOrUpdatedArticleGroupDTO creatingArticleGroup)
@@ -45,9 +45,9 @@ namespace BusinessLayer.Base.Models
         {
             return await _articleGroupList.GetNextFreeArticleGroupIdAsync();
         }
-        public async Task<IEnumerable<ArticleGroupDTO>> GetAllArticleGroups()
+        public async Task<IEnumerable<ArticleGroupDTO>> GetAllArticleGroupsAsync()
         {
-            return await _articleGroupList.GetAllArticleGroups();
+            return await _articleGroupList.GetAllArticleGroupsAsync();
         }
         public async Task DeleteArticleGroupAsync(ArticleGroupDTO articleGroup)
         {
@@ -78,7 +78,6 @@ namespace BusinessLayer.Base.Models
         {
             await _articleList.SaveChangesToArticleAsync(initialArticle, editedArticle);
         }
-
 
         private readonly CustomerList _customerList;
         private readonly ArticleGroupList _articleGroupList;

@@ -12,7 +12,7 @@ namespace DataLayer.ArticleGroups.Services.ArticleGroupProviders
             _dbContextFactory = dbContextFactory;
         }
 
-        public async Task<IEnumerable<ArticleGroupDTO>> GetAllArticleGroups()
+        public async Task<IEnumerable<ArticleGroupDTO>> GetAllArticleGroupsAsync()
         {
             using ManagerDbContext context = _dbContextFactory.CreateDbContext();
 

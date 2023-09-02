@@ -4,6 +4,6 @@ namespace DataLayer.Customers.Services.CustomerProviders
 {
     public interface ICustomerProvider
     {
-        Task<IEnumerable<CustomerDTO>> GetAllCustomers();
+        Task<IEnumerable<CustomerDTO>> GetAllCustomersAsync();
     }
 }

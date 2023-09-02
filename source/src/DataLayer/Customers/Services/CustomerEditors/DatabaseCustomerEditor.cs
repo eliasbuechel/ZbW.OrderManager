@@ -16,7 +16,7 @@ namespace DataLayer.Customers.Services.CustomerEditors
             _customerValidator = customerValidator;
         }
 
-        public async Task EditCustomer(CustomerDTO initialCustomer, CustomerDTO editedCustomer)
+        public async Task EditCustomerAsync(CustomerDTO initialCustomer, CustomerDTO editedCustomer)
         {
             ManagerDbContext dbContext = _orderDbContextFactory.CreateDbContext();
 

@@ -14,7 +14,7 @@ namespace BusinessLayer.Customers.Commands
 
         public async override Task ExecuteAsync(object? parameter)
         {
-            await _managerStore.DeleteCustomer(_customer);
+            await _managerStore.DeleteCustomerAsync(_customer);
         }
 
         private readonly ManagerStore _managerStore;

@@ -15,7 +15,7 @@ namespace DataLayer.Customers.Services.CustomerCreators
             _customerValidator = customerValidator;
         }
 
-        public async Task CreateCustomer(CustomerDTO customer)
+        public async Task CreateCustomerAsync(CustomerDTO customer)
         {
             using ManagerDbContext context = _dbContextFactory.CreateDbContext();
 

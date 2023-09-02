@@ -45,7 +45,7 @@ namespace BusinessLayer.Customers.Commands
                 _editedCustomerViewModel.Password
                 );
 
-            await _managerStore.EditCustomer(_initialCustomer, editedCustomer);
+            await _managerStore.EditCustomerAsync(_initialCustomer, editedCustomer);
             _customerListingViewModelNavigationService.Navigate();
         }
 

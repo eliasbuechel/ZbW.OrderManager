@@ -4,6 +4,6 @@ namespace DataLayer.ArticleGroups.Services.ArticleGroupProviders
 {
     public interface IArticleGroupProvider
     {
-        Task<IEnumerable<ArticleGroupDTO>> GetAllArticleGroups();
+        Task<IEnumerable<ArticleGroupDTO>> GetAllArticleGroupsAsync();
     }
 }

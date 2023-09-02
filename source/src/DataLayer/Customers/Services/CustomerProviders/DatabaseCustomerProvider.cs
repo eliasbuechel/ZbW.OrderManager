@@ -14,7 +14,7 @@ namespace DataLayer.Customers.Services.CustomerProviders
             _dbContextFactory = dbContextFactory;
         }
 
-        public async Task<IEnumerable<CustomerDTO>> GetAllCustomers()
+        public async Task<IEnumerable<CustomerDTO>> GetAllCustomersAsync()
         {
             using ManagerDbContext context = _dbContextFactory.CreateDbContext();
             IEnumerable<Customer> customerDTOs = await context.Customers.Include(c => c.Address).ToListAsync();

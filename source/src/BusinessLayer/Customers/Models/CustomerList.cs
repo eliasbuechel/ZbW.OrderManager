@@ -19,27 +19,27 @@ namespace BusinessLayer.Customers.Models
             _customerValidator = customerValidator;
         }
 
-        public async Task<IEnumerable<CustomerDTO>> GetAllCustomers()
+        public async Task<IEnumerable<CustomerDTO>> GetAllCustomersAsync()
         {
-            return await _customerProvider.GetAllCustomers();
+            return await _customerProvider.GetAllCustomersAsync();
         }
-        public async Task CreateCustomer(CustomerDTO customer)
+        public async Task CreateCustomerAsync(CustomerDTO customer)
         {
             ValidateCustomer(customer);
-            await _customerCreator.CreateCustomer(customer);
+            await _customerCreator.CreateCustomerAsync(customer);
         }
         public async Task<int> GetNextFreeCustomerIdAsync()
         {
             return await _customerCreator.GetNextFreeCustomerIdAsync();
         }
-        public async Task DeleteCustomer(CustomerDTO customer)
+        public async Task DeleteCustomerAsync(CustomerDTO customer)
         {
-            await _customerDeletor.DeleteCustomer(customer);
+            await _customerDeletor.DeleteCustomerAsync(customer);
         }
-        public async Task EditCustomer(CustomerDTO initialCustomer, CustomerDTO editedCustomer)
+        public async Task EditCustomerAsync(CustomerDTO initialCustomer, CustomerDTO editedCustomer)
         {
             ValidateCustomer(initialCustomer);
-            await _customerEditor.EditCustomer(initialCustomer, editedCustomer);
+            await _customerEditor.EditCustomerAsync(initialCustomer, editedCustomer);
         }
 
         private void ValidateCustomer(CustomerDTO customer)

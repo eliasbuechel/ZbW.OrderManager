@@ -4,6 +4,6 @@ namespace DataLayer.Customers.Services.CustomerDeletors
 {
     public interface ICustomerDeletor
     {
-        Task DeleteCustomer(CustomerDTO customer);
+        Task DeleteCustomerAsync(CustomerDTO customer);
     }
 }

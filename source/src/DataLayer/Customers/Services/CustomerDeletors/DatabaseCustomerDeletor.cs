@@ -8,7 +8,7 @@ namespace DataLayer.Customers.Services.CustomerDeletors
 {
     public class DatabaseCustomerDeletor : ICustomerDeletor
     {
-        public async Task DeleteCustomer(CustomerDTO customer)
+        public async Task DeleteCustomerAsync(CustomerDTO customer)
         {
             ManagerDbContext context = _dbContextFactory.CreateDbContext();
 

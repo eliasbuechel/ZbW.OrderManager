@@ -19,9 +19,9 @@ namespace BusinessLayer.ArticleGroups.Models
             _articleGroupValidator = articleGroupValidator;
         }
 
-        public async Task<IEnumerable<ArticleGroupDTO>> GetAllArticleGroups()
+        public async Task<IEnumerable<ArticleGroupDTO>> GetAllArticleGroupsAsync()
         {
-            return await _articleGroupProvider.GetAllArticleGroups();
+            return await _articleGroupProvider.GetAllArticleGroupsAsync();
         }
         public async Task CreateArticleGroupAsync(CreatedOrUpdatedArticleGroupDTO creatingArticleGroup)
         {
