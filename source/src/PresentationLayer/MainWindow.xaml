@@ -5,10 +5,12 @@
              xmlns:dashboard="clr-namespace:PresentationLayer.Dashboard"
              xmlns:customers="clr-namespace:PresentationLayer.Customers"
              xmlns:articleGroups="clr-namespace:PresentationLayer.ArticleGroups"
+             xmlns:orders="clr-namespace:PresentationLayer.Orders"
              xmlns:BusinessLayer.Dashboard="clr-namespace:BusinessLayer.Dashboard.ViewModels;assembly=BusinessLayer"
              xmlns:BusinessLayer.Customers="clr-namespace:BusinessLayer.Customers.ViewModels;assembly=BusinessLayer"
              xmlns:BusinessLayer.ArticleGroups="clr-namespace:BusinessLayer.ArticleGroups.ViewModels;assembly=BusinessLayer"
              xmlns:BusinessLayer.Articles="clr-namespace:BusinessLayer.Articles.ViewModels;assembly=BusinessLayer"
+             xmlns:BusinessLayer.Orders="clr-namespace:BusinessLayer.Orders.ViewModels;assembly=BusinessLayer"
              xmlns:articles="clr-namespace:PresentationLayer.Article"
              Background="{ui:ThemeResource ApplicationBackgroundBrush}"
              ExtendsContentIntoTitleBar="True"
@@ -48,6 +50,10 @@
                     <ui:NavigationItem Content="Articles"
                                        Icon="Balloon24"
                                        Command="{Binding NavigateToArticleListingViewCommand}"
+                                       PageTag="listingView" />
+                    <ui:NavigationItem Content="Orders"
+                                       Icon="Backpack24"
+                                       Command="{Binding NavigateToOrderListingViewCommand}"
                                        PageTag="listingView" />
                 </ui:NavigationStore.Items>
             </ui:NavigationStore>
@@ -99,6 +105,18 @@
                             </DataTemplate>
                             <DataTemplate DataType="{x:Type BusinessLayer.Articles:EditArticleViewModel}">
                                 <articles:EditArticleView />
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type BusinessLayer.Orders:OrderListingViewModel}">
+                                <orders:OrderListingView/>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type BusinessLayer.Orders:CreateOrderViewModel}">
+                                <orders:CreateOrderView />
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type BusinessLayer.Orders:CreatePositionViewModel}">
+                                <orders:CreatePositionViewModel />
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type BusinessLayer.Orders:EditCreatingPositionViewModel}">
+                                <orders:EdtitCreatingPositionView />
                             </DataTemplate>
                         </Grid.Resources>
                     </Grid>

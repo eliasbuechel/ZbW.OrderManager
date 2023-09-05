@@ -3,6 +3,8 @@ using DataLayer.ArticleGroups.DTOs;
 using DataLayer.ArticleGroups.Exceptions;
 using DataLayer.Articles.DTOs;
 using DataLayer.Customers.DTOs;
+using DataLayer.Orders.DTOs;
+using System.Net.Http.Headers;
 
 namespace BusinessLayer.Base.Stores
 {
@@ -11,11 +13,6 @@ namespace BusinessLayer.Base.Stores
         public ManagerStore(Manager manager)
         {
             _manager = manager;
-
-            _customers = new List<CustomerDTO>();
-            _articleGroups = new List<ArticleGroupDTO>();
-            _articles = new List<ArticleDTO>();
-
             _inizializeLazy = new Lazy<Task>(Inizialize);
         }
 
@@ -27,10 +24,13 @@ namespace BusinessLayer.Base.Stores
         public event Action<ArticleGroupDTO, ArticleGroupDTO>? SubordinateArticleGroupDeleted;
         public event Action<ArticleDTO>? ArticleCreated;
         public event Action<ArticleDTO>? ArticleDeleted;
+        public event Action<OrderDTO>? OrderCreated;
+        public event Action<OrderDTO>? OrderDeleted;
 
         public IEnumerable<CustomerDTO> Customers => _customers;
         public IEnumerable<ArticleGroupDTO> ArticleGroups => _articleGroups;
         public IEnumerable<ArticleDTO> Articles => _articles;
+        public IEnumerable<OrderDTO> Orders => _orders;
 
         public async Task Load()
         {
@@ -108,25 +108,6 @@ namespace BusinessLayer.Base.Stores
             ArticleGroupDTO superiorArticleGroup = articleGroup.SuperiorArticleGroup;
             articleGroup.SuperiorArticleGroup = null;
             OnSubordinateArticleGroupDeleted(articleGroup, superiorArticleGroup);
-
-            //foreach (ArticleGroupDTO rootArticleGroup in _articleGroups)
-            //{
-            //    if (rootArticleGroup.Id == articleGroup.Id)
-            //    {
-            //        _articleGroups.Remove(articleGroup);
-            //        OnRootArticleGroupDeleted(articleGroup);
-            //        return;
-            //    }
-
-            //    ArticleGroupDTO? superiorArticleGroup = GetSuperiorArticleGroupRecursive(rootArticleGroup, articleGroup);
-
-            //    if (superiorArticleGroup != null)
-            //    {
-            //        superiorArticleGroup.SubordinateArticleGroups.Remove(articleGroup);
-            //        OnSubordinateArticleGroupDeleted(articleGroup, superiorArticleGroup);
-            //        return;
-            //    }
-            //}
         }
         public async Task UpdateArticleGroupAsync(CreatedOrUpdatedArticleGroupDTO modifiedArticleGroup, ArticleGroupDTO initialArticleGroup)
         {
@@ -191,6 +172,17 @@ namespace BusinessLayer.Base.Stores
             _articles[articleIndex] = editedArticle;
         }
 
+        public async Task CreateOrderAsync(CreatingOrderDTO order)
+        {
+            OrderDTO orderDTO = await _manager.CreateOrderAsync(order);
+            OnOrderCreated(orderDTO);
+        }
+        public async Task DeleteOrderAsync(OrderDTO order)
+        {
+            await _manager.DeleteOrderAsync(order);
+            OnOrderDeleted(order);
+        }
+
         private void OnCustomerCreated(CustomerDTO customer)
         {
             CustomerCreated?.Invoke(customer);
@@ -223,6 +215,14 @@ namespace BusinessLayer.Base.Stores
         {
             ArticleDeleted?.Invoke(article);
         }
+        private void OnOrderCreated(OrderDTO order)
+        {
+            OrderCreated?.Invoke(order);
+        }
+        private void OnOrderDeleted(OrderDTO order)
+        {
+            OrderDeleted?.Invoke(order);
+        }
         private async Task Inizialize()
         {
             IEnumerable<CustomerDTO> customers = await _manager.GetAllCustomersAsync();
@@ -236,12 +236,18 @@ namespace BusinessLayer.Base.Stores
             IEnumerable<ArticleDTO> articles = await _manager.GetAllArticlesAsync();
             _articles.Clear();
             _articles.AddRange(articles);
+
+            IEnumerable<OrderDTO> orders = await _manager.GetAllOrdersAsync();
+            _orders.Clear();
+            _orders.AddRange(orders);
         }
 
-        private Lazy<Task> _inizializeLazy;
+
         private readonly Manager _manager;
-        private readonly List<CustomerDTO> _customers;
-        private readonly List<ArticleGroupDTO> _articleGroups;
-        private readonly List<ArticleDTO> _articles;
+        private Lazy<Task> _inizializeLazy;
+        private readonly List<CustomerDTO> _customers = new List<CustomerDTO>();
+        private readonly List<ArticleGroupDTO> _articleGroups = new List<ArticleGroupDTO>();
+        private readonly List<ArticleDTO> _articles = new List<ArticleDTO>();
+        private readonly List<OrderDTO> _orders = new List<OrderDTO>();
     }
 }

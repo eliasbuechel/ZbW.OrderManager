@@ -1,9 +1,9 @@
 ﻿using BusinessLayer.Base.ViewModels;
 using DataLayer.ArticleGroups.DTOs;
 
-namespace BusinessLayer.Articles.ViewModels
+namespace BusinessLayer.ArticleGroups.ViewModels
 {
-    public interface IArticleGroupUpdatable : ILoadable, IErrorInfo
+    public interface IArticleGroupUpdatable : IUpdatable
     {
         void UpdateArticleGroups(IEnumerable<ArticleGroupDTO> articleGroups);
     }

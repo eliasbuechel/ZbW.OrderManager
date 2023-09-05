@@ -10,16 +10,16 @@ using System.Windows.Input;
 
 namespace BusinessLayer.Customers.ViewModels
 {
-    public class CustomerListingViewModel : BaseLoadableViewModel
+    public class CustomerListingViewModel : BaseLoadableViewModel, ICustomerUpdatable
     {
-        public static CustomerListingViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService createCustomerViewModelNavigationService, NavigationService customerListingViewModelNavigationService, ICustomerValidator customerValidator)
+        public static CustomerListingViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService createCustomerViewModelNavigationService, NavigationService customerListingViewModelNavigationService, ICustomerValidator customerValidator, IFileDialogue fileDialogue)
         {
-            CustomerListingViewModel viewModel = new CustomerListingViewModel(managerStore, navigationStore, createCustomerViewModelNavigationService, customerListingViewModelNavigationService, customerValidator);
+            CustomerListingViewModel viewModel = new CustomerListingViewModel(managerStore, navigationStore, createCustomerViewModelNavigationService, customerListingViewModelNavigationService, customerValidator, fileDialogue);
             viewModel.LoadCustomersCommand.Execute(null);
             return viewModel;
         }
 
-        private CustomerListingViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService createCustomerViewModelNavigationService, NavigationService customerListingViewModelNavigationService, ICustomerValidator customerValidator)
+        private CustomerListingViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService createCustomerViewModelNavigationService, NavigationService customerListingViewModelNavigationService, ICustomerValidator customerValidator, IFileDialogue fileDialogue)
         {
             _managerStore = managerStore;
             _navigationStore = navigationStore;
@@ -27,6 +27,8 @@ namespace BusinessLayer.Customers.ViewModels
 
             NavigateToCreateCustomerCommand = new NavigateCommand(createCustomerViewModelNavigationService);
             LoadCustomersCommand = new LoadCustomersCommand(managerStore, this);
+            ImportCustomersCommand = new ImportCustomersCommand(managerStore, fileDialogue);
+            ExportCustomersCommand = new ExportCustomersCommand(managerStore, fileDialogue);
 
             managerStore.CustomerCreated += OnCustomerCreated;
             managerStore.CustomerDeleted += OnCustomerDeleted;
@@ -36,6 +38,8 @@ namespace BusinessLayer.Customers.ViewModels
         public IEnumerable<CustomerViewModel> Customers => _customers;
         public ICommand NavigateToCreateCustomerCommand { get; }
         public ICommand LoadCustomersCommand { get; }
+        public ICommand ImportCustomersCommand { get; }
+        public ICommand ExportCustomersCommand { get; }
 
         public void UpdateCustomers(IEnumerable<CustomerDTO> customers)
         {

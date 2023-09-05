@@ -4,16 +4,16 @@ namespace BusinessLayer.Base.Commands
 {
     public class NavigateCommand : BaseCommand
     {
-
-        public NavigateCommand(NavigationService navigationService)
+        public NavigateCommand(INavigationService navigationService)
         {
             _navigationService = navigationService;
         }
+
         public override void Execute(object? parameter)
         {
             _navigationService.Navigate();
         }
 
-        private readonly NavigationService _navigationService;
+        private readonly INavigationService _navigationService;
     }
 }

@@ -1,5 +1,4 @@
 ﻿using BusinessLayer.ArticleGroups.Commands;
-using BusinessLayer.Articles.ViewModels;
 using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;

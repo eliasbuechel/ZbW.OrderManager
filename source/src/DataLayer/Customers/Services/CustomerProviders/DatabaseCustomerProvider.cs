@@ -1,5 +1,6 @@
 ﻿using DataLayer.Base.DatabaseContext;
 using DataLayer.Customers.DTOs;
+using DataLayer.Customers.Exceptions;
 using DataLayer.Customers.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,11 +22,22 @@ namespace DataLayer.Customers.Services.CustomerProviders
 
             return customerDTOs.Select(c => ToCustomer(c));
         }
+        public async Task<CustomerDTO> GetCustomerAsync(int id)
+        {
+            using ManagerDbContext context = _dbContextFactory.CreateDbContext();
+            return await context.Customers
+                .Where(c => c.Id == id)
+                .Include(c => c.Address)
+                .Select(c => ToCustomer(c))
+                .FirstOrDefaultAsync()
+                ?? throw new NotInDatabaseException($"Not containing customer with the id '{id}' in database");
+        }
 
         private static CustomerDTO ToCustomer(Customer c)
         {
             CustomerDTO customer = new CustomerDTO(c.Id, c.FirstName, c.LastName, c.Address.StreetName, c.Address.HouseNumber, c.Address.City, c.Address.PostalCode, c.EmailAddress, c.WebsiteURL, c.Password);
             return customer;
         }
+
     }
 }

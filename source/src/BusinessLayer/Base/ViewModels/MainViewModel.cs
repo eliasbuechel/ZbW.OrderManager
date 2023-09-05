@@ -6,9 +6,9 @@ using System.Windows.Input;
 
 namespace BusinessLayer.Base.ViewModels
 {
-    public class MainViewModel : BaseViewModel
+    public class MainViewModel : BaseViewModel, IDisposable
     {
-        public MainViewModel(NavigationStore navigationStore, NavigationService dashboardViewModelNavigationService, NavigationService customerListingViewModelNavigationService, NavigationService articleGroupListingViewModelNavigationService, NavigationService articleListingViewModelNavigationService)
+        public MainViewModel(NavigationStore navigationStore, NavigationService dashboardViewModelNavigationService, NavigationService customerListingViewModelNavigationService, NavigationService articleGroupListingViewModelNavigationService, NavigationService articleListingViewModelNavigationService, NavigationService orderListingViewModelNavigationService)
         {
             _navigationStore = navigationStore;
             _navigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
@@ -17,6 +17,7 @@ namespace BusinessLayer.Base.ViewModels
             NavigateToCustomerListingViewCommand = new NavigateCommand(customerListingViewModelNavigationService);
             NavigateToArticleGroupListingViewCommand = new NavigateCommand(articleGroupListingViewModelNavigationService);
             NavigateToArticleListingViewCommand = new NavigateCommand(articleListingViewModelNavigationService);
+            NavigateToOrderListingViewCommand = new NavigateCommand(orderListingViewModelNavigationService);
         }
 
         public BaseViewModel CurrentViewModel => _navigationStore.CurrentViewModel;
@@ -24,10 +25,16 @@ namespace BusinessLayer.Base.ViewModels
         public ICommand NavigateToCustomerListingViewCommand { get; }
         public ICommand NavigateToArticleGroupListingViewCommand { get; }
         public ICommand NavigateToArticleListingViewCommand { get; }
+        public ICommand NavigateToOrderListingViewCommand { get; }
 
         public void OnCurrentViewModelChanged()
         {
             OnPropertyChanged(nameof(CurrentViewModel));
+        }
+        public override void Dispose()
+        {
+            _navigationStore.CurrentViewModelChanged -= OnCurrentViewModelChanged;
+            base.Dispose();
         }
 
 
