@@ -22,6 +22,29 @@ namespace DataLayer.Customers.Services.CustomerProviders
 
             return customerDTOs.Select(c => ToCustomer(c));
         }
+        public async Task<IEnumerable<SerializableCustomerDTO>> GetAllSerializableCustomersAsync()
+        {
+            using ManagerDbContext context = _dbContextFactory.CreateDbContext();
+
+            return await context.Customers
+                .Include(c => c.Address)
+                .Select(c => new SerializableCustomerDTO(
+                    c.Id,
+                    c.FirstName,
+                    c.LastName,
+                    new SerializableAddressDTO(
+                        c.Address.StreetName,
+                        c.Address.HouseNumber,
+                        c.Address.City,
+                        c.Address.PostalCode
+                        ),
+                    c.EmailAddress,
+                    c.WebsiteURL,
+                    c.Password
+                    )
+                )
+                .ToListAsync();
+        }
         public async Task<CustomerDTO> GetCustomerAsync(int id)
         {
             using ManagerDbContext context = _dbContextFactory.CreateDbContext();
@@ -38,6 +61,5 @@ namespace DataLayer.Customers.Services.CustomerProviders
             CustomerDTO customer = new CustomerDTO(c.Id, c.FirstName, c.LastName, c.Address.StreetName, c.Address.HouseNumber, c.Address.City, c.Address.PostalCode, c.EmailAddress, c.WebsiteURL, c.Password);
             return customer;
         }
-
     }
 }

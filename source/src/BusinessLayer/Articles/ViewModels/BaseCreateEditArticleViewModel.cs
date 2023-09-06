@@ -33,7 +33,7 @@ namespace BusinessLayer.Articles.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (Name.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_articleValidator.ValidateName(Name))
+                if (!_articleValidator.ValidateName(Name))
                     AddError(ValidationErrorMessage());
             }
         }

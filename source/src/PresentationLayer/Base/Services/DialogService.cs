@@ -1,9 +1,10 @@
 ﻿using BusinessLayer.Base.Services;
 using Microsoft.Win32;
+using System.Windows;
 
 namespace PresentationLayer.Base.Services
 {
-    public class FileDialogue : IFileDialogue
+    public class DialogService : IDialogService
     {
         public string OpenFileDialogue(string filter)
         {
@@ -22,6 +23,11 @@ namespace PresentationLayer.Base.Services
             saveFileDialog.ShowDialog();
 
             return saveFileDialog.FileName;
+        }
+
+        public void MessageBoxDialog(string message)
+        {
+            MessageBox.Show(message);
         }
     }
 }

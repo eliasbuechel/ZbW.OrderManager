@@ -30,7 +30,7 @@ namespace BusinessLayer.ArticleGroups.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (Name.Length > maxPropertyLength)
                     AddError(ToLongErrorMessage(maxPropertyLength));
-                if (_articleGroupValidator.ValidateName(Name))
+                if (!_articleGroupValidator.ValidateName(Name))
                     AddError(ValidationErrorMessage());
             }
         }

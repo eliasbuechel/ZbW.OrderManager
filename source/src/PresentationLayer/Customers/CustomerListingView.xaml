@@ -31,12 +31,12 @@
                            Content="Improt"
                            Icon="folder16"
                            Command="{Binding ImportCustomersCommand}"
-                           Margin="0 0 20 0"/>
+                           Margin="0 0 20 0" />
                 <ui:Button Grid.Column="1"
                            Content="Export"
                            Icon="folder16"
                            Command="{Binding ExportCustomersCommand}"
-                           Margin="0 0 20 0"/>
+                           Margin="0 0 20 0" />
                 <ui:Button Grid.Column="1"
                            Content="Create new customer"
                            Icon="Add12"

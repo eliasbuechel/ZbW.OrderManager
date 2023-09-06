@@ -47,7 +47,7 @@ namespace PresentationLayer
         private readonly IArticleGroupValidator _articleGroupValidator;
         private readonly IArticleValidator _articleValidator;
 
-        private readonly IFileDialogue _fileDialogue;
+        private readonly IDialogService _fileDialogue;
 
         private readonly NavigationStore _navigationStore;
         private readonly NavigationService _dashboardViewModelNavigationService;
@@ -86,7 +86,7 @@ namespace PresentationLayer
             IOrderCreator orderCreator = new DatabaseOrderCreator(_orderDbContextFactory, orderProvider);
             IOrderDeletor orderDeletor = new DatabaseOrderDeletor(_orderDbContextFactory);
 
-            _fileDialogue = new FileDialogue();
+            _fileDialogue = new DialogService();
 
             CustomerList customerList = new CustomerList(customerProvider, customerCreator, cusotmerDeletor, customerEditor, _customerValidator);
             ArticleGroupList articleGroupList = new ArticleGroupList(articleGroupProvider, articleGroupCreator, articleGroupDeletor, articleGroupUpdator, _articleGroupValidator);

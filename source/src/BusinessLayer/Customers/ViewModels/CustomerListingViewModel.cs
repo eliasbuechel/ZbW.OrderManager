@@ -12,14 +12,14 @@ namespace BusinessLayer.Customers.ViewModels
 {
     public class CustomerListingViewModel : BaseLoadableViewModel, ICustomerUpdatable
     {
-        public static CustomerListingViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService createCustomerViewModelNavigationService, NavigationService customerListingViewModelNavigationService, ICustomerValidator customerValidator, IFileDialogue fileDialogue)
+        public static CustomerListingViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService createCustomerViewModelNavigationService, NavigationService customerListingViewModelNavigationService, ICustomerValidator customerValidator, IDialogService fileDialogue)
         {
             CustomerListingViewModel viewModel = new CustomerListingViewModel(managerStore, navigationStore, createCustomerViewModelNavigationService, customerListingViewModelNavigationService, customerValidator, fileDialogue);
             viewModel.LoadCustomersCommand.Execute(null);
             return viewModel;
         }
 
-        private CustomerListingViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService createCustomerViewModelNavigationService, NavigationService customerListingViewModelNavigationService, ICustomerValidator customerValidator, IFileDialogue fileDialogue)
+        private CustomerListingViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService createCustomerViewModelNavigationService, NavigationService customerListingViewModelNavigationService, ICustomerValidator customerValidator, IDialogService fileDialogue)
         {
             _managerStore = managerStore;
             _navigationStore = navigationStore;

@@ -60,70 +60,72 @@
             <Border Grid.Column="1"
                     Background="{ui:ThemeResource ControlFillColorDefaultBrush}"
                     CornerRadius="8,0,0,0">
-                <Grid Margin="15">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Frame x:Name="RootFrame"
-                           Grid.Row="1" />
-                    <ui:Breadcrumb Grid.Row="0"
-                                   Margin="18"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Top"
-                                   FontSize="24"
-                                   Navigation="{Binding ElementName=RootNavigation, Mode=OneWay}" />
-                    <Grid Grid.Column="1">
-                        <ContentControl Content="{Binding CurrentViewModel}" />
-                        <Grid.Resources>
-                            <DataTemplate DataType="{x:Type BusinessLayer.Dashboard:DashboardViewModel}">
-                                <dashboard:DashboardView />
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type BusinessLayer.Customers:CustomerListingViewModel}">
-                                <customers:CustomerListingView />
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type BusinessLayer.Customers:CreateCustomerViewModel}">
-                                <customers:CreateCustomerView />
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type BusinessLayer.Customers:EditCustomerViewModel}">
-                                <customers:EditCustomerView />
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type BusinessLayer.ArticleGroups:ArticleGroupListingViewModel}">
-                                <articleGroups:ArticleCroupListingView />
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type BusinessLayer.ArticleGroups:CreateArticleGroupViewModel}">
-                                <articleGroups:CreateArticleGroupView />
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type BusinessLayer.ArticleGroups:EditArticleGroupViewModel}">
-                                <articleGroups:EditArticleGroupView />
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type BusinessLayer.Articles:ArticleListingViewModel}">
-                                <articles:ArticleListingView />
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type BusinessLayer.Articles:CreateArticleViewModel}">
-                                <articles:CreateArticleView />
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type BusinessLayer.Articles:EditArticleViewModel}">
-                                <articles:EditArticleView />
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type BusinessLayer.Orders:OrderListingViewModel}">
-                                <orders:OrderListingView/>
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type BusinessLayer.Orders:CreateOrderViewModel}">
-                                <orders:CreateOrderView />
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type BusinessLayer.Orders:CreatePositionViewModel}">
-                                <orders:CreatePositionViewModel />
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type BusinessLayer.Orders:EditCreatingPositionViewModel}">
-                                <orders:EdtitCreatingPositionView />
-                            </DataTemplate>
-                        </Grid.Resources>
+                <ScrollViewer>
+                    <Grid Margin="15">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Frame x:Name="RootFrame"
+                               Grid.Row="1" />
+                        <ui:Breadcrumb Grid.Row="0"
+                                       Margin="18"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Top"
+                                       FontSize="24"
+                                       Navigation="{Binding ElementName=RootNavigation, Mode=OneWay}" />
+                        <Grid Grid.Column="1">
+                            <ContentControl Content="{Binding CurrentViewModel}" />
+                            <Grid.Resources>
+                                <DataTemplate DataType="{x:Type BusinessLayer.Dashboard:DashboardViewModel}">
+                                    <dashboard:DashboardView />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type BusinessLayer.Customers:CustomerListingViewModel}">
+                                    <customers:CustomerListingView />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type BusinessLayer.Customers:CreateCustomerViewModel}">
+                                    <customers:CreateCustomerView />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type BusinessLayer.Customers:EditCustomerViewModel}">
+                                    <customers:EditCustomerView />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type BusinessLayer.ArticleGroups:ArticleGroupListingViewModel}">
+                                    <articleGroups:ArticleCroupListingView />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type BusinessLayer.ArticleGroups:CreateArticleGroupViewModel}">
+                                    <articleGroups:CreateArticleGroupView />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type BusinessLayer.ArticleGroups:EditArticleGroupViewModel}">
+                                    <articleGroups:EditArticleGroupView />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type BusinessLayer.Articles:ArticleListingViewModel}">
+                                    <articles:ArticleListingView />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type BusinessLayer.Articles:CreateArticleViewModel}">
+                                    <articles:CreateArticleView />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type BusinessLayer.Articles:EditArticleViewModel}">
+                                    <articles:EditArticleView />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type BusinessLayer.Orders:OrderListingViewModel}">
+                                    <orders:OrderListingView />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type BusinessLayer.Orders:CreateOrderViewModel}">
+                                    <orders:CreateOrderView />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type BusinessLayer.Orders:CreatePositionViewModel}">
+                                    <orders:CreatePositionViewModel />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type BusinessLayer.Orders:EditCreatingPositionViewModel}">
+                                    <orders:EdtitCreatingPositionView />
+                                </DataTemplate>
+                            </Grid.Resources>
+                        </Grid>
                     </Grid>
-                </Grid>
+                </ScrollViewer>
             </Border>
         </Grid>
-        <ui:TitleBar Title="WPF UI - Fluent design system"
+        <ui:TitleBar Title="Manager"
                      Grid.Row="0">
             <ui:TitleBar.Tray>
                 <ui:NotifyIcon FocusOnLeftClick="True"

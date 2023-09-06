@@ -23,6 +23,10 @@ namespace BusinessLayer.Base.Models
         {
             return await _customerList.GetAllCustomersAsync();
         }
+        public async Task<IEnumerable<SerializableCustomerDTO>> GetAllSerializableCustomersAsync()
+        {
+            return await _customerList.GetAllSerializableCustomersAsync();
+        }
         public async Task CreateCustomerAsync(CustomerDTO customer)
         {
             await _customerList.CreateCustomerAsync(customer);

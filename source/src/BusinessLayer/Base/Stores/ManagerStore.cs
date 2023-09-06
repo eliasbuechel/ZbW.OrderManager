@@ -45,6 +45,10 @@ namespace BusinessLayer.Base.Stores
             }
         }
 
+        public async Task<IEnumerable<SerializableCustomerDTO>> GetAllSerializableCustomersAsync()
+        {
+            return await _manager.GetAllSerializableCustomersAsync();
+        }
         public async Task CreateCustomerAsync(CustomerDTO customer)
         {
             await _manager.CreateCustomerAsync(customer);

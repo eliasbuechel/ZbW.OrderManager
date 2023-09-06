@@ -39,7 +39,7 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (FirstName.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidateFirstName(FirstName))
+                if (!_customerValidator.ValidateFirstName(FirstName))
                     AddError(ValidationErrorMessage());
             }
         }
@@ -61,7 +61,7 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (LastName.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidateLastName(LastName))
+                if (!_customerValidator.ValidateLastName(LastName))
                     AddError(ValidationErrorMessage());
             }
         }
@@ -83,7 +83,7 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (StreetName.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidateStreetName(StreetName))
+                if (!_customerValidator.ValidateStreetName(StreetName))
                     AddError(ValidationErrorMessage());
             }
         }
@@ -105,7 +105,7 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (HouseNumber.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidateHouseNumer(HouseNumber))
+                if (!_customerValidator.ValidateHouseNumer(HouseNumber))
                     AddError(ValidationErrorMessage());
             }
         }
@@ -127,7 +127,7 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (City.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidateCity(City))
+                if (!_customerValidator.ValidateCity(City))
                     AddError(ValidationErrorMessage());
             }
         }
@@ -149,7 +149,7 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (PostalCode.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidatePostalCode(PostalCode))
+                if (!_customerValidator.ValidatePostalCode(PostalCode))
                     AddError(ValidationErrorMessage());
             }
         }
@@ -171,7 +171,7 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (EmailAddress.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidateEmailAddress(EmailAddress))
+                if (!_customerValidator.ValidateEmailAddress(EmailAddress))
                     AddError(ValidationErrorMessage());
             }
         }
@@ -193,7 +193,7 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (WebsiteUrl.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidateWebsiteUrl(WebsiteUrl))
+                if (!_customerValidator.ValidateWebsiteUrl(WebsiteUrl))
                     AddError(ValidationErrorMessage());
             }
         }
@@ -215,7 +215,7 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (Password.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidatePassword(Password))
+                if (!_customerValidator.ValidatePassword(Password))
                     AddError(ValidationErrorMessage());
             }
         }
