@@ -10,7 +10,7 @@ namespace BusinessLayer.ArticleGroups.Commands
 {
     public class UpdateArticleGroupCommand : BaseAsyncCommand, IDisposable
     {
-        public UpdateArticleGroupCommand(ManagerStore managerStore, EditArticleGroupViewModel editArticleGroupViewModel, ArticleGroupDTO initialArticleGroup, NavigationService articleGroupListingNavigationService)
+        public UpdateArticleGroupCommand(ManagerStore managerStore, EditArticleGroupViewModel editArticleGroupViewModel, ArticleGroupDTO initialArticleGroup, NavigationService<ArticleGroupListingViewModel> articleGroupListingNavigationService)
         {
             _managerStore = managerStore;
             _editArticleGroupViewModel = editArticleGroupViewModel;
@@ -79,7 +79,7 @@ namespace BusinessLayer.ArticleGroups.Commands
 
         private readonly ManagerStore _managerStore;
         private readonly ArticleGroupDTO _initialArticleGroup;
-        private readonly NavigationService _articleGroupListingNavigationService;
+        private readonly NavigationService<ArticleGroupListingViewModel> _articleGroupListingNavigationService;
         private readonly EditArticleGroupViewModel _editArticleGroupViewModel;
     }
 }

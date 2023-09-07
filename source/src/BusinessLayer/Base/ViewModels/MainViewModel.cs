@@ -1,6 +1,12 @@
-﻿using BusinessLayer.Base.Commands;
+﻿using BusinessLayer.ArticleGroups.Models;
+using BusinessLayer.ArticleGroups.ViewModels;
+using BusinessLayer.Articles.ViewModels;
+using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
+using BusinessLayer.Customers.ViewModels;
+using BusinessLayer.Dashboard.ViewModels;
+using BusinessLayer.Orders.ViewModels;
 using Microsoft.Identity.Client;
 using System.Windows.Input;
 
@@ -8,7 +14,7 @@ namespace BusinessLayer.Base.ViewModels
 {
     public class MainViewModel : BaseViewModel, IDisposable
     {
-        public MainViewModel(NavigationStore navigationStore, NavigationService dashboardViewModelNavigationService, NavigationService customerListingViewModelNavigationService, NavigationService articleGroupListingViewModelNavigationService, NavigationService articleListingViewModelNavigationService, NavigationService orderListingViewModelNavigationService)
+        public MainViewModel(NavigationStore navigationStore, NavigationService<DashboardViewModel> dashboardViewModelNavigationService, NavigationService<CustomerListingViewModel> customerListingViewModelNavigationService, NavigationService<ArticleGroupListingViewModel> articleGroupListingViewModelNavigationService, NavigationService<ArticleListingViewModel> articleListingViewModelNavigationService, NavigationService<OrderListingViewModel> orderListingViewModelNavigationService)
         {
             _navigationStore = navigationStore;
             _navigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;

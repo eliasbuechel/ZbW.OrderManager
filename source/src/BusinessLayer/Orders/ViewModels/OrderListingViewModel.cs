@@ -22,7 +22,7 @@ namespace BusinessLayer.Orders.ViewModels
         {
             _managerStore = managerStore;
             _navigationStore = navigationStore;
-            _createOrderViewModelSubNavigationService = new SubNavigationService(navigationStore, this, CreateCreateOrderViewModel);
+            _createOrderViewModelSubNavigationService = new SubNavigationService<OrderListingViewModel, CreateOrderViewModel>(navigationStore, this, CreateCreateOrderViewModel);
 
             LoadOrdersCommand = new LoadOrdersCommand(managerStore, this);
             CreateOrderCommand = new NavigateCommand(_createOrderViewModelSubNavigationService);
@@ -76,6 +76,6 @@ namespace BusinessLayer.Orders.ViewModels
         private readonly ObservableCollection<OrderViewModel> _orders = new ObservableCollection<OrderViewModel>();
         private readonly ManagerStore _managerStore;
         private readonly NavigationStore _navigationStore;
-        private readonly SubNavigationService _createOrderViewModelSubNavigationService;
+        private readonly SubNavigationService<OrderListingViewModel, CreateOrderViewModel> _createOrderViewModelSubNavigationService;
     }
 }

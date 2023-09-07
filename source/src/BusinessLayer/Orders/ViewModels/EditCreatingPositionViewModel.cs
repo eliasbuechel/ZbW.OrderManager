@@ -17,14 +17,14 @@ namespace BusinessLayer.Orders.ViewModels
 {
     public class EditCreatingPositionViewModel : BaseCreateEditPositionViewModel
     {
-        public static EditCreatingPositionViewModel LoadViewModel(ManagerStore managerStore, SubNavigationService createPositionViewModelSubNavigationService, CreatingPositionDTO position)
+        public static EditCreatingPositionViewModel LoadViewModel(ManagerStore managerStore, SubNavigationService<CreateOrderViewModel, EditCreatingPositionViewModel> createPositionViewModelSubNavigationService, CreatingPositionDTO position)
         {
             EditCreatingPositionViewModel viewModel = new EditCreatingPositionViewModel(managerStore, createPositionViewModelSubNavigationService, position);
             viewModel.LoadArticlesCommand?.Execute(null);
             return viewModel;
         }
 
-        private EditCreatingPositionViewModel(ManagerStore managerStore, SubNavigationService createPositionViewModelSubNavigationService, CreatingPositionDTO initialPosition)
+        private EditCreatingPositionViewModel(ManagerStore managerStore, SubNavigationService<CreateOrderViewModel, EditCreatingPositionViewModel> createPositionViewModelSubNavigationService, CreatingPositionDTO initialPosition)
             : base(managerStore)
         {
             _initialPosition = initialPosition;

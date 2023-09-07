@@ -10,14 +10,14 @@ namespace BusinessLayer.Articles.ViewModels
 {
     public class EditArticleViewModel : BaseCreateEditArticleViewModel
     {
-        public static EditArticleViewModel LoadViewModel(ManagerStore managerStore, ArticleDTO article, NavigationService articleListingViewModelNavigationService, IArticleValidator articleValidator)
+        public static EditArticleViewModel LoadViewModel(ManagerStore managerStore, ArticleDTO article, NavigationService<ArticleListingViewModel> articleListingViewModelNavigationService, IArticleValidator articleValidator)
         {
             EditArticleViewModel viewModel = new EditArticleViewModel(managerStore, article, articleListingViewModelNavigationService, articleValidator);
             viewModel.LoadArticleGroupsCommand?.Execute(null);
             return viewModel;
         }
 
-        private EditArticleViewModel(ManagerStore managerStore, ArticleDTO article, NavigationService articleListingViewModelNavigationService, IArticleValidator articleValidator)
+        private EditArticleViewModel(ManagerStore managerStore, ArticleDTO article, NavigationService<ArticleListingViewModel> articleListingViewModelNavigationService, IArticleValidator articleValidator)
             : base(managerStore, articleValidator, article.Name, article.ArticleGroup)
         {
             _initialArticle = article;

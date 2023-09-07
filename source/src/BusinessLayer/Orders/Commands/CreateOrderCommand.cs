@@ -7,9 +7,9 @@ using System.ComponentModel;
 
 namespace BusinessLayer.Orders.Commands
 {
-    public class CreateOrderCommand : BaseAsyncCommand, IDisposable
+    public class CreateOrderCommand : BaseAsyncCommand
     {
-        public CreateOrderCommand(ManagerStore managerStore, CreateOrderViewModel createOrderViewModel, IEnumerable<CreatingPositionDTO> positions, SubNavigationService orderListingViewModelSubNavigationService)
+        public CreateOrderCommand(ManagerStore managerStore, CreateOrderViewModel createOrderViewModel, IEnumerable<CreatingPositionDTO> positions, SubNavigationService<OrderListingViewModel, CreateOrderViewModel> orderListingViewModelSubNavigationService)
         {
             _managerStore = managerStore;
             _createOrderViewModel = createOrderViewModel;
@@ -52,6 +52,6 @@ namespace BusinessLayer.Orders.Commands
         private readonly ManagerStore _managerStore;
         private readonly CreateOrderViewModel _createOrderViewModel;
         private readonly IEnumerable<CreatingPositionDTO> _positions;
-        private readonly SubNavigationService _orderListingViewModelSubNavigationService;
+        private readonly SubNavigationService<OrderListingViewModel, CreateOrderViewModel> _orderListingViewModelSubNavigationService;
     }
 }

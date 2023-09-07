@@ -3,9 +3,9 @@ using BusinessLayer.Base.ViewModels;
 
 namespace BusinessLayer.Base.Services
 {
-    public class NavigationService : INavigationService
+    public class NavigationService<TViewModel> : INavigationService where TViewModel : BaseViewModel
     {
-        public NavigationService(NavigationStore navigationStore, Func<BaseViewModel> createViewModel)
+        public NavigationService(NavigationStore navigationStore, Func<TViewModel> createViewModel)
         {
             _navigationStore = navigationStore;
             _createViewModel = createViewModel;
@@ -13,11 +13,11 @@ namespace BusinessLayer.Base.Services
 
         public void Navigate()
         {
-            _navigationStore.CurrentViewModel.Dispose();
+            _navigationStore.CurrentViewModel?.Dispose();
             _navigationStore.CurrentViewModel = _createViewModel();
         }
 
         private readonly NavigationStore _navigationStore;
-        private readonly Func<BaseViewModel> _createViewModel;
+        private readonly Func<TViewModel> _createViewModel;
     }
 }

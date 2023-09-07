@@ -15,19 +15,19 @@ namespace BusinessLayer.Orders.ViewModels
 {
     public class CreateOrderViewModel : BaseLoadableViewModel, ICustomerUpdatable
     {
-		public static CreateOrderViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, SubNavigationService createOrderViewModelSubNavigationService)
+		public static CreateOrderViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, SubNavigationService<OrderListingViewModel, CreateOrderViewModel> createOrderViewModelSubNavigationService)
 		{
 			CreateOrderViewModel viewModel = new CreateOrderViewModel(managerStore, navigationStore, createOrderViewModelSubNavigationService);
 			viewModel.LoadCustomersCommand?.Execute(null);
 			return viewModel;
 		}
 
-        private CreateOrderViewModel(ManagerStore managerStore, NavigationStore navigationStore, SubNavigationService createOrderViewModelSubNavigationService)
+        private CreateOrderViewModel(ManagerStore managerStore, NavigationStore navigationStore, SubNavigationService<OrderListingViewModel, CreateOrderViewModel> createOrderViewModelSubNavigationService)
         {
             _managerStore = managerStore;
             _navigationStore = navigationStore;
 
-            _createPositionViewModelSubNavigationService = new SubNavigationService(navigationStore, this, CreateCreatePositionViewModel);
+            _createPositionViewModelSubNavigationService = new SubNavigationService<CreateOrderViewModel, CreatePositionViewModel>(navigationStore, this, CreateCreatePositionViewModel);
 
             LoadCustomersCommand = new LoadCustomersCommand(managerStore, this);
 			AddPositionCommand = new NavigateCommand(_createPositionViewModelSubNavigationService);
@@ -101,7 +101,7 @@ namespace BusinessLayer.Orders.ViewModels
 		private CustomerDTO? _customer;
         private readonly ManagerStore _managerStore;
         private readonly NavigationStore _navigationStore;
-        private readonly SubNavigationService _createPositionViewModelSubNavigationService;
+        private readonly SubNavigationService<CreateOrderViewModel, CreatePositionViewModel> _createPositionViewModelSubNavigationService;
         private readonly ObservableCollection<CustomerDTO> _customers = new ObservableCollection<CustomerDTO>();
 		private readonly ObservableCollection<CreatingPositionDTO> _positions = new ObservableCollection<CreatingPositionDTO>();
     }

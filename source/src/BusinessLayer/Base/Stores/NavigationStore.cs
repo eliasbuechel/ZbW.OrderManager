@@ -4,22 +4,22 @@ namespace BusinessLayer.Base.Stores
 {
     public class NavigationStore
     {
-        private BaseViewModel m_CurrentViewModel;
-        public BaseViewModel CurrentViewModel
+        public event Action? CurrentViewModelChanged;
+        public BaseViewModel? CurrentViewModel
         {
-            get => m_CurrentViewModel;
+            get => _currentViewModel;
             set
             {
-                m_CurrentViewModel = value;
+                _currentViewModel = value;
                 OnCurrentViewModelChanged();
             }
         }
 
-        public event Action CurrentViewModelChanged;
-
-        public void OnCurrentViewModelChanged()
+        private void OnCurrentViewModelChanged()
         {
             CurrentViewModelChanged?.Invoke();
         }
+
+        private BaseViewModel? _currentViewModel;
     }
 }

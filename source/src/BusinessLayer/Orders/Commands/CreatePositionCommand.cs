@@ -9,7 +9,7 @@ namespace BusinessLayer.Orders.Commands
 {
     public class CreatePositionCommand : BaseCommand, IDisposable
     {
-        public CreatePositionCommand(CreateOrderViewModel createOrderViewModel, CreatePositionViewModel createPositionViewModel, int nextFreeNumber, SubNavigationService createPositionViewModelSubNavigationService)
+        public CreatePositionCommand(CreateOrderViewModel createOrderViewModel, CreatePositionViewModel createPositionViewModel, int nextFreeNumber, SubNavigationService<CreateOrderViewModel, CreatePositionViewModel> createPositionViewModelSubNavigationService)
         {
             _createOrderViewModel = createOrderViewModel;
             _createPositionViewModel = createPositionViewModel;
@@ -52,6 +52,6 @@ namespace BusinessLayer.Orders.Commands
         private CreateOrderViewModel _createOrderViewModel;
         private CreatePositionViewModel _createPositionViewModel;
         private readonly int _nextFreeNumber;
-        private readonly SubNavigationService _createPositionViewModelSubNavigationService;
+        private readonly SubNavigationService<CreateOrderViewModel, CreatePositionViewModel> _createPositionViewModelSubNavigationService;
     }
 }

@@ -9,18 +9,18 @@ namespace BusinessLayer.Articles.ViewModels
 {
     public class CreateArticleViewModel : BaseCreateEditArticleViewModel
     {
-        public static CreateArticleViewModel LoadViewModel(ManagerStore managerStore, NavigationService createArticleViewModelNavigationService, IArticleValidator articleValidator)
+        public static CreateArticleViewModel LoadViewModel(ManagerStore managerStore, NavigationService<ArticleListingViewModel> articleListingViewModelNavigationService, IArticleValidator articleValidator)
 		{
-			CreateArticleViewModel viewModel = new CreateArticleViewModel(managerStore, createArticleViewModelNavigationService, articleValidator);
+			CreateArticleViewModel viewModel = new CreateArticleViewModel(managerStore, articleListingViewModelNavigationService, articleValidator);
 			viewModel.LoadArticleGroupsCommand?.Execute(null);
 			return viewModel;
 		}
 
-        private CreateArticleViewModel(ManagerStore managerStore, NavigationService articleListingViewMoelNavigationService, IArticleValidator articleValidator)
+        private CreateArticleViewModel(ManagerStore managerStore, NavigationService<ArticleListingViewModel> articleListingViewModelNavigationService, IArticleValidator articleValidator)
 			: base(managerStore, articleValidator, string.Empty)
         {
-            CreateArticleCommand = new CreateArticleCommand(managerStore, this, articleListingViewMoelNavigationService);
-            CancelCreateArticleCommand = new NavigateCommand(articleListingViewMoelNavigationService);
+            CreateArticleCommand = new CreateArticleCommand(managerStore, this, articleListingViewModelNavigationService);
+            CancelCreateArticleCommand = new NavigateCommand(articleListingViewModelNavigationService);
         }
 
         public ICommand CreateArticleCommand { get; }

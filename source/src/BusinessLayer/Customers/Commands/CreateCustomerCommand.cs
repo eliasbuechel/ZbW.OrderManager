@@ -10,7 +10,7 @@ namespace BusinessLayer.Customers.Commands
 {
     public class CreateCustomerCommand : BaseAsyncCommand
     {
-        public CreateCustomerCommand(ManagerStore managerStore, CreateCustomerViewModel createCustomerViewModel, NavigationService customerListingViewModelNavigationService)
+        public CreateCustomerCommand(ManagerStore managerStore, CreateCustomerViewModel createCustomerViewModel, NavigationService<CustomerListingViewModel> customerListingViewModelNavigationService)
         {
             _managerStore = managerStore;
             _createCustomerViewModel = createCustomerViewModel;
@@ -57,6 +57,6 @@ namespace BusinessLayer.Customers.Commands
 
         private readonly ManagerStore _managerStore;
         private readonly CreateCustomerViewModel _createCustomerViewModel;
-        private readonly NavigationService _customerListingViewModelNavigationService;
+        private readonly NavigationService<CustomerListingViewModel> _customerListingViewModelNavigationService;
     }
 }

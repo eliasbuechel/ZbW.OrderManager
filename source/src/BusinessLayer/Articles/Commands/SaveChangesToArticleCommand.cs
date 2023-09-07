@@ -9,7 +9,7 @@ namespace BusinessLayer.Articles.Commands
 {
     public class SaveChangesToArticleCommand : BaseAsyncCommand
     {
-        public SaveChangesToArticleCommand(ManagerStore managerStore, ArticleDTO initialArticle, EditArticleViewModel editArticleViewModel, NavigationService articleListingViewModelNavigationService)
+        public SaveChangesToArticleCommand(ManagerStore managerStore, ArticleDTO initialArticle, EditArticleViewModel editArticleViewModel, NavigationService<ArticleListingViewModel> articleListingViewModelNavigationService)
         {
             _managerStore = managerStore;
             _initialArticle = initialArticle;
@@ -59,6 +59,6 @@ namespace BusinessLayer.Articles.Commands
         private readonly ManagerStore _managerStore;
         private readonly ArticleDTO _initialArticle;
         private readonly EditArticleViewModel _editArticleViewModel;
-        private readonly NavigationService _articleListingViewModelNavigationService;
+        private readonly NavigationService<ArticleListingViewModel> _articleListingViewModelNavigationService;
     }
 }

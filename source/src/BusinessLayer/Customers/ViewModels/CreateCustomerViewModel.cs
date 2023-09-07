@@ -9,7 +9,7 @@ namespace BusinessLayer.Customers.ViewModels
 {
     public class CreateCustomerViewModel : BaseCreateEditCustomerViewModel
     {
-        public CreateCustomerViewModel(ManagerStore managerStore, NavigationService customerListingViewModelNavigationService, ICustomerValidator customerValidator)
+        public CreateCustomerViewModel(ManagerStore managerStore, NavigationService<CustomerListingViewModel> customerListingViewModelNavigationService, ICustomerValidator customerValidator)
             : base(customerValidator)
         {
             CreateCustomerCommand = new CreateCustomerCommand(managerStore, this, customerListingViewModelNavigationService);

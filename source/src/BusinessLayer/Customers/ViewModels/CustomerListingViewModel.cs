@@ -1,4 +1,5 @@
-﻿using BusinessLayer.Base.Commands;
+﻿using BusinessLayer.ArticleGroups.ViewModels;
+using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using BusinessLayer.Base.ViewModels;
@@ -12,14 +13,14 @@ namespace BusinessLayer.Customers.ViewModels
 {
     public class CustomerListingViewModel : BaseLoadableViewModel, ICustomerUpdatable
     {
-        public static CustomerListingViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService createCustomerViewModelNavigationService, NavigationService customerListingViewModelNavigationService, ICustomerValidator customerValidator, IDialogService fileDialogue)
+        public static CustomerListingViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService<CreateCustomerViewModel> createCustomerViewModelNavigationService, NavigationService<CustomerListingViewModel> customerListingViewModelNavigationService, ICustomerValidator customerValidator, IDialogService fileDialogue)
         {
             CustomerListingViewModel viewModel = new CustomerListingViewModel(managerStore, navigationStore, createCustomerViewModelNavigationService, customerListingViewModelNavigationService, customerValidator, fileDialogue);
             viewModel.LoadCustomersCommand.Execute(null);
             return viewModel;
         }
 
-        private CustomerListingViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService createCustomerViewModelNavigationService, NavigationService customerListingViewModelNavigationService, ICustomerValidator customerValidator, IDialogService fileDialogue)
+        private CustomerListingViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService<CreateCustomerViewModel> createCustomerViewModelNavigationService, NavigationService<CustomerListingViewModel> customerListingViewModelNavigationService, ICustomerValidator customerValidator, IDialogService fileDialogue)
         {
             _managerStore = managerStore;
             _navigationStore = navigationStore;
@@ -81,14 +82,14 @@ namespace BusinessLayer.Customers.ViewModels
 
             _customers.Remove(customerViewModel);
         }
-        private NavigationService CreateEditCustomerViewModelNavigationService(CustomerDTO customer)
+        private NavigationService<EditCustomerViewModel> CreateEditCustomerViewModelNavigationService(CustomerDTO customer)
         {
-            return new NavigationService(_navigationStore, () => new EditCustomerViewModel(_managerStore, customer, _customerListingViewModelNavigationService, _customerValidator));
+            return new NavigationService<EditCustomerViewModel>(_navigationStore, () => new EditCustomerViewModel(_managerStore, customer, _customerListingViewModelNavigationService, _customerValidator));
         }
 
         private readonly ManagerStore _managerStore;
         private readonly NavigationStore _navigationStore;
-        private readonly NavigationService _customerListingViewModelNavigationService;
+        private readonly NavigationService<CustomerListingViewModel> _customerListingViewModelNavigationService;
         private readonly ObservableCollection<CustomerViewModel> _customers = new ObservableCollection<CustomerViewModel>();
         private readonly ICustomerValidator _customerValidator;
     }

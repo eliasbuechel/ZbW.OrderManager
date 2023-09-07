@@ -9,8 +9,7 @@ namespace BusinessLayer.Customers.Commands
 {
     internal class SaveChangesToCustomerCommand : BaseAsyncCommand
     {
-
-        public SaveChangesToCustomerCommand(ManagerStore managerStore, CustomerDTO initialCustomer, EditCustomerViewModel editCustomerViewModel, NavigationService customerListingViewModelNavigationService)
+        public SaveChangesToCustomerCommand(ManagerStore managerStore, CustomerDTO initialCustomer, EditCustomerViewModel editCustomerViewModel, NavigationService<CustomerListingViewModel> customerListingViewModelNavigationService)
         {
             _managerStore = managerStore;
             _initialCustomer = initialCustomer;
@@ -20,16 +19,10 @@ namespace BusinessLayer.Customers.Commands
             _editedCustomerViewModel.ErrorsChanged += OnHasCustomerPropertyErrorChanged;
         }
 
-        private void OnHasCustomerPropertyErrorChanged(object? sender, DataErrorsChangedEventArgs e)
-        {
-            OnCanExecuteChanged();
-        }
-
         public override bool CanExecute(object? parameter)
         {
             return !_editedCustomerViewModel.HasErrors && CustomerDataChanged() && base.CanExecute(parameter);
         }
-
         public async override Task ExecuteAsync(object? parameter)
         {
             CustomerDTO editedCustomer = new CustomerDTO(
@@ -63,10 +56,14 @@ namespace BusinessLayer.Customers.Commands
 
 
         }
+        private void OnHasCustomerPropertyErrorChanged(object? sender, DataErrorsChangedEventArgs e)
+        {
+            OnCanExecuteChanged();
+        }
 
         private readonly CustomerDTO _initialCustomer;
         private readonly ManagerStore _managerStore;
-        private readonly NavigationService _customerListingViewModelNavigationService;
+        private readonly NavigationService<CustomerListingViewModel> _customerListingViewModelNavigationService;
         private readonly EditCustomerViewModel _editedCustomerViewModel;
     }
 }

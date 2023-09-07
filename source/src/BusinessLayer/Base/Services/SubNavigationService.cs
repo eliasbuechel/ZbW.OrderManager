@@ -4,9 +4,9 @@ using System.Diagnostics;
 
 namespace BusinessLayer.Base.Services
 {
-    public class SubNavigationService : INavigationService
+    public class SubNavigationService<TBaseViewModel, TSubViewModel> : INavigationService where TBaseViewModel : BaseViewModel where TSubViewModel : BaseViewModel
     {
-        public SubNavigationService(NavigationStore navigationStore, BaseViewModel currentViewModel, Func<BaseViewModel> subViewModelCreationMethode)
+        public SubNavigationService(NavigationStore navigationStore, TBaseViewModel currentViewModel, Func<TSubViewModel> subViewModelCreationMethode)
         {
             _navigationStore = navigationStore;
             _currentViewModel = currentViewModel;
@@ -15,7 +15,7 @@ namespace BusinessLayer.Base.Services
 
         public void Navigate()
         {
-            if (_navigationStore.CurrentViewModel == _currentViewModel)
+            if (_navigationStore.CurrentViewModel.Equals(_currentViewModel))
                 NavigateToSub();
             else
                 NavigateBack();
@@ -27,12 +27,12 @@ namespace BusinessLayer.Base.Services
         }
         private void NavigateBack()
         {
-            _navigationStore.CurrentViewModel.Dispose();
+            _navigationStore.CurrentViewModel?.Dispose();
             _navigationStore.CurrentViewModel = _currentViewModel;
         }
 
         private readonly NavigationStore _navigationStore;
-        private readonly BaseViewModel _currentViewModel;
-        private readonly Func<BaseViewModel> _subViewModelCreationMethode;
+        private readonly TBaseViewModel _currentViewModel;
+        private readonly Func<TSubViewModel> _subViewModelCreationMethode;
     }
 }

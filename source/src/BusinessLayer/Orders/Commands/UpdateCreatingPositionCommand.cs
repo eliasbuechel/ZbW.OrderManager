@@ -8,7 +8,7 @@ namespace BusinessLayer.Orders.Commands
 {
     public class UpdateCreatingPositionCommand : BaseCommand, IDisposable
     {
-        public UpdateCreatingPositionCommand(SubNavigationService createPositionViewModelSubNavigationService, EditCreatingPositionViewModel editCreatingPositionViewModel, CreatingPositionDTO position)
+        public UpdateCreatingPositionCommand(SubNavigationService<CreateOrderViewModel, EditCreatingPositionViewModel> createPositionViewModelSubNavigationService, EditCreatingPositionViewModel editCreatingPositionViewModel, CreatingPositionDTO position)
         {
             _createPositionViewModelSubNavigationService = createPositionViewModelSubNavigationService;
             _editCreatingPositionViewModel = editCreatingPositionViewModel;
@@ -60,7 +60,7 @@ namespace BusinessLayer.Orders.Commands
         }
 
 
-        private readonly SubNavigationService _createPositionViewModelSubNavigationService;
+        private readonly SubNavigationService<CreateOrderViewModel, EditCreatingPositionViewModel> _createPositionViewModelSubNavigationService;
         private readonly EditCreatingPositionViewModel _editCreatingPositionViewModel;
         private readonly CreatingPositionDTO _position;
     }

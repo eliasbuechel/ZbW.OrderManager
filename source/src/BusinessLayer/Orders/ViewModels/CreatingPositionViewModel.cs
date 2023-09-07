@@ -16,7 +16,7 @@ namespace BusinessLayer.Orders.ViewModels
             _managerStore = managerStore;
             _position = position;
 
-            _editCreatingPositionViewModelSubNavigationService = new SubNavigationService(navigationStore, createOrderViewModel, CreateEditCreatingPositionViewModel);
+            _editCreatingPositionViewModelSubNavigationService = new SubNavigationService<CreateOrderViewModel, EditCreatingPositionViewModel>(navigationStore, createOrderViewModel, CreateEditCreatingPositionViewModel);
 
             EditCreatingPositionCommand = new NavigateCommand(_editCreatingPositionViewModelSubNavigationService);
             DeleteCreatingPositioncommand = new DeleteCreatingPositionCommand(createOrderViewModel, position);
@@ -35,6 +35,6 @@ namespace BusinessLayer.Orders.ViewModels
 
         private readonly ManagerStore _managerStore;
         private readonly CreatingPositionDTO _position;
-        private readonly SubNavigationService _editCreatingPositionViewModelSubNavigationService;
+        private readonly SubNavigationService<CreateOrderViewModel, EditCreatingPositionViewModel> _editCreatingPositionViewModelSubNavigationService;
     }
 }

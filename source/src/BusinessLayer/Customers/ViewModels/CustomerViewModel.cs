@@ -9,7 +9,7 @@ namespace BusinessLayer.Customers.ViewModels
 {
     public class CustomerViewModel
     {
-        public CustomerViewModel(ManagerStore managerStore, CustomerDTO customer, NavigationService editCustomerViewModelNavigationService)
+        public CustomerViewModel(ManagerStore managerStore, CustomerDTO customer, NavigationService<EditCustomerViewModel> editCustomerViewModelNavigationService)
         {
             _customer = customer;
             DeleteCustomerCommand = new DeleteCustomeCommand(managerStore, _customer);

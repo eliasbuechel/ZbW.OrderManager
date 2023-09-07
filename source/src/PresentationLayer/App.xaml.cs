@@ -31,131 +31,190 @@ using DataLayer.Customers.Services.CustomerEditors;
 using DataLayer.Customers.Services.CustomerProviders;
 using DataLayer.Customers.Validation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using PresentationLayer.Base.Services;
+using System;
 using System.Windows;
 
 namespace PresentationLayer
 {
     public partial class App : Application
     {
-        private const string CONNECTION_STRING = "Server=.;Database=OrderManagerTestV2;Trusted_Connection=True;MultipleActiveResultSets=True;Encrypt=False;";
-        private readonly Manager _manager;
-        private readonly ManagerStore _managerStore;
-        private readonly ManagerDbContextFactory _orderDbContextFactory;
-
-        private readonly ICustomerValidator _customerValidator;
-        private readonly IArticleGroupValidator _articleGroupValidator;
-        private readonly IArticleValidator _articleValidator;
-
-        private readonly IDialogService _fileDialogue;
-
-        private readonly NavigationStore _navigationStore;
-        private readonly NavigationService _dashboardViewModelNavigationService;
-        private readonly NavigationService _customerListingViewModelNavigationService;
-        private readonly NavigationService _createCustomerViewModelNavigationService;
-        private readonly NavigationService _articleGroupListingViewModelNavigationService;
-        private readonly NavigationService _createArticleGroupViewModelNavigationService;
-        private readonly NavigationService _articleListingViewModelNavigationService;
-        private readonly NavigationService _createArticleViewModelNavigationService;
-        private readonly NavigationService _orderListingViewModelNavigationService;
-        //private readonly NavigationService _createOrderViewModelNavigationService;
-
         public App()
         {
-            _orderDbContextFactory = new ManagerDbContextFactory(CONNECTION_STRING);
+            _host = Host.CreateDefaultBuilder().ConfigureServices(services =>
+                {
+                    services.AddSingleton(new ManagerDbContextFactory(CONNECTION_STRING));
 
-            _customerValidator = new CustomerValidator();
-            ICustomerProvider customerProvider = new DatabaseCustomerProvider(_orderDbContextFactory);
-            ICustomerCreator customerCreator = new DatabaseCustomerCreator(_orderDbContextFactory, _customerValidator);
-            ICustomerDeletor cusotmerDeletor = new DatabaseCustomerDeletor(_orderDbContextFactory);
-            ICustomerEditor customerEditor = new DatabaseCustomerEditor(_orderDbContextFactory, _customerValidator);
+                    services.AddSingleton<ICustomerValidator, CustomerValidator>();
+                    services.AddSingleton<ICustomerProvider, DatabaseCustomerProvider>();
+                    services.AddSingleton<ICustomerCreator, DatabaseCustomerCreator>();
+                    services.AddSingleton<ICustomerDeletor, DatabaseCustomerDeletor>();
+                    services.AddSingleton<ICustomerEditor, DatabaseCustomerEditor>();
 
-            _articleGroupValidator = new ArticleGroupValidator();
-            IArticleGroupProvider articleGroupProvider = new DatabaseArticleGroupProviders(_orderDbContextFactory);
-            IArticleGroupCreator articleGroupCreator = new DatabaseArticleGroupCreator(_orderDbContextFactory, _articleGroupValidator);
-            IArticleGroupDeletor articleGroupDeletor = new DatabaseArticleGroupDeletor(_orderDbContextFactory);
-            IArticleGroupUpdator articleGroupUpdator = new DatabaseArticleGroupUpdator(_orderDbContextFactory, _articleGroupValidator);
+                    services.AddSingleton<IArticleGroupValidator, ArticleGroupValidator>();
+                    services.AddSingleton<IArticleGroupProvider, DatabaseArticleGroupProvider>();
+                    services.AddSingleton<IArticleGroupCreator, DatabaseArticleGroupCreator>();
+                    services.AddSingleton<IArticleGroupDeletor, DatabaseArticleGroupDeletor>();
+                    services.AddSingleton<IArticleGroupUpdator, DatabaseArticleGroupUpdator>();
 
-            _articleValidator = new ArticleValidator();
-            IArticleProvider articleProvider = new DatabaseArticleProvider(_orderDbContextFactory, articleGroupProvider);
-            IArticleCreator articleCreator = new DatabaseArticleCreator(_orderDbContextFactory, _articleValidator);
-            IArticleDeletor articleDeletor = new DatabaseArticleDeletor(_orderDbContextFactory);
-            IArticleEditor articleEditor = new DatabaseArticleEditor(_orderDbContextFactory, _articleValidator);
+                    services.AddSingleton<IArticleValidator, ArticleValidator>();
+                    services.AddSingleton<IArticleProvider, DatabaseArticleProvider>();
+                    services.AddSingleton<IArticleCreator, DatabaseArticleCreator>();
+                    services.AddSingleton<IArticleDeletor, DatabaseArticleDeletor>();
+                    services.AddSingleton<IArticleEditor, DatabaseArticleEditor>();
 
-            IOrderProvider orderProvider = new DatabaseOrderProvider(_orderDbContextFactory, customerProvider, articleProvider);
-            IOrderCreator orderCreator = new DatabaseOrderCreator(_orderDbContextFactory, orderProvider);
-            IOrderDeletor orderDeletor = new DatabaseOrderDeletor(_orderDbContextFactory);
+                    services.AddSingleton<IOrderProvider, DatabaseOrderProvider>();
+                    services.AddSingleton<IOrderCreator, DatabaseOrderCreator>();
+                    services.AddSingleton<IOrderDeletor, DatabaseOrderDeletor>();
 
-            _fileDialogue = new DialogService();
+                    services.AddSingleton<IDialogService, DialogService>();
 
-            CustomerList customerList = new CustomerList(customerProvider, customerCreator, cusotmerDeletor, customerEditor, _customerValidator);
-            ArticleGroupList articleGroupList = new ArticleGroupList(articleGroupProvider, articleGroupCreator, articleGroupDeletor, articleGroupUpdator, _articleGroupValidator);
-            ArticleList articleList = new ArticleList(articleProvider, articleCreator, articleDeletor, articleEditor, _articleValidator);
-            OrderList orderList = new OrderList(orderProvider, orderCreator, orderDeletor);
+                    services.AddSingleton<CustomerList>();
+                    services.AddSingleton<ArticleGroupList>();
+                    services.AddSingleton<ArticleList>();
+                    services.AddSingleton<OrderList>();
 
-            _manager = new Manager(customerList, articleGroupList, articleList, orderList);
-            _managerStore = new ManagerStore(_manager);
-            _navigationStore = new NavigationStore();
+                    services.AddSingleton<NavigationStore>();
 
-            _dashboardViewModelNavigationService = new NavigationService(_navigationStore, CreateDashboardViewModel);
-            _customerListingViewModelNavigationService = new NavigationService(_navigationStore, CreateCustomerListingViewModel);
-            _createCustomerViewModelNavigationService = new NavigationService(_navigationStore, CreateCreateCustomerViewModel);
-            _articleGroupListingViewModelNavigationService = new NavigationService(_navigationStore, CreateArticleGroupListingViewModel);
-            _createArticleGroupViewModelNavigationService = new NavigationService(_navigationStore, CreateCreateArticleGroupViewModel);
-            _articleListingViewModelNavigationService = new NavigationService(_navigationStore, CreateArticleListingViewModel);
-            _createArticleViewModelNavigationService = new NavigationService(_navigationStore, CreateCreateArticleViewModel);
-            _orderListingViewModelNavigationService = new NavigationService(_navigationStore, CreateOrderListingViewModel);
-            //_createOrderViewModelNavigationService = new NavigationService(_navigationStore, CreateCreateOrderViewModel);
+                    services.AddTransient<DashboardViewModel>();
+                    services.AddSingleton<Func<DashboardViewModel>>(s => () => s.GetRequiredService<DashboardViewModel>());
+                    services.AddSingleton<NavigationService<DashboardViewModel>>();
+
+                    services.AddTransient(s => CreateCustomerListingViewModel(s));
+                    services.AddSingleton<Func<CustomerListingViewModel>>(s => () => s.GetRequiredService<CustomerListingViewModel>());
+                    services.AddSingleton<NavigationService<CustomerListingViewModel>>();
+
+                    services.AddTransient<CreateCustomerViewModel>();
+                    services.AddSingleton<Func<CreateCustomerViewModel>>(s => () => s.GetRequiredService<CreateCustomerViewModel>());
+                    services.AddSingleton<NavigationService<CreateCustomerViewModel>>();
+
+                    services.AddTransient(s => CreateArticleGroupListingViewModel(s));
+                    services.AddSingleton<Func<ArticleGroupListingViewModel>>(s => () => s.GetRequiredService<ArticleGroupListingViewModel>());
+                    services.AddSingleton<NavigationService<ArticleGroupListingViewModel>>();
+
+                    services.AddTransient(s => CreateCreateArticleGroupViewModel(s));
+                    services.AddSingleton<Func<CreateArticleGroupViewModel>>(s => () => s.GetRequiredService<CreateArticleGroupViewModel>());
+                    services.AddSingleton<NavigationService<CreateArticleGroupViewModel>>();
+
+                    services.AddTransient(s => CreateArticleListingViewModel(s));
+                    services.AddSingleton<Func<ArticleListingViewModel>>(s => () => s.GetRequiredService<ArticleListingViewModel>());
+                    services.AddSingleton<NavigationService<ArticleListingViewModel>>();
+
+                    services.AddTransient(s => CreateCreateArticleViewModel(s));
+                    services.AddSingleton<Func<CreateArticleViewModel>>(s => () => s.GetRequiredService<CreateArticleViewModel>());
+                    services.AddSingleton<NavigationService<CreateArticleViewModel>>();
+
+                    services.AddTransient(s => CrateOrderListingViewModel(s));
+                    services.AddSingleton<Func<OrderListingViewModel>>(s => () => s.GetRequiredService<OrderListingViewModel>());
+                    services.AddSingleton<NavigationService<OrderListingViewModel>>();
+
+                    services.AddTransient(s => CreateCreateOrderViewModel(s));
+                    services.AddSingleton<Func<CreateOrderViewModel>>(s => () => s.GetRequiredService<CreateOrderViewModel>());
+                    services.AddSingleton<SubNavigationService<OrderListingViewModel, CreateOrderViewModel>>();
+
+                    services.AddSingleton<Manager>();
+                    services.AddSingleton<ManagerStore>();
+
+                    services.AddSingleton<MainViewModel>();
+                    services.AddSingleton(s => new MainWindow()
+                    {
+                        DataContext = s.GetRequiredService<MainViewModel>()
+                    });
+                })
+                .Build();
+
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            using ManagerDbContext dbContext = _orderDbContextFactory.CreateDbContext();
+            _host.Start();
+
+            ManagerDbContextFactory managerDbContextFactory = _host.Services.GetRequiredService<ManagerDbContextFactory>();
+            using ManagerDbContext dbContext = managerDbContextFactory.CreateDbContext();
             dbContext.Database.Migrate();
 
-            _navigationStore.CurrentViewModel = CreateDashboardViewModel();
+            NavigationService<DashboardViewModel> dashboardViewModelNavigationService = _host.Services.GetRequiredService<NavigationService<DashboardViewModel>>();
+            dashboardViewModelNavigationService.Navigate();
 
-            MainWindow = new MainWindow()
-            {
-                DataContext = new MainViewModel(_navigationStore,_dashboardViewModelNavigationService, _customerListingViewModelNavigationService, _articleGroupListingViewModelNavigationService, _articleListingViewModelNavigationService, _orderListingViewModelNavigationService)
-            };
-            MainWindow.Show();
+            MainWindow mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            mainWindow.Show();
 
             base.OnStartup(e);
         }
+        protected override void OnExit(ExitEventArgs e)
+        {
+            _host.Dispose();
 
-        private DashboardViewModel CreateDashboardViewModel()
-        {
-            return DashboardViewModel.LoadViewModel();
+            base.OnExit(e);
         }
-        private CustomerListingViewModel CreateCustomerListingViewModel()
+
+        private CreateOrderViewModel CreateCreateOrderViewModel(IServiceProvider s)
         {
-            return CustomerListingViewModel.LoadViewModel(_managerStore, _navigationStore, _createCustomerViewModelNavigationService, _customerListingViewModelNavigationService, _customerValidator, _fileDialogue);
+            return CreateOrderViewModel.LoadViewModel(
+               s.GetRequiredService<ManagerStore>(),
+               s.GetRequiredService<NavigationStore>(),
+               s.GetRequiredService<SubNavigationService<OrderListingViewModel, CreateOrderViewModel>>()
+               );
         }
-        private CreateCustomerViewModel CreateCreateCustomerViewModel()
+        private OrderListingViewModel CrateOrderListingViewModel(IServiceProvider s)
         {
-            return new CreateCustomerViewModel(_managerStore, _customerListingViewModelNavigationService, _customerValidator);
+            return OrderListingViewModel.LoadViewModel(
+              s.GetRequiredService<ManagerStore>(),
+              s.GetRequiredService<NavigationStore>()
+              );
         }
-        private ArticleGroupListingViewModel CreateArticleGroupListingViewModel()
+        private CreateArticleViewModel CreateCreateArticleViewModel(IServiceProvider s)
         {
-            return ArticleGroupListingViewModel.LoadViewModel(_managerStore, _navigationStore, _articleGroupListingViewModelNavigationService, _createArticleGroupViewModelNavigationService, _articleGroupValidator);
+            return CreateArticleViewModel.LoadViewModel(
+              s.GetRequiredService<ManagerStore>(),
+              s.GetRequiredService<NavigationService<ArticleListingViewModel>>(),
+              s.GetRequiredService<IArticleValidator>()
+              );
         }
-        private CreateArticleGroupViewModel CreateCreateArticleGroupViewModel()
+        private ArticleListingViewModel CreateArticleListingViewModel(IServiceProvider s)
         {
-            return CreateArticleGroupViewModel.LoadViewModel(_managerStore, _articleGroupListingViewModelNavigationService, _articleGroupValidator);
+            return ArticleListingViewModel.LoadViewModel(
+                s.GetRequiredService<ManagerStore>(),
+                s.GetRequiredService<NavigationStore>(),
+                s.GetRequiredService<NavigationService<ArticleListingViewModel>>(),
+                s.GetRequiredService<NavigationService<CreateArticleViewModel>>(),
+                s.GetRequiredService<IArticleValidator>()
+                );
         }
-        private ArticleListingViewModel CreateArticleListingViewModel()
+        private CreateArticleGroupViewModel CreateCreateArticleGroupViewModel(IServiceProvider s)
         {
-            return ArticleListingViewModel.LoadViewModel(_managerStore, _navigationStore, _articleListingViewModelNavigationService, _createArticleViewModelNavigationService, _articleValidator);
+            return CreateArticleGroupViewModel.LoadViewModel(
+                s.GetRequiredService<ManagerStore>(),
+                s.GetRequiredService<NavigationService<ArticleGroupListingViewModel>>(),
+                s.GetRequiredService<IArticleGroupValidator>()
+                );
         }
-        private CreateArticleViewModel CreateCreateArticleViewModel()
+        private ArticleGroupListingViewModel CreateArticleGroupListingViewModel(IServiceProvider s)
         {
-            return CreateArticleViewModel.LoadViewModel(_managerStore, _articleListingViewModelNavigationService, _articleValidator);
+            return ArticleGroupListingViewModel.LoadViewModel(
+                s.GetRequiredService<ManagerStore>(),
+                s.GetRequiredService<NavigationStore>(),
+                s.GetRequiredService<NavigationService<ArticleGroupListingViewModel>>(),
+                s.GetRequiredService<NavigationService<CreateArticleGroupViewModel>>(),
+                s.GetRequiredService<IArticleGroupValidator>()
+                );
         }
-        private OrderListingViewModel CreateOrderListingViewModel()
+        private CustomerListingViewModel CreateCustomerListingViewModel(IServiceProvider s)
         {
-            return OrderListingViewModel.LoadViewModel(_managerStore, _navigationStore);
+            return CustomerListingViewModel.LoadViewModel(
+                s.GetRequiredService<ManagerStore>(),
+                s.GetRequiredService<NavigationStore>(),
+                s.GetRequiredService<NavigationService<CreateCustomerViewModel>>(),
+                s.GetRequiredService<NavigationService<CustomerListingViewModel>>(),
+                s.GetRequiredService<ICustomerValidator>(),
+                s.GetRequiredService<IDialogService>()
+                );
         }
+
+        private readonly IHost _host;
+        private const string CONNECTION_STRING = "Server=.;Database=OrderManagerTestV2;Trusted_Connection=True;MultipleActiveResultSets=True;Encrypt=False;";
     }
 }

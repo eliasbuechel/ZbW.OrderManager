@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.ArticleGroups.Services.ArticleGroupProviders
 {
-    public class DatabaseArticleGroupProviders : IArticleGroupProvider
+    public class DatabaseArticleGroupProvider : IArticleGroupProvider
     {
-        public DatabaseArticleGroupProviders(ManagerDbContextFactory dbContextFactory)
+        public DatabaseArticleGroupProvider(ManagerDbContextFactory dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
         }

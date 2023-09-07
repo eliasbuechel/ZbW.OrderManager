@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.ArticleGroups.ViewModels;
+using BusinessLayer.Articles.ViewModels;
 using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
@@ -11,7 +12,7 @@ namespace BusinessLayer.ArticleGroups.Commands
 {
     public class CreateArticleGroupCommand : BaseAsyncCommand, IDisposable
     {
-        public CreateArticleGroupCommand(ManagerStore managerStore, CreateArticleGroupViewModel createArticleGroupViewModel, NavigationService articleGroupListingViewModelNavigationService)
+        public CreateArticleGroupCommand(ManagerStore managerStore, CreateArticleGroupViewModel createArticleGroupViewModel, NavigationService<ArticleGroupListingViewModel> articleGroupListingViewModelNavigationService)
         {
             _managerStore = managerStore;
             _createArticleGroupViewModel = createArticleGroupViewModel;
@@ -87,6 +88,6 @@ namespace BusinessLayer.ArticleGroups.Commands
 
         private readonly ManagerStore _managerStore;
         private readonly CreateArticleGroupViewModel _createArticleGroupViewModel;
-        private readonly NavigationService _articleGroupListingViewModelNavigationService;
+        private readonly NavigationService<ArticleGroupListingViewModel> _articleGroupListingViewModelNavigationService;
     }
 }
