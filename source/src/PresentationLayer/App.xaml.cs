@@ -31,6 +31,7 @@ using DataLayer.Customers.Services.CustomerEditors;
 using DataLayer.Customers.Services.CustomerProviders;
 using DataLayer.Customers.Validation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using PresentationLayer.Base.Services;
 using System.Windows;
 
