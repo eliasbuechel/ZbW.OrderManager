@@ -7,8 +7,8 @@ namespace DataLayer.Orders.Models
     {
         public int Id { get; set; }
         public int Number { get; set; }
-        public Article Article { get; set; }
+        public Article Article { get; set; } = new Article();
         public int Ammount { get; set; }
-        public Order Order { get; set; }
+        public Order Order { get; set; } = new Order();
     }
 }

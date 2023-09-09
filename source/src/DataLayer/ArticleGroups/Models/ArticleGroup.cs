@@ -10,7 +10,7 @@ namespace DataLayer.ArticleGroups.Models
 
         [Required]
         [MaxLength(100)]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         public virtual ArticleGroup? SuperiorArticleGroup { get; set; }
 

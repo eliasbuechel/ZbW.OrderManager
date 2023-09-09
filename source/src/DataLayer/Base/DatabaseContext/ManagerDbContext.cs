@@ -14,7 +14,7 @@ namespace DataLayer.Base.DatabaseContext
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.LogTo(Console.WriteLine);
+            optionsBuilder.LogTo(Console.WriteLine);
         }
 
         public DbSet<Customer> Customers { get; set; }

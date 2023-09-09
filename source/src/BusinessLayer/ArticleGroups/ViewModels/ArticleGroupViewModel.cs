@@ -64,7 +64,7 @@ namespace BusinessLayer.ArticleGroups.ViewModels
             return new NavigationService<EditArticleGroupViewModel>(_navigationStore, () => EditArticleGroupViewModel.LoadViewModel(_managerStore, _articleGroup, _articleGroupListingViewModelNavigationService, _articleGroupValidator));
         }
 
-        private static IEnumerable<ArticleGroupViewModel> GetSubordinateArticleGroups(ArticleGroupDTO articlGroup)
+        private IEnumerable<ArticleGroupViewModel> GetSubordinateArticleGroups(ArticleGroupDTO articlGroup)
         {
             ICollection<ArticleGroupDTO> subordinateArticleGroups = articlGroup.SubordinateArticleGroups;
 

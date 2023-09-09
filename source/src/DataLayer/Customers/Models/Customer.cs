@@ -5,6 +5,17 @@ namespace DataLayer.Customers.Models
 {
     public class Customer
     {
+        public Customer()
+        {
+            FirstName = string.Empty;
+            LastName = string.Empty;
+            Address = new Address();
+            EmailAddress = string.Empty;
+            WebsiteURL = string.Empty;
+            Password = string.Empty;
+        }
+
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 

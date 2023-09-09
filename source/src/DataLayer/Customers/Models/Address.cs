@@ -9,20 +9,20 @@ namespace DataLayer.Customers.Models
 
         [Required]
         [MaxLength(200)]
-        public string StreetName { get; set; }
+        public string StreetName { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(10)]
         [Column(TypeName = "varchar(10)")]
-        public string HouseNumber { get; set; }
+        public string HouseNumber { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(100)]
-        public string City { get; set; }
+        public string City { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(10)]
         [Column(TypeName = "varchar(10)")]
-        public string PostalCode { get; set; }
+        public string PostalCode { get; set; } = string.Empty;
     }
 }
