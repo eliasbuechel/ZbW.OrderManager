@@ -18,7 +18,7 @@ namespace BusinessLayer.Base.ViewModels
             return _propertyNameToErrorsDictionary.GetValueOrDefault(propertyName, new List<string>());
         }
 
-        protected void AddError(string errorMessage, [CallerMemberName] string propertyName = null)
+        protected void AddError(string errorMessage, [CallerMemberName] string propertyName = "")
         {
             if (!_propertyNameToErrorsDictionary.ContainsKey(propertyName))
                 _propertyNameToErrorsDictionary.Add(propertyName, new List<string>());
@@ -30,7 +30,7 @@ namespace BusinessLayer.Base.ViewModels
         {
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
-        protected void ClearErrors([CallerMemberName] string propertyName = null)
+        protected void ClearErrors([CallerMemberName] string propertyName = "")
         {
             _propertyNameToErrorsDictionary.Remove(propertyName);
             OnErrorsChanged(propertyName);
@@ -51,7 +51,7 @@ namespace BusinessLayer.Base.ViewModels
         {
             return $"Cannot be larger than {maxSize} characters!";
         }
-        protected static string ValidationErrorMessage([CallerMemberName] string propertyName = null)
+        protected static string ValidationErrorMessage([CallerMemberName] string propertyName = "")
         {
             return $"{propertyName} has validation error!";
         }

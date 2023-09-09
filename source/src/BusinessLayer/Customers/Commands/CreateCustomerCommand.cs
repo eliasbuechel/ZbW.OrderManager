@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 namespace BusinessLayer.Customers.Commands
 {
-    public class CreateCustomerCommand : BaseAsyncCommand, IDisposable
+    public sealed class CreateCustomerCommand : BaseAsyncCommand, IDisposable
     {
         public CreateCustomerCommand(ManagerStore managerStore, CreateCustomerViewModel createCustomerViewModel, FromSubNavigationService<CustomerListingViewModel> customerListingViweModelNavigateBackService)
         {

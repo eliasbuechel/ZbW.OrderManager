@@ -10,6 +10,7 @@ namespace BusinessLayer.ArticleGroups.ViewModels
 {
     public class CreateArticleGroupViewModel : BaseCreateAndDeleteArticleGroupViewModel
     {
+
         public static CreateArticleGroupViewModel LoadViewModel(ManagerStore managerStore, NavigationService<ArticleGroupListingViewModel> articleGroupListingViewModelNavigationService, IArticleGroupValidator articleGroupValidator, ArticleGroupDTO? suggestedSuperiorArticleGroup = null)
         {
             CreateArticleGroupViewModel viewModel = new CreateArticleGroupViewModel(managerStore, articleGroupListingViewModelNavigationService, articleGroupValidator, suggestedSuperiorArticleGroup);
@@ -20,7 +21,7 @@ namespace BusinessLayer.ArticleGroups.ViewModels
         private CreateArticleGroupViewModel(ManagerStore managerStore, NavigationService<ArticleGroupListingViewModel> articleGroupListingViewModelNavigationService, IArticleGroupValidator articleGroupValidator, ArticleGroupDTO? suggestedSuperiorArticleGroup = null)
 			: base(managerStore, articleGroupValidator)
         {
-			CreateArticleGroupCommand = new CreateArticleGroupCommand(managerStore, this, articleGroupListingViewModelNavigationService);
+			CreateArticleGroupCommand = _createArticleGroupCommand = new CreateArticleGroupCommand(managerStore, this, articleGroupListingViewModelNavigationService);
 			CancelCreateArticleGroupCommand = new NavigateCommand(articleGroupListingViewModelNavigationService);
 
             Name = string.Empty;
@@ -29,7 +30,14 @@ namespace BusinessLayer.ArticleGroups.ViewModels
 
         }
 
+        public override void Dispose(bool disposing)
+        {
+            _createArticleGroupCommand.Dispose();
+        }
+
         public ICommand CreateArticleGroupCommand { get; }
         public ICommand CancelCreateArticleGroupCommand { get; }
+
+        private readonly CreateArticleGroupCommand _createArticleGroupCommand;
     }
 }

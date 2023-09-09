@@ -19,11 +19,18 @@ namespace BusinessLayer.Articles.ViewModels
         private CreateArticleViewModel(ManagerStore managerStore, NavigationService<ArticleListingViewModel> articleListingViewModelNavigationService, IArticleValidator articleValidator)
 			: base(managerStore, articleValidator, string.Empty)
         {
-            CreateArticleCommand = new CreateArticleCommand(managerStore, this, articleListingViewModelNavigationService);
+            CreateArticleCommand = _createArticleCommand = new CreateArticleCommand(managerStore, this, articleListingViewModelNavigationService);
             CancelCreateArticleCommand = new NavigateCommand(articleListingViewModelNavigationService);
+        }
+
+        public override void Dispose(bool disposing)
+        {
+            _createArticleCommand.Dispose();
         }
 
         public ICommand CreateArticleCommand { get; }
         public ICommand CancelCreateArticleCommand { get; }
+
+        private readonly CreateArticleCommand _createArticleCommand;
     }
 }

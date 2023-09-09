@@ -10,7 +10,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BusinessLayer.ArticleGroups.Commands
 {
-    public class CreateArticleGroupCommand : BaseAsyncCommand, IDisposable
+    public sealed class CreateArticleGroupCommand : BaseAsyncCommand, IDisposable
     {
         public CreateArticleGroupCommand(ManagerStore managerStore, CreateArticleGroupViewModel createArticleGroupViewModel, NavigationService<ArticleGroupListingViewModel> articleGroupListingViewModelNavigationService)
         {
@@ -21,12 +21,14 @@ namespace BusinessLayer.ArticleGroups.Commands
             _createArticleGroupViewModel.ErrorsChanged += OnCreateArticleGroupViewModelHasErrorsChanged;
         }
 
-
+        public void Dispose()
+        {
+            _createArticleGroupViewModel.ErrorsChanged -= OnCreateArticleGroupViewModelHasErrorsChanged;
+        }
         public override bool CanExecute(object? parameter)
         {
             return base.CanExecute(parameter) && !_createArticleGroupViewModel.HasErrors;
         }
-
         public override async Task ExecuteAsync(object? parameter)
         {
             try
@@ -81,11 +83,7 @@ namespace BusinessLayer.ArticleGroups.Commands
             OnCanExecuteChanged();
         }
 
-        public void Dispose()
-        {
-            _createArticleGroupViewModel.ErrorsChanged -= OnCreateArticleGroupViewModelHasErrorsChanged;
-        }
-
+        
         private readonly ManagerStore _managerStore;
         private readonly CreateArticleGroupViewModel _createArticleGroupViewModel;
         private readonly NavigationService<ArticleGroupListingViewModel> _articleGroupListingViewModelNavigationService;

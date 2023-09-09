@@ -80,7 +80,7 @@ namespace BusinessLayer.Customers.Commands
                 {
                     await _managerStore.CreateCustomerAsync(c);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     continue;
                 }

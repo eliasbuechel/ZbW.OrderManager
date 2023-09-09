@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace BusinessLayer.Orders.Commands
 {
-    public class CreateOrderCommand : BaseAsyncCommand, IDisposable
+    public sealed class CreateOrderCommand : BaseAsyncCommand, IDisposable
     {
         public CreateOrderCommand(ManagerStore managerStore, CreateOrderViewModel createOrderViewModel, IEnumerable<CreatingPositionDTO> positions, FromSubNavigationService<OrderListingViewModel> orderListingViewModelNavigateBackService)
         {

@@ -4,7 +4,7 @@ using DataLayer.Customers.DTOs;
 
 namespace BusinessLayer.Customers.Commands
 {
-    class DeleteCustomeCommand : BaseAsyncCommand
+    public class DeleteCustomeCommand : BaseAsyncCommand
     {
         public DeleteCustomeCommand(ManagerStore managerStore, CustomerDTO customer)
         {

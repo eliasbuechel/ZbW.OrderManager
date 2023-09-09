@@ -48,12 +48,10 @@ namespace BusinessLayer.Articles.ViewModels
                 _articles.Add(viewModel);
             }
         }
-        public override void Dispose()
+        public override void Dispose(bool disposing)
         {
             _managerStore.ArticleCreated -= OnArticleCreated;
             _managerStore.ArticleDeleted -= OnArticleDeleted;
-
-            base.Dispose();
         }
 
         private NavigationService<EditArticleViewModel> CreateEditArticleNavigationService(ArticleDTO article)

@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace BusinessLayer.Base.ViewModels
 {
-    public class MainViewModel : BaseViewModel, IDisposable
+    public class MainViewModel : BaseViewModel
     {
         public MainViewModel(NavigationStore navigationStore, NavigationService<DashboardViewModel> dashboardViewModelNavigationService, NavigationService<CustomerListingViewModel> customerListingViewModelNavigationService, NavigationService<ArticleGroupListingViewModel> articleGroupListingViewModelNavigationService, NavigationService<ArticleListingViewModel> articleListingViewModelNavigationService, NavigationService<OrderListingViewModel> orderListingViewModelNavigationService)
         {
@@ -26,7 +26,7 @@ namespace BusinessLayer.Base.ViewModels
             NavigateToOrderListingViewCommand = new NavigateCommand(orderListingViewModelNavigationService);
         }
 
-        public BaseViewModel CurrentViewModel => _navigationStore.CurrentViewModel;
+        public BaseViewModel? CurrentViewModel => _navigationStore.CurrentViewModel;
         public ICommand NavigateToDashboardViewCommand { get; }
         public ICommand NavigateToCustomerListingViewCommand { get; }
         public ICommand NavigateToArticleGroupListingViewCommand { get; }
@@ -37,10 +37,9 @@ namespace BusinessLayer.Base.ViewModels
         {
             OnPropertyChanged(nameof(CurrentViewModel));
         }
-        public override void Dispose()
+        public override void Dispose(bool disposing)
         {
             _navigationStore.CurrentViewModelChanged -= OnCurrentViewModelChanged;
-            base.Dispose();
         }
 
 

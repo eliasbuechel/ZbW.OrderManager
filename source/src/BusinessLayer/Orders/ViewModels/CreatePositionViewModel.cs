@@ -29,10 +29,9 @@ namespace BusinessLayer.Orders.ViewModels
         public ICommand CreatePositionCommand { get; }
         public ICommand CancelCreatePositionCommand { get; }
 
-        public override void Dispose()
+        public override void Dispose(bool disposing)
         {
             _createPositionCommand.Dispose();
-            base.Dispose();
         }
 
         private readonly CreatePositionCommand _createPositionCommand;

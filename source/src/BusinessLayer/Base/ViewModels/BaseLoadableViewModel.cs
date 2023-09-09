@@ -1,6 +1,6 @@
 ﻿namespace BusinessLayer.Base.ViewModels
 {
-    public class BaseLoadableViewModel : BaseErrorHandlingViewModel, ILoadable
+    public abstract class BaseLoadableViewModel : BaseErrorHandlingViewModel, ILoadable
     {
         protected BaseLoadableViewModel()
         {}

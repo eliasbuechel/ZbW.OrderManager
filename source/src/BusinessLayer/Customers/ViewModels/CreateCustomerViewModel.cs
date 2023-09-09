@@ -12,18 +12,16 @@ namespace BusinessLayer.Customers.ViewModels
         public CreateCustomerViewModel(ManagerStore managerStore, FromSubNavigationService<CustomerListingViewModel> customerListingViweModelNavigateBackService, ICustomerValidator customerValidator)
             : base(customerValidator)
         {
-            _createCustomerCommand = new CreateCustomerCommand(managerStore, this, customerListingViweModelNavigateBackService);
+            CreateCustomerCommand = _createCustomerCommand = new CreateCustomerCommand(managerStore, this, customerListingViweModelNavigateBackService);
             CancelCreateCustomerCommand = new NavigateCommand(customerListingViweModelNavigateBackService);
         }
 
-        public ICommand CreateCustomerCommand => _createCustomerCommand;
+        public ICommand CreateCustomerCommand { get; }
         public ICommand CancelCreateCustomerCommand { get; }
 
-        public override void Dispose()
+        public override void Dispose(bool disposing)
         {
             _createCustomerCommand.Dispose();
-
-            base.Dispose();
         }
 
         private readonly CreateCustomerCommand _createCustomerCommand;

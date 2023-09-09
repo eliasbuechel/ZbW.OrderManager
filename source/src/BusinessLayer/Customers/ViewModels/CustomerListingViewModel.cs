@@ -54,12 +54,10 @@ namespace BusinessLayer.Customers.ViewModels
                 _customers.Add(customerViewModel);
             }
         }
-        public override void Dispose()
+        public override void Dispose(bool disposing)
         {
             _managerStore.CustomerCreated -= OnCustomerCreated;
             _managerStore.CustomerDeleted -= OnCustomerDeleted;
-
-            base.Dispose();
         }
 
         private void OnCustomerCreated(CustomerDTO customer)

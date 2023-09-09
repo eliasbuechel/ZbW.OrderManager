@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace BusinessLayer.Orders.Commands
 {
-    public class UpdateCreatingPositionCommand : BaseCommand, IDisposable
+    public sealed class UpdateCreatingPositionCommand : BaseCommand, IDisposable
     {
         public UpdateCreatingPositionCommand(FromSubNavigationService<CreateOrderViewModel> createPositionViewModelNavigateBackService, EditCreatingPositionViewModel editCreatingPositionViewModel, CreatingPositionDTO position)
         {

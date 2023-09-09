@@ -37,12 +37,10 @@ namespace BusinessLayer.ArticleGroups.ViewModels
         {
             return _articleGroup;
         }
-        public override void Dispose()
+        public override void Dispose(bool disposing)
         {
             _managerStore.SubordinateArticleGroupCreated -= OnSubordinateArticleGroupCreated;
             _managerStore.SubordinateArticleGroupDeleted -= OnSubordinateArticleGroupDeleted;
-
-            base.Dispose();
         }
 
         private void OnSubordinateArticleGroupCreated(ArticleGroupDTO createdArticleGroup, ArticleGroupDTO superiorArticleGroup)

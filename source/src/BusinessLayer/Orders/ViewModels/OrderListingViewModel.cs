@@ -43,12 +43,10 @@ namespace BusinessLayer.Orders.ViewModels
                 _orders.Add(viewModel);
             }
         }
-        public override void Dispose()
+        public override void Dispose(bool disposing)
         {
             _managerStore.OrderCreated -= OnOrderCreated;
             _managerStore.OrderDeleted -= OnOrderDeleted;
-
-            base.Dispose();
         }
 
         private void OnOrderCreated(OrderDTO order)

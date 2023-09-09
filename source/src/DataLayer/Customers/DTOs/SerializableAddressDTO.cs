@@ -6,9 +6,7 @@ namespace DataLayer.Customers.DTOs
     public class SerializableAddressDTO
     {
         public SerializableAddressDTO()
-        {
-            
-        }
+        {}
         public SerializableAddressDTO(string streetName, string houseNumber, string city, string postalCode)
         {
             StreetName = streetName;
@@ -17,9 +15,9 @@ namespace DataLayer.Customers.DTOs
             PostalCode = postalCode;
         }
 
-        public string StreetName { get; set; }
-        public string HouseNumber { get; set; }
-        public string City { get; set; }
-        public string PostalCode { get; set; }
+        public string StreetName { get; set; } = string.Empty;
+        public string HouseNumber { get; set; } = string.Empty;
+        public string City { get; set; } = string.Empty;
+        public string PostalCode { get; set; } = string.Empty;
     }
 }

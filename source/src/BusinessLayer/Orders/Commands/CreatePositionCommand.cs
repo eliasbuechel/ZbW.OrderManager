@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace BusinessLayer.Orders.Commands
 {
-    public class CreatePositionCommand : BaseCommand, IDisposable
+    public sealed class CreatePositionCommand : BaseCommand, IDisposable
     {
         public CreatePositionCommand(CreateOrderViewModel createOrderViewModel, CreatePositionViewModel createPositionViewModel, int nextFreeNumber, FromSubNavigationService<CreateOrderViewModel> createPositionViewModelNavigateBackService)
         {

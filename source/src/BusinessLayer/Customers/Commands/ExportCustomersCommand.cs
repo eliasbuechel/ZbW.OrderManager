@@ -23,7 +23,7 @@ namespace BusinessLayer.Customers.Commands
             {
                 customers = await _managerStore.GetAllSerializableCustomersAsync();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return;
             }

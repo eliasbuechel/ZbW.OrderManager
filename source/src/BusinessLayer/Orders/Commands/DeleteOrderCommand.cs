@@ -18,9 +18,9 @@ namespace BusinessLayer.Orders.Commands
             {
                 await _managerStore.DeleteOrderAsync(_order);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                // error message
+                return;
             }
         }
 

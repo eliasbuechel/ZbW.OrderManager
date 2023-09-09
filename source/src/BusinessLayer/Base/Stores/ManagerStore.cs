@@ -100,7 +100,14 @@ namespace BusinessLayer.Base.Stores
             if (articleGroup.SubordinateArticleGroups.Count > 0)
                 throw new DeletingNonLeaveArticleGroupException(articleGroup);
 
-            await _manager.DeleteArticleGroupAsync(articleGroup);
+            try
+            {
+                await _manager.DeleteArticleGroupAsync(articleGroup);
+            }
+            catch
+            {
+                return;
+            }
 
             if (articleGroup.SuperiorArticleGroup == null)
             {

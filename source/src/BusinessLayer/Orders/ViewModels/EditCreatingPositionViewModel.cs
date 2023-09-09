@@ -32,10 +32,9 @@ namespace BusinessLayer.Orders.ViewModels
         public ICommand CancelUpdatePositionCommand { get; }
         public int Number => _initialPosition.Number;
 
-        public override void Dispose()
+        public override void Dispose(bool disposing)
         {
             _updatePositionCommand.Dispose();
-            base.Dispose();
         }
 
         private readonly CreatingPositionDTO _initialPosition;

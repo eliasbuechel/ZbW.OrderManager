@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 namespace BusinessLayer.Articles.Commands
 {
-    public class CreateArticleCommand : BaseAsyncCommand, IDisposable
+    public sealed class CreateArticleCommand : BaseAsyncCommand, IDisposable
     {
         public CreateArticleCommand(ManagerStore managerStore, CreateArticleViewModel createArticleViewModel, NavigationService<ArticleListingViewModel> articleListingViewMoelNavigationService)
         {

@@ -93,10 +93,9 @@ namespace BusinessLayer.Orders.ViewModels
             _positions.Remove(position);
 			OnPropertyChanged(nameof(Positions));
         }
-        public override void Dispose()
+        public override void Dispose(bool disposing)
         {
             _createOrderCommand.Dispose();
-            base.Dispose();
         }
 
         private CreatePositionViewModel CreateCreatePositionViewModel()

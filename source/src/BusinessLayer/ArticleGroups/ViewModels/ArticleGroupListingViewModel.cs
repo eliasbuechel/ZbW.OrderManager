@@ -51,12 +51,10 @@ namespace BusinessLayer.ArticleGroups.ViewModels
                 _articleGroups.Add(articleGropViewModel);
             }
         }
-        public override void Dispose()
+        public override void Dispose(bool disposing)
         {
             _managerStore.RootArticleGroupCreated -= OnRootArticleGroupCreated;
             _managerStore.RootArticleGroupDeleted -= OnRootArticleGroupDeleted;
-
-            base.Dispose();
         }
 
         private void OnRootArticleGroupCreated(ArticleGroupDTO createdArticleGroup)

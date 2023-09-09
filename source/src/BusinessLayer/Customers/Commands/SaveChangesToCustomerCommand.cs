@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace BusinessLayer.Customers.Commands
 {
-    internal class SaveChangesToCustomerCommand : BaseAsyncCommand
+    public sealed class SaveChangesToCustomerCommand : BaseAsyncCommand, IDisposable
     {
         public SaveChangesToCustomerCommand(ManagerStore managerStore, CustomerDTO initialCustomer, EditCustomerViewModel editCustomerViewModel, FromSubNavigationService<CustomerListingViewModel> customerListingViweModelNavigateBackService)
         {
@@ -40,6 +40,10 @@ namespace BusinessLayer.Customers.Commands
 
             await _managerStore.EditCustomerAsync(_initialCustomer, editedCustomer);
             _customerListingViweModelNavigateBackService.Navigate();
+        }
+        public void Dispose()
+        {
+            _editedCustomerViewModel.ErrorsChanged -= OnHasCustomerPropertyErrorChanged;
         }
 
         private bool CustomerDataChanged()

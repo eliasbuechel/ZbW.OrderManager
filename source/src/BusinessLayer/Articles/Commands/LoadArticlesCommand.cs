@@ -34,6 +34,6 @@ namespace BusinessLayer.Articles.Commands
         }
 
         private readonly ManagerStore _managerStore;
-        private IArticleUpdatable _articleUpdatable;
+        private readonly IArticleUpdatable _articleUpdatable;
     }
 }

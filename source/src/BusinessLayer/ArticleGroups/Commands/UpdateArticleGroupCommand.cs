@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 namespace BusinessLayer.ArticleGroups.Commands
 {
-    public class UpdateArticleGroupCommand : BaseAsyncCommand, IDisposable
+    public sealed class UpdateArticleGroupCommand : BaseAsyncCommand, IDisposable
     {
         public UpdateArticleGroupCommand(ManagerStore managerStore, EditArticleGroupViewModel editArticleGroupViewModel, ArticleGroupDTO initialArticleGroup, NavigationService<ArticleGroupListingViewModel> articleGroupListingNavigationService)
         {
@@ -16,10 +16,10 @@ namespace BusinessLayer.ArticleGroups.Commands
             _editArticleGroupViewModel = editArticleGroupViewModel;
             _initialArticleGroup = initialArticleGroup;
             _articleGroupListingNavigationService = articleGroupListingNavigationService;
+
             _editArticleGroupViewModel.ErrorsChanged += OnEditArticleGroupViewModelErrorsChanged;
             _editArticleGroupViewModel.PropertyChanged += OnEditArticleGroupViewModelPropertyChanged;
         }
-
 
         public override bool CanExecute(object? parameter)
         {
@@ -53,6 +53,7 @@ namespace BusinessLayer.ArticleGroups.Commands
         public void Dispose()
         {
             _editArticleGroupViewModel.ErrorsChanged -= OnEditArticleGroupViewModelErrorsChanged;
+            _editArticleGroupViewModel.PropertyChanged -= OnEditArticleGroupViewModelPropertyChanged;
         }
 
         private void OnEditArticleGroupViewModelErrorsChanged(object? sender, DataErrorsChangedEventArgs e)

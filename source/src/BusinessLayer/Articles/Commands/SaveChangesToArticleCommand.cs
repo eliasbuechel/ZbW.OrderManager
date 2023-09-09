@@ -4,6 +4,7 @@ using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using DataLayer.Articles.DTOs;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace BusinessLayer.Articles.Commands
 {
@@ -52,8 +53,8 @@ namespace BusinessLayer.Articles.Commands
         }
         private bool ArticleDataHasChanged()
         {
-            return _initialArticle.Name != _editArticleViewModel.Name ||
-                _initialArticle.ArticleGroup.Id != _editArticleViewModel.ArticleGroup.Id;
+            return _initialArticle.Name != _editArticleViewModel.Name
+                || _initialArticle.ArticleGroup.Id != _editArticleViewModel.ArticleGroup!.Id;
         }
 
         private readonly ManagerStore _managerStore;

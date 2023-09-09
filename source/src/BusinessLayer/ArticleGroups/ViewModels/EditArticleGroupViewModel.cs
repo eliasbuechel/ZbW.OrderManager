@@ -26,13 +26,18 @@ namespace BusinessLayer.ArticleGroups.ViewModels
             SuperiorArticleGroup = initialArticleGroup.SuperiorArticleGroup;
             IsRootElement = SuperiorArticleGroup == null;
 
-            SaveChangesToArticleGroupCommand = new UpdateArticleGroupCommand(managerStore, this, initialArticleGroup, articleGroupListingViewModelNavigationService);
+            SaveChangesToArticleGroupCommand = _saveChangesToArticleGroupCommand = new UpdateArticleGroupCommand(managerStore, this, initialArticleGroup, articleGroupListingViewModelNavigationService);
             CancelEdtiArticleGroupCommand = new NavigateCommand(articleGroupListingViewModelNavigationService);
         }
 
         public ICommand SaveChangesToArticleGroupCommand { get; }
 		public ICommand CancelEdtiArticleGroupCommand{ get; }
         public int Id => _initialArticleGroup.Id;
+
+        public override void Dispose(bool disposing)
+        {
+            _saveChangesToArticleGroupCommand.Dispose();
+        }
 
         protected override void FurtherValidateSuperiorArticleGroup(string propertyName)
         {
@@ -47,7 +52,6 @@ namespace BusinessLayer.ArticleGroups.ViewModels
             if (RefferesAChildRec(_initialArticleGroup.SubordinateArticleGroups, SuperiorArticleGroup.Id))
                 AddError("Superior article group reffers one of its own childs!", propertyName);
         }
-
         private bool RefferesAChildRec(IEnumerable<ArticleGroupDTO> children, int id)
         {
             foreach (var child in children)
@@ -63,5 +67,6 @@ namespace BusinessLayer.ArticleGroups.ViewModels
         }
 
         private readonly ArticleGroupDTO _initialArticleGroup;
+        private readonly UpdateArticleGroupCommand _saveChangesToArticleGroupCommand;
     }
 }
