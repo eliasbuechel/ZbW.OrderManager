@@ -10,11 +10,11 @@ namespace BusinessLayer.Customers.ViewModels
 {
     public class EditCustomerViewModel : BaseCreateEditCustomerViewModel
     {
-        public EditCustomerViewModel(ManagerStore managerStore, CustomerDTO customer, NavigationService<CustomerListingViewModel> createCustomerListingViewModelNavigationService, ICustomerValidator customerValidator)
+        public EditCustomerViewModel(ManagerStore managerStore, CustomerDTO customer, FromSubNavigationService<CustomerListingViewModel> customerListingViweModelNavigateBackService, ICustomerValidator customerValidator)
             : base(customerValidator)
         {
-            SaveChangedToCustomerCommand = new SaveChangesToCustomerCommand(managerStore, customer, this, createCustomerListingViewModelNavigationService);
-            CancelEditCustomerCommand = new NavigateCommand(createCustomerListingViewModelNavigationService);
+            SaveChangedToCustomerCommand = new SaveChangesToCustomerCommand(managerStore, customer, this, customerListingViweModelNavigateBackService);
+            CancelEditCustomerCommand = new NavigateCommand(customerListingViweModelNavigateBackService);
 
             Id = customer.Id.ToString();
             FirstName = customer.FirstName;

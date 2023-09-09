@@ -22,10 +22,9 @@ namespace BusinessLayer.Orders.ViewModels
         {
             _managerStore = managerStore;
             _navigationStore = navigationStore;
-            _createOrderViewModelSubNavigationService = new SubNavigationService<OrderListingViewModel, CreateOrderViewModel>(navigationStore, this, CreateCreateOrderViewModel);
 
             LoadOrdersCommand = new LoadOrdersCommand(managerStore, this);
-            CreateOrderCommand = new NavigateCommand(_createOrderViewModelSubNavigationService);
+            CreateOrderCommand = new NavigateCommand(new ToSubNavigationService<CreateOrderViewModel>(navigationStore, CreateCreateOrderViewModel));
 
             managerStore.OrderCreated += OnOrderCreated;
             managerStore.OrderDeleted += OnOrderDeleted;
@@ -70,12 +69,15 @@ namespace BusinessLayer.Orders.ViewModels
         }
         private CreateOrderViewModel CreateCreateOrderViewModel()
         {
-            return CreateOrderViewModel.LoadViewModel(_managerStore, _navigationStore, _createOrderViewModelSubNavigationService);
+            return CreateOrderViewModel.LoadViewModel(
+                _managerStore,
+                _navigationStore,
+                new FromSubNavigationService<OrderListingViewModel>(_navigationStore, this)
+                );
         }
 
-        private readonly ObservableCollection<OrderViewModel> _orders = new ObservableCollection<OrderViewModel>();
         private readonly ManagerStore _managerStore;
         private readonly NavigationStore _navigationStore;
-        private readonly SubNavigationService<OrderListingViewModel, CreateOrderViewModel> _createOrderViewModelSubNavigationService;
+        private readonly ObservableCollection<OrderViewModel> _orders = new ObservableCollection<OrderViewModel>();
     }
 }

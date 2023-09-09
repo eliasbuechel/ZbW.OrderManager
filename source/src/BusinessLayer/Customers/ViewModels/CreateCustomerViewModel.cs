@@ -9,15 +9,23 @@ namespace BusinessLayer.Customers.ViewModels
 {
     public class CreateCustomerViewModel : BaseCreateEditCustomerViewModel
     {
-        public CreateCustomerViewModel(ManagerStore managerStore, NavigationService<CustomerListingViewModel> customerListingViewModelNavigationService, ICustomerValidator customerValidator)
+        public CreateCustomerViewModel(ManagerStore managerStore, FromSubNavigationService<CustomerListingViewModel> customerListingViweModelNavigateBackService, ICustomerValidator customerValidator)
             : base(customerValidator)
         {
-            CreateCustomerCommand = new CreateCustomerCommand(managerStore, this, customerListingViewModelNavigationService);
-            CancelCreateCustomerCommand = new NavigateCommand(customerListingViewModelNavigationService);
+            _createCustomerCommand = new CreateCustomerCommand(managerStore, this, customerListingViweModelNavigateBackService);
+            CancelCreateCustomerCommand = new NavigateCommand(customerListingViweModelNavigateBackService);
         }
 
-        public ICommand CreateCustomerCommand { get; }
+        public ICommand CreateCustomerCommand => _createCustomerCommand;
         public ICommand CancelCreateCustomerCommand { get; }
 
+        public override void Dispose()
+        {
+            _createCustomerCommand.Dispose();
+
+            base.Dispose();
+        }
+
+        private readonly CreateCustomerCommand _createCustomerCommand;
     }
 }

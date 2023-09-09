@@ -9,12 +9,12 @@ namespace BusinessLayer.Customers.Commands
 {
     internal class SaveChangesToCustomerCommand : BaseAsyncCommand
     {
-        public SaveChangesToCustomerCommand(ManagerStore managerStore, CustomerDTO initialCustomer, EditCustomerViewModel editCustomerViewModel, NavigationService<CustomerListingViewModel> customerListingViewModelNavigationService)
+        public SaveChangesToCustomerCommand(ManagerStore managerStore, CustomerDTO initialCustomer, EditCustomerViewModel editCustomerViewModel, FromSubNavigationService<CustomerListingViewModel> customerListingViweModelNavigateBackService)
         {
             _managerStore = managerStore;
             _initialCustomer = initialCustomer;
             _editedCustomerViewModel = editCustomerViewModel;
-            _customerListingViewModelNavigationService = customerListingViewModelNavigationService;
+            _customerListingViweModelNavigateBackService = customerListingViweModelNavigateBackService;
 
             _editedCustomerViewModel.ErrorsChanged += OnHasCustomerPropertyErrorChanged;
         }
@@ -39,7 +39,7 @@ namespace BusinessLayer.Customers.Commands
                 );
 
             await _managerStore.EditCustomerAsync(_initialCustomer, editedCustomer);
-            _customerListingViewModelNavigationService.Navigate();
+            _customerListingViweModelNavigateBackService.Navigate();
         }
 
         private bool CustomerDataChanged()
@@ -63,7 +63,7 @@ namespace BusinessLayer.Customers.Commands
 
         private readonly CustomerDTO _initialCustomer;
         private readonly ManagerStore _managerStore;
-        private readonly NavigationService<CustomerListingViewModel> _customerListingViewModelNavigationService;
         private readonly EditCustomerViewModel _editedCustomerViewModel;
+        private readonly FromSubNavigationService<CustomerListingViewModel> _customerListingViweModelNavigateBackService;
     }
 }

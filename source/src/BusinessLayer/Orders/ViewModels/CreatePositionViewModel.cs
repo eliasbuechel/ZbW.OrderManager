@@ -1,30 +1,26 @@
-﻿using BusinessLayer.Articles.Commands;
-using BusinessLayer.Articles.ViewModels;
-using BusinessLayer.Base.Commands;
+﻿using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
-using BusinessLayer.Base.ViewModels;
 using BusinessLayer.Orders.Commands;
-using DataLayer.Articles.DTOs;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace BusinessLayer.Orders.ViewModels
 {
     public class CreatePositionViewModel : BaseCreateEditPositionViewModel
     {
-        public static CreatePositionViewModel LoadViewModel(ManagerStore managerStore, SubNavigationService<CreateOrderViewModel, CreatePositionViewModel> createPositionViewModelSubNavigationService, CreateOrderViewModel createOrderViewModel, int nextFreeNumber)
+
+        public static CreatePositionViewModel LoadViewModel(ManagerStore managerStore, FromSubNavigationService<CreateOrderViewModel> createPositionViewModelNavigateBackService, CreateOrderViewModel createOrderViewModel, int nextFreeNumber)
         {
-            CreatePositionViewModel viewModel = new CreatePositionViewModel(managerStore, createPositionViewModelSubNavigationService, createOrderViewModel, nextFreeNumber);
+            CreatePositionViewModel viewModel = new CreatePositionViewModel(managerStore, createPositionViewModelNavigateBackService, createOrderViewModel, nextFreeNumber);
             viewModel.LoadArticlesCommand?.Execute(null);
             return viewModel;
         }
 
-        private CreatePositionViewModel(ManagerStore managerStore, SubNavigationService<CreateOrderViewModel, CreatePositionViewModel> createPositionViewModelSubNavigationService, CreateOrderViewModel createOrderViewModel, int nextFreeNumber)
+        private CreatePositionViewModel(ManagerStore managerStore, FromSubNavigationService<CreateOrderViewModel> createPositionViewModelNavigateBackService, CreateOrderViewModel createOrderViewModel, int nextFreeNumber)
             : base(managerStore)
         {
-            CreatePositionCommand = new CreatePositionCommand(createOrderViewModel, this, nextFreeNumber, createPositionViewModelSubNavigationService);
-            CancelCreatePositionCommand = new NavigateCommand(createPositionViewModelSubNavigationService);
+            CreatePositionCommand = _createPositionCommand = new CreatePositionCommand(createOrderViewModel, this, nextFreeNumber, createPositionViewModelNavigateBackService);
+            CancelCreatePositionCommand = new NavigateCommand(createPositionViewModelNavigateBackService);
 
             Ammount = 1;
             Article = null;
@@ -32,5 +28,13 @@ namespace BusinessLayer.Orders.ViewModels
 
         public ICommand CreatePositionCommand { get; }
         public ICommand CancelCreatePositionCommand { get; }
+
+        public override void Dispose()
+        {
+            _createPositionCommand.Dispose();
+            base.Dispose();
+        }
+
+        private readonly CreatePositionCommand _createPositionCommand;
     }
 }

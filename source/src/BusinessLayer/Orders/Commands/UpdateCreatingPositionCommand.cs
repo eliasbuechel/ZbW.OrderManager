@@ -8,9 +8,9 @@ namespace BusinessLayer.Orders.Commands
 {
     public class UpdateCreatingPositionCommand : BaseCommand, IDisposable
     {
-        public UpdateCreatingPositionCommand(SubNavigationService<CreateOrderViewModel, EditCreatingPositionViewModel> createPositionViewModelSubNavigationService, EditCreatingPositionViewModel editCreatingPositionViewModel, CreatingPositionDTO position)
+        public UpdateCreatingPositionCommand(FromSubNavigationService<CreateOrderViewModel> createPositionViewModelNavigateBackService, EditCreatingPositionViewModel editCreatingPositionViewModel, CreatingPositionDTO position)
         {
-            _createPositionViewModelSubNavigationService = createPositionViewModelSubNavigationService;
+            _createPositionViewModelNavigateBackService = createPositionViewModelNavigateBackService;
             _editCreatingPositionViewModel = editCreatingPositionViewModel;
             _position = position;
 
@@ -24,7 +24,6 @@ namespace BusinessLayer.Orders.Commands
                 && !_editCreatingPositionViewModel.HasErrors
                 && DataHasChanged();
         }
-
         public override void Execute(object? parameter)
         {
             if (_editCreatingPositionViewModel.Article == null)
@@ -37,7 +36,7 @@ namespace BusinessLayer.Orders.Commands
                 );
 
             _position.Update(position);
-            _createPositionViewModelSubNavigationService.Navigate();
+            _createPositionViewModelNavigateBackService.Navigate();
         }
         public void Dispose()
         {
@@ -60,7 +59,7 @@ namespace BusinessLayer.Orders.Commands
         }
 
 
-        private readonly SubNavigationService<CreateOrderViewModel, EditCreatingPositionViewModel> _createPositionViewModelSubNavigationService;
+        private readonly FromSubNavigationService<CreateOrderViewModel> _createPositionViewModelNavigateBackService;
         private readonly EditCreatingPositionViewModel _editCreatingPositionViewModel;
         private readonly CreatingPositionDTO _position;
     }

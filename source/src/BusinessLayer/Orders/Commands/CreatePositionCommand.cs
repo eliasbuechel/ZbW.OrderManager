@@ -9,12 +9,12 @@ namespace BusinessLayer.Orders.Commands
 {
     public class CreatePositionCommand : BaseCommand, IDisposable
     {
-        public CreatePositionCommand(CreateOrderViewModel createOrderViewModel, CreatePositionViewModel createPositionViewModel, int nextFreeNumber, SubNavigationService<CreateOrderViewModel, CreatePositionViewModel> createPositionViewModelSubNavigationService)
+        public CreatePositionCommand(CreateOrderViewModel createOrderViewModel, CreatePositionViewModel createPositionViewModel, int nextFreeNumber, FromSubNavigationService<CreateOrderViewModel> createPositionViewModelNavigateBackService)
         {
             _createOrderViewModel = createOrderViewModel;
             _createPositionViewModel = createPositionViewModel;
             _nextFreeNumber = nextFreeNumber;
-            _createPositionViewModelSubNavigationService = createPositionViewModelSubNavigationService;
+            _createPositionViewModelNavigateBackService = createPositionViewModelNavigateBackService;
 
             createPositionViewModel.ErrorsChanged += OnCreatePositionViewModelErrorsChanged;
         }
@@ -36,7 +36,7 @@ namespace BusinessLayer.Orders.Commands
                 );
 
             _createOrderViewModel.AddPosition(position);
-            _createPositionViewModelSubNavigationService.Navigate();
+            _createPositionViewModelNavigateBackService.Navigate();
         }
         public void Dispose()
         {
@@ -52,6 +52,6 @@ namespace BusinessLayer.Orders.Commands
         private CreateOrderViewModel _createOrderViewModel;
         private CreatePositionViewModel _createPositionViewModel;
         private readonly int _nextFreeNumber;
-        private readonly SubNavigationService<CreateOrderViewModel, CreatePositionViewModel> _createPositionViewModelSubNavigationService;
+        private readonly FromSubNavigationService<CreateOrderViewModel> _createPositionViewModelNavigateBackService;
     }
 }

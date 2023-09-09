@@ -8,13 +8,13 @@ using System.ComponentModel;
 
 namespace BusinessLayer.Customers.Commands
 {
-    public class CreateCustomerCommand : BaseAsyncCommand
+    public class CreateCustomerCommand : BaseAsyncCommand, IDisposable
     {
-        public CreateCustomerCommand(ManagerStore managerStore, CreateCustomerViewModel createCustomerViewModel, NavigationService<CustomerListingViewModel> customerListingViewModelNavigationService)
+        public CreateCustomerCommand(ManagerStore managerStore, CreateCustomerViewModel createCustomerViewModel, FromSubNavigationService<CustomerListingViewModel> customerListingViweModelNavigateBackService)
         {
             _managerStore = managerStore;
             _createCustomerViewModel = createCustomerViewModel;
-            _customerListingViewModelNavigationService = customerListingViewModelNavigationService;
+            _customerListingViweModelNavigateBackService = customerListingViweModelNavigateBackService;
 
             _createCustomerViewModel.ErrorsChanged += OnHasCustomerPropertyErrorChanged;
         }
@@ -47,9 +47,13 @@ namespace BusinessLayer.Customers.Commands
                 _createCustomerViewModel.ErrorMessage = $"Failed to create customer! {e.Message}";
             }
 
-            _customerListingViewModelNavigationService.Navigate();
+            _customerListingViweModelNavigateBackService.Navigate();
         }
-        
+        public void Dispose()
+        {
+            _createCustomerViewModel.ErrorsChanged -= OnHasCustomerPropertyErrorChanged;
+        }
+
         private void OnHasCustomerPropertyErrorChanged(object? sender, DataErrorsChangedEventArgs e)
         {
             OnCanExecuteChanged();
@@ -57,6 +61,6 @@ namespace BusinessLayer.Customers.Commands
 
         private readonly ManagerStore _managerStore;
         private readonly CreateCustomerViewModel _createCustomerViewModel;
-        private readonly NavigationService<CustomerListingViewModel> _customerListingViewModelNavigationService;
+        private readonly FromSubNavigationService<CustomerListingViewModel> _customerListingViweModelNavigateBackService;
     }
 }

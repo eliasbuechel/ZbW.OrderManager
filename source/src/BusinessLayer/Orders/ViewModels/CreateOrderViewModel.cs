@@ -15,24 +15,24 @@ namespace BusinessLayer.Orders.ViewModels
 {
     public class CreateOrderViewModel : BaseLoadableViewModel, ICustomerUpdatable
     {
-		public static CreateOrderViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, SubNavigationService<OrderListingViewModel, CreateOrderViewModel> createOrderViewModelSubNavigationService)
+		public static CreateOrderViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, FromSubNavigationService<OrderListingViewModel> orderListingViewModelNavigateBackService)
 		{
-			CreateOrderViewModel viewModel = new CreateOrderViewModel(managerStore, navigationStore, createOrderViewModelSubNavigationService);
+			CreateOrderViewModel viewModel = new CreateOrderViewModel(managerStore, navigationStore, orderListingViewModelNavigateBackService);
 			viewModel.LoadCustomersCommand?.Execute(null);
 			return viewModel;
 		}
 
-        private CreateOrderViewModel(ManagerStore managerStore, NavigationStore navigationStore, SubNavigationService<OrderListingViewModel, CreateOrderViewModel> createOrderViewModelSubNavigationService)
+        private CreateOrderViewModel(ManagerStore managerStore, NavigationStore navigationStore, FromSubNavigationService<OrderListingViewModel> orderListingViewModelNavigateBackService)
         {
             _managerStore = managerStore;
             _navigationStore = navigationStore;
 
-            _createPositionViewModelSubNavigationService = new SubNavigationService<CreateOrderViewModel, CreatePositionViewModel>(navigationStore, this, CreateCreatePositionViewModel);
+			_createOrderViewModelNavigateBackService = new FromSubNavigationService<CreateOrderViewModel>(_navigationStore, this);
 
             LoadCustomersCommand = new LoadCustomersCommand(managerStore, this);
-			AddPositionCommand = new NavigateCommand(_createPositionViewModelSubNavigationService);
-			CreateOrderCommand = new CreateOrderCommand(managerStore, this, _positions, createOrderViewModelSubNavigationService);
-			CancelCreateOrderCommand = new NavigateCommand(createOrderViewModelSubNavigationService);
+			AddPositionCommand = new NavigateCommand(new ToSubNavigationService<CreatePositionViewModel>(navigationStore, CreateCreatePositionViewModel));
+			CreateOrderCommand = _createOrderCommand = new CreateOrderCommand(managerStore, this, _positions, orderListingViewModelNavigateBackService);
+			CancelCreateOrderCommand = new NavigateCommand(orderListingViewModelNavigateBackService);
 
 			Customer = null;
         }
@@ -63,7 +63,15 @@ namespace BusinessLayer.Orders.ViewModels
 				if (!_positions.Any())
 					AddError("No position has been added!");
 
-				return _positions.Select(p => new CreatingPositionViewModel(_managerStore, _navigationStore, p, this));
+				return _positions
+					.Select(p => new CreatingPositionViewModel(
+						_managerStore,
+						_navigationStore,
+						p,
+						this,
+						_createOrderViewModelNavigateBackService
+						)
+					);
 			}
 		}
 			
@@ -85,8 +93,13 @@ namespace BusinessLayer.Orders.ViewModels
             _positions.Remove(position);
 			OnPropertyChanged(nameof(Positions));
         }
+        public override void Dispose()
+        {
+            _createOrderCommand.Dispose();
+            base.Dispose();
+        }
 
-		private CreatePositionViewModel CreateCreatePositionViewModel()
+        private CreatePositionViewModel CreateCreatePositionViewModel()
 		{
 			int nextFreeNumber = 0;
 
@@ -95,14 +108,20 @@ namespace BusinessLayer.Orders.ViewModels
 
 			nextFreeNumber++;
 
-			return CreatePositionViewModel.LoadViewModel(_managerStore, _createPositionViewModelSubNavigationService, this, nextFreeNumber);
+			return CreatePositionViewModel.LoadViewModel(
+				_managerStore,
+				_createOrderViewModelNavigateBackService,
+				this,
+				nextFreeNumber
+				);
         }
 
 		private CustomerDTO? _customer;
         private readonly ManagerStore _managerStore;
         private readonly NavigationStore _navigationStore;
-        private readonly SubNavigationService<CreateOrderViewModel, CreatePositionViewModel> _createPositionViewModelSubNavigationService;
+        private readonly CreateOrderCommand _createOrderCommand;
         private readonly ObservableCollection<CustomerDTO> _customers = new ObservableCollection<CustomerDTO>();
 		private readonly ObservableCollection<CreatingPositionDTO> _positions = new ObservableCollection<CreatingPositionDTO>();
+		private readonly FromSubNavigationService<CreateOrderViewModel> _createOrderViewModelNavigateBackService;
     }
 }

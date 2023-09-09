@@ -1,36 +1,28 @@
-﻿using BusinessLayer.ArticleGroups.Commands;
-using BusinessLayer.Articles.Commands;
-using BusinessLayer.Articles.ViewModels;
-using BusinessLayer.Base.Commands;
+﻿using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
-using BusinessLayer.Base.ViewModels;
 using BusinessLayer.Orders.Commands;
-using DataLayer.Articles.DTOs;
 using DataLayer.Orders.DTOs;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.IdentityModel.Tokens;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace BusinessLayer.Orders.ViewModels
 {
     public class EditCreatingPositionViewModel : BaseCreateEditPositionViewModel
     {
-        public static EditCreatingPositionViewModel LoadViewModel(ManagerStore managerStore, SubNavigationService<CreateOrderViewModel, EditCreatingPositionViewModel> createPositionViewModelSubNavigationService, CreatingPositionDTO position)
+        public static EditCreatingPositionViewModel LoadViewModel(ManagerStore managerStore, FromSubNavigationService<CreateOrderViewModel> createPositionViewModelNavigateBackService, CreatingPositionDTO position)
         {
-            EditCreatingPositionViewModel viewModel = new EditCreatingPositionViewModel(managerStore, createPositionViewModelSubNavigationService, position);
+            EditCreatingPositionViewModel viewModel = new EditCreatingPositionViewModel(managerStore, createPositionViewModelNavigateBackService, position);
             viewModel.LoadArticlesCommand?.Execute(null);
             return viewModel;
         }
 
-        private EditCreatingPositionViewModel(ManagerStore managerStore, SubNavigationService<CreateOrderViewModel, EditCreatingPositionViewModel> createPositionViewModelSubNavigationService, CreatingPositionDTO initialPosition)
+        private EditCreatingPositionViewModel(ManagerStore managerStore, FromSubNavigationService<CreateOrderViewModel> createPositionViewModelNavigateBackService, CreatingPositionDTO initialPosition)
             : base(managerStore)
         {
             _initialPosition = initialPosition;
 
-            UpdatePositionCommand = new UpdateCreatingPositionCommand(createPositionViewModelSubNavigationService, this, initialPosition);
-            CancelUpdatePositionCommand = new NavigateCommand(createPositionViewModelSubNavigationService);
+            UpdatePositionCommand = _updatePositionCommand = new UpdateCreatingPositionCommand(createPositionViewModelNavigateBackService, this, initialPosition);
+            CancelUpdatePositionCommand = new NavigateCommand(createPositionViewModelNavigateBackService);
 
             Article = initialPosition.Article;
             Ammount = initialPosition.Ammount;
@@ -40,7 +32,13 @@ namespace BusinessLayer.Orders.ViewModels
         public ICommand CancelUpdatePositionCommand { get; }
         public int Number => _initialPosition.Number;
 
-        private int _number;
+        public override void Dispose()
+        {
+            _updatePositionCommand.Dispose();
+            base.Dispose();
+        }
+
         private readonly CreatingPositionDTO _initialPosition;
+        private readonly UpdateCreatingPositionCommand _updatePositionCommand;
     }
 }

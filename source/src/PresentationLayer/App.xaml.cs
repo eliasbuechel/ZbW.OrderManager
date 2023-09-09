@@ -87,10 +87,6 @@ namespace PresentationLayer
                     services.AddSingleton<Func<CustomerListingViewModel>>(s => () => s.GetRequiredService<CustomerListingViewModel>());
                     services.AddSingleton<NavigationService<CustomerListingViewModel>>();
 
-                    services.AddTransient<CreateCustomerViewModel>();
-                    services.AddSingleton<Func<CreateCustomerViewModel>>(s => () => s.GetRequiredService<CreateCustomerViewModel>());
-                    services.AddSingleton<NavigationService<CreateCustomerViewModel>>();
-
                     services.AddTransient(s => CreateArticleGroupListingViewModel(s));
                     services.AddSingleton<Func<ArticleGroupListingViewModel>>(s => () => s.GetRequiredService<ArticleGroupListingViewModel>());
                     services.AddSingleton<NavigationService<ArticleGroupListingViewModel>>();
@@ -110,10 +106,6 @@ namespace PresentationLayer
                     services.AddTransient(s => CrateOrderListingViewModel(s));
                     services.AddSingleton<Func<OrderListingViewModel>>(s => () => s.GetRequiredService<OrderListingViewModel>());
                     services.AddSingleton<NavigationService<OrderListingViewModel>>();
-
-                    services.AddTransient(s => CreateCreateOrderViewModel(s));
-                    services.AddSingleton<Func<CreateOrderViewModel>>(s => () => s.GetRequiredService<CreateOrderViewModel>());
-                    services.AddSingleton<SubNavigationService<OrderListingViewModel, CreateOrderViewModel>>();
 
                     services.AddSingleton<Manager>();
                     services.AddSingleton<ManagerStore>();
@@ -151,14 +143,6 @@ namespace PresentationLayer
             base.OnExit(e);
         }
 
-        private CreateOrderViewModel CreateCreateOrderViewModel(IServiceProvider s)
-        {
-            return CreateOrderViewModel.LoadViewModel(
-               s.GetRequiredService<ManagerStore>(),
-               s.GetRequiredService<NavigationStore>(),
-               s.GetRequiredService<SubNavigationService<OrderListingViewModel, CreateOrderViewModel>>()
-               );
-        }
         private OrderListingViewModel CrateOrderListingViewModel(IServiceProvider s)
         {
             return OrderListingViewModel.LoadViewModel(
@@ -207,8 +191,6 @@ namespace PresentationLayer
             return CustomerListingViewModel.LoadViewModel(
                 s.GetRequiredService<ManagerStore>(),
                 s.GetRequiredService<NavigationStore>(),
-                s.GetRequiredService<NavigationService<CreateCustomerViewModel>>(),
-                s.GetRequiredService<NavigationService<CustomerListingViewModel>>(),
                 s.GetRequiredService<ICustomerValidator>(),
                 s.GetRequiredService<IDialogService>()
                 );

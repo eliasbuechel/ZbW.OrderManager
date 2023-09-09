@@ -1,7 +1,6 @@
 ﻿using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
-using BusinessLayer.Base.ViewModels;
 using BusinessLayer.Orders.Commands;
 using DataLayer.Articles.DTOs;
 using DataLayer.Orders.DTOs;
@@ -11,20 +10,19 @@ namespace BusinessLayer.Orders.ViewModels
 {
     public class CreatingPositionViewModel
     {
-        public CreatingPositionViewModel(ManagerStore managerStore, NavigationStore navigationStore, CreatingPositionDTO position, CreateOrderViewModel createOrderViewModel)
+        public CreatingPositionViewModel(ManagerStore managerStore, NavigationStore navigationStore, CreatingPositionDTO position, CreateOrderViewModel createOrderViewModel, FromSubNavigationService<CreateOrderViewModel> createOrderViewModelNavigateBackService)
         {
             _managerStore = managerStore;
             _position = position;
+            _createOrderViewModelNavigateBackService = createOrderViewModelNavigateBackService;
 
-            _editCreatingPositionViewModelSubNavigationService = new SubNavigationService<CreateOrderViewModel, EditCreatingPositionViewModel>(navigationStore, createOrderViewModel, CreateEditCreatingPositionViewModel);
-
-            EditCreatingPositionCommand = new NavigateCommand(_editCreatingPositionViewModelSubNavigationService);
+            EditCreatingPositionCommand = new NavigateCommand(new ToSubNavigationService<EditCreatingPositionViewModel>(navigationStore, CreateEditCreatingPositionViewModel));
             DeleteCreatingPositioncommand = new DeleteCreatingPositionCommand(createOrderViewModel, position);
         }
 
         private EditCreatingPositionViewModel CreateEditCreatingPositionViewModel()
         {
-            return EditCreatingPositionViewModel.LoadViewModel(_managerStore, _editCreatingPositionViewModelSubNavigationService, _position);
+            return EditCreatingPositionViewModel.LoadViewModel(_managerStore, _createOrderViewModelNavigateBackService, _position);
         }
 
         public ICommand EditCreatingPositionCommand { get; }
@@ -35,6 +33,6 @@ namespace BusinessLayer.Orders.ViewModels
 
         private readonly ManagerStore _managerStore;
         private readonly CreatingPositionDTO _position;
-        private readonly SubNavigationService<CreateOrderViewModel, EditCreatingPositionViewModel> _editCreatingPositionViewModelSubNavigationService;
+        private readonly FromSubNavigationService<CreateOrderViewModel> _createOrderViewModelNavigateBackService;
     }
 }

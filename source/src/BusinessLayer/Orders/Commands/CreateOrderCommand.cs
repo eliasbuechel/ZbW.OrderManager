@@ -7,14 +7,14 @@ using System.ComponentModel;
 
 namespace BusinessLayer.Orders.Commands
 {
-    public class CreateOrderCommand : BaseAsyncCommand
+    public class CreateOrderCommand : BaseAsyncCommand, IDisposable
     {
-        public CreateOrderCommand(ManagerStore managerStore, CreateOrderViewModel createOrderViewModel, IEnumerable<CreatingPositionDTO> positions, SubNavigationService<OrderListingViewModel, CreateOrderViewModel> orderListingViewModelSubNavigationService)
+        public CreateOrderCommand(ManagerStore managerStore, CreateOrderViewModel createOrderViewModel, IEnumerable<CreatingPositionDTO> positions, FromSubNavigationService<OrderListingViewModel> orderListingViewModelNavigateBackService)
         {
             _managerStore = managerStore;
             _createOrderViewModel = createOrderViewModel;
             _positions = positions;
-            _orderListingViewModelSubNavigationService = orderListingViewModelSubNavigationService;
+            _orderListingViewModelNavigateBackService = orderListingViewModelNavigateBackService;
 
             createOrderViewModel.ErrorsChanged += OnCreateOrderViewModelErrorsChanged;
         }
@@ -37,7 +37,7 @@ namespace BusinessLayer.Orders.Commands
 
             await _managerStore.CreateOrderAsync(order);
 
-            _orderListingViewModelSubNavigationService.Navigate();
+            _orderListingViewModelNavigateBackService.Navigate();
         }
         public void Dispose()
         {
@@ -52,6 +52,6 @@ namespace BusinessLayer.Orders.Commands
         private readonly ManagerStore _managerStore;
         private readonly CreateOrderViewModel _createOrderViewModel;
         private readonly IEnumerable<CreatingPositionDTO> _positions;
-        private readonly SubNavigationService<OrderListingViewModel, CreateOrderViewModel> _orderListingViewModelSubNavigationService;
+        private readonly FromSubNavigationService<OrderListingViewModel> _orderListingViewModelNavigateBackService;
     }
 }
