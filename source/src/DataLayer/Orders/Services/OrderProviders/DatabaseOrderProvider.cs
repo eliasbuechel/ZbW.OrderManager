@@ -7,7 +7,7 @@ using DataLayer.Orders.DTOs;
 using DataLayer.Orders.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BusinessLayer.Orders.Services.OrderProviders
+namespace DataLayer.Orders.Services.OrderProviders
 {
     public class DatabaseOrderProvider : IOrderProvider
     {

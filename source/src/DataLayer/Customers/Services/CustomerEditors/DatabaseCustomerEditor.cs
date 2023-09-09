@@ -16,47 +16,47 @@ namespace DataLayer.Customers.Services.CustomerEditors
             _customerValidator = customerValidator;
         }
 
-        public async Task EditCustomerAsync(CustomerDTO initialCustomer, CustomerDTO editedCustomer)
+        public async Task EditCustomerAsync(CustomerDTO initialCustomerDTO, CustomerDTO editedCustomerDTO)
         {
             ManagerDbContext dbContext = _orderDbContextFactory.CreateDbContext();
 
-            ValidateCustomer(editedCustomer);
+            ValidateCustomer(editedCustomerDTO);
 
             Customer? customerDTO = await dbContext.Customers
                 .Include(c => c.Address)
                 .Where(c =>
-                    c.FirstName == initialCustomer.FirstName &&
-                    c.LastName == initialCustomer.LastName &&
-                    c.Address.StreetName == initialCustomer.StreetName &&
-                    c.Address.City == initialCustomer.City &&
-                    c.Address.PostalCode == initialCustomer.PostalCode &&
-                    c.Address.City == initialCustomer.City &&
-                    c.EmailAddress == initialCustomer.EmailAddress &&
-                    c.WebsiteURL == initialCustomer.WebsiteURL &&
-                    c.Password == initialCustomer.Password)
+                    c.FirstName == initialCustomerDTO.FirstName &&
+                    c.LastName == initialCustomerDTO.LastName &&
+                    c.Address.StreetName == initialCustomerDTO.StreetName &&
+                    c.Address.City == initialCustomerDTO.City &&
+                    c.Address.PostalCode == initialCustomerDTO.PostalCode &&
+                    c.Address.City == initialCustomerDTO.City &&
+                    c.EmailAddress == initialCustomerDTO.EmailAddress &&
+                    c.WebsiteURL == initialCustomerDTO.WebsiteURL &&
+                    c.Password == initialCustomerDTO.Password)
                 .FirstOrDefaultAsync()
-                ?? throw new NotContainingCustomerInDatabaseException(initialCustomer);
+                ?? throw new NotContainingCustomerInDatabaseException(initialCustomerDTO);
 
-            EditCustomer(editedCustomer, customerDTO);
+            EditCustomer(editedCustomerDTO, customerDTO);
             await dbContext.SaveChangesAsync();
         }
 
-        private void ValidateCustomer(CustomerDTO editedCustomer)
+        private void ValidateCustomer(IValidatableCustomer customer)
         {
-            if (!_customerValidator.Validate(editedCustomer))
+            if (!_customerValidator.Validate(customer))
                 throw new ValidationException();
         }
-        private static void EditCustomer(CustomerDTO editedCustomer, Customer customerDTO)
+        private static void EditCustomer(CustomerDTO editedCustomerDTO, Customer customer)
         {
-            customerDTO.FirstName = editedCustomer.FirstName;
-            customerDTO.LastName = editedCustomer.LastName;
-            customerDTO.Address.StreetName = editedCustomer.StreetName;
-            customerDTO.Address.City = editedCustomer.City;
-            customerDTO.Address.PostalCode = editedCustomer.PostalCode;
-            customerDTO.Address.City = editedCustomer.City;
-            customerDTO.EmailAddress = editedCustomer.EmailAddress;
-            customerDTO.WebsiteURL = editedCustomer.WebsiteURL;
-            customerDTO.Password = editedCustomer.Password;
+            customer.FirstName = editedCustomerDTO.FirstName;
+            customer.LastName = editedCustomerDTO.LastName;
+            customer.Address.StreetName = editedCustomerDTO.StreetName;
+            customer.Address.City = editedCustomerDTO.City;
+            customer.Address.PostalCode = editedCustomerDTO.PostalCode;
+            customer.Address.City = editedCustomerDTO.City;
+            customer.EmailAddress = editedCustomerDTO.EmailAddress;
+            customer.WebsiteURL = editedCustomerDTO.WebsiteURL;
+            customer.Password = editedCustomerDTO.Password;
         }
 
         private readonly ManagerDbContextFactory _orderDbContextFactory;

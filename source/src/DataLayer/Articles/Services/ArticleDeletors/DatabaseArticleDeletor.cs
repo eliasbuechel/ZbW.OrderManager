@@ -10,10 +10,10 @@ namespace DataLayer.Articles.Services.ArticleDeletors
         {
             _managerDbContextFactory = managerDbContextFactory;
         }
-        public async Task DeleteArticleAsync(ArticleDTO article)
+        public async Task DeleteArticleAsync(ArticleDTO articleDTO)
         {
             ManagerDbContext context = _managerDbContextFactory.CreateDbContext();
-            context.Articles.Where(a => a.Id == article.Id).ExecuteDelete();
+            context.Articles.Where(a => a.Id == articleDTO.Id).ExecuteDelete();
             await context.SaveChangesAsync();
         }
 

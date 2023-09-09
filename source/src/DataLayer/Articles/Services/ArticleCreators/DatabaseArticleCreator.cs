@@ -16,25 +16,25 @@ namespace DataLayer.Articles.Services.ArticleCreators
             _managerDbContextFactory = managerDbContextFactory;
             _articleValidator = articleValidator;
         }
-        public async Task CreateArticleAsync(ArticleDTO article)
+        public async Task CreateArticleAsync(ArticleDTO articleDTO)
         {
             ManagerDbContext context = _managerDbContextFactory.CreateDbContext();
 
-            ValidateArticle(article);
+            ValidateArticle(articleDTO);
 
             ArticleGroup? articleGroupDTO = await context.ArticleGroups
-                .Where(ag => ag.Id == article.ArticleGroup.Id)
+                .Where(ag => ag.Id == articleDTO.ArticleGroup.Id)
                 .FirstOrDefaultAsync()
-                ?? throw new NotContainingArticleGroupInDatabaseException("Database does not contain ArticleGroup reffered by the Article", article.ArticleGroup);
+                ?? throw new NotContainingArticleGroupInDatabaseException("Database does not contain ArticleGroup reffered by the Article", articleDTO.ArticleGroup);
 
-            Article articleDto = new Article()
+            Article article = new Article()
             {
-                Id = article.Id,
-                Name = article.Name,
+                Id = articleDTO.Id,
+                Name = articleDTO.Name,
                 ArticleGroup = articleGroupDTO
             };
 
-            context.Articles.Add(articleDto);
+            context.Articles.Add(article);
             await context.SaveChangesAsync();
         }
         public async Task<int> GetNextFreeArticleIdAsync()
@@ -48,7 +48,7 @@ namespace DataLayer.Articles.Services.ArticleCreators
             return maxId + 1;
         }
 
-        private void ValidateArticle(ArticleDTO article)
+        private void ValidateArticle(IValidatableArticle article)
         {
             if (!_articleValidator.Validate(article))
                 throw new ValidationException();

@@ -1,7 +1,7 @@
-﻿using BusinessLayer.Orders.Services.OrderCreators;
-using BusinessLayer.Orders.Services.OrderDeletors;
-using BusinessLayer.Orders.Services.OrderProviders;
-using DataLayer.Orders.DTOs;
+﻿using DataLayer.Orders.DTOs;
+using DataLayer.Orders.Services.OrderCreators;
+using DataLayer.Orders.Services.OrderDeletors;
+using DataLayer.Orders.Services.OrderProviders;
 using System.Collections.Generic;
 
 namespace BusinessLayer.Orders.Models

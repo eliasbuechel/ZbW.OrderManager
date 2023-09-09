@@ -1,6 +1,6 @@
 ﻿using DataLayer.Orders.DTOs;
 
-namespace BusinessLayer.Orders.Services.OrderProviders
+namespace DataLayer.Orders.Services.OrderProviders
 {
     public interface IOrderProvider
     {

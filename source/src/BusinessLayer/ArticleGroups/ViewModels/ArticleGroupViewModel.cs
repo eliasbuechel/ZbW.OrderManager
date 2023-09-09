@@ -26,23 +26,23 @@ namespace BusinessLayer.ArticleGroups.ViewModels
             CreateArticleGroupCommand = new NavigateCommand(CreateCreateArticleGroupNavigationService());
             DeleteArticleGroupCommand = new DeleteArticleGroupCommand(_managerStore, _articleGroup, this);
         }
+
+        public ICommand EditArticleGroupCommand { get; }
+        public ICommand CreateArticleGroupCommand { get; }
+        public ICommand DeleteArticleGroupCommand { get; }
+        public string Name => _articleGroup.Name;
+        public IEnumerable<ArticleGroupViewModel> SubordinateArticleGroups => GetSubordinateArticleGroups(_articleGroup);
+
+        public ArticleGroupDTO GetArticleGroup()
+        {
+            return _articleGroup;
+        }
         public override void Dispose()
         {
             _managerStore.SubordinateArticleGroupCreated -= OnSubordinateArticleGroupCreated;
             _managerStore.SubordinateArticleGroupDeleted -= OnSubordinateArticleGroupDeleted;
 
             base.Dispose();
-        }
-
-        public string Name => _articleGroup.Name;
-        public IEnumerable<ArticleGroupViewModel> SubordinateArticleGroups => _articleGroup.SubordinateArticleGroups.Select(a =>  new ArticleGroupViewModel(_managerStore, a, _navigationStore, _articleGroupListingViewModelNavigationService, _articleGroupValidator)).ToList();
-        public ICommand EditArticleGroupCommand { get; }
-        public ICommand CreateArticleGroupCommand { get; }
-        public ICommand DeleteArticleGroupCommand { get; }
-
-        public ArticleGroupDTO GetArticleGroup()
-        {
-            return _articleGroup;
         }
 
         private void OnSubordinateArticleGroupCreated(ArticleGroupDTO createdArticleGroup, ArticleGroupDTO superiorArticleGroup)
@@ -64,10 +64,29 @@ namespace BusinessLayer.ArticleGroups.ViewModels
             return new NavigationService<EditArticleGroupViewModel>(_navigationStore, () => EditArticleGroupViewModel.LoadViewModel(_managerStore, _articleGroup, _articleGroupListingViewModelNavigationService, _articleGroupValidator));
         }
 
+        private static IEnumerable<ArticleGroupViewModel> GetSubordinateArticleGroups(ArticleGroupDTO articlGroup)
+        {
+            ICollection<ArticleGroupDTO> subordinateArticleGroups = articlGroup.SubordinateArticleGroups;
+
+            
+
+            ICollection<ArticleGroupViewModel> articleGroupViewModels = subordinateArticleGroups
+                .Select(articleGroupViewModel => new ArticleGroupViewModel(
+                    _managerStore,
+                    articleGroupViewModel,
+                    _navigationStore,
+                    _articleGroupListingViewModelNavigationService,
+                    _articleGroupValidator)
+                )
+                .ToList();
+
+            return articleGroupViewModels;
+        }
+
         private readonly ManagerStore _managerStore;
         private readonly ArticleGroupDTO _articleGroup;
         private readonly NavigationStore _navigationStore;
-        private readonly NavigationService<ArticleGroupListingViewModel> _articleGroupListingViewModelNavigationService;
         private readonly IArticleGroupValidator _articleGroupValidator;
+        private readonly NavigationService<ArticleGroupListingViewModel> _articleGroupListingViewModelNavigationService;
     }
 }

@@ -1,12 +1,12 @@
-﻿using BusinessLayer.Orders.Services.OrderProviders;
-using DataLayer.Base.DatabaseContext;
+﻿using DataLayer.Base.DatabaseContext;
 using DataLayer.Customers.Exceptions;
 using DataLayer.Customers.Models;
 using DataLayer.Orders.DTOs;
 using DataLayer.Orders.Models;
+using DataLayer.Orders.Services.OrderProviders;
 using Microsoft.EntityFrameworkCore;
 
-namespace BusinessLayer.Orders.Services.OrderCreators
+namespace DataLayer.Orders.Services.OrderCreators
 {
     public class DatabaseOrderCreator : IOrderCreator
     {
@@ -16,29 +16,32 @@ namespace BusinessLayer.Orders.Services.OrderCreators
             _orderProvider = orderProvider;
         }
 
-        public async Task<OrderDTO> CreateOrderAsync(CreatingOrderDTO creatingOrder)
+        public async Task<OrderDTO> CreateOrderAsync(CreatingOrderDTO creatingOrderDTO)
         {
             using ManagerDbContext context = _managerDbContextFactory.CreateDbContext();
 
             Customer? customer = await context.Customers
-                .Where(c => c.Id == creatingOrder.Customer.Id)
+                .Where(c => c.Id == creatingOrderDTO.Customer.Id)
                 .FirstOrDefaultAsync()
-                ?? throw new NotInDatabaseException($"Not found customer width id '{creatingOrder.Customer.Id}' in database!");
+                ?? throw new NotInDatabaseException($"Not found customer width id '{creatingOrderDTO.Customer.Id}' in database!");
 
-            ICollection<Position> positions = creatingOrder.Positions
+            ICollection<Position> positions = creatingOrderDTO.Positions
                 .Select(p => new Position()
-                    {
-                        Number = p.Number,
-                        Ammount = p.Ammount,
-                        Article = context.Articles.Where(a => a.Id == p.Article.Id).FirstOrDefault() ?? throw new NotInDatabaseException($"Nof fount article with id '{p.Article.Id}' in database!")
-                    }
+                {
+                    Number = p.Number,
+                    Ammount = p.Ammount,
+                    Article = context.Articles
+                            .Where(a => a.Id == p.Article.Id)
+                            .FirstOrDefault()
+                            ?? throw new NotInDatabaseException($"Nof fount article with id '{p.Article.Id}' in database!")
+                }
                 )
                 .ToList();
 
             Order order = new Order()
             {
                 //Id = creatingOrder.Id,
-                TimeStamp = creatingOrder.TimeStamp,
+                TimeStamp = creatingOrderDTO.TimeStamp,
                 Customer = customer,
                 Positions = positions
             };

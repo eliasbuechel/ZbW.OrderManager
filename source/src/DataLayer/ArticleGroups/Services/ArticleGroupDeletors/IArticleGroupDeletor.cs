@@ -4,6 +4,6 @@ namespace DataLayer.ArticleGroups.Services.ArticleGroupDeletors
 {
     public interface IArticleGroupDeletor
     {
-        Task DeleteArticleGroupAsync(ArticleGroupDTO articleGroup);
+        Task DeleteArticleGroupAsync(ArticleGroupDTO articleGroupDTO);
     }
 }

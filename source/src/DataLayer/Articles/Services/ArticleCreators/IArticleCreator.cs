@@ -4,7 +4,7 @@ namespace DataLayer.Articles.Services.ArticleCreators
 {
     public interface IArticleCreator
     {
-        Task CreateArticleAsync(ArticleDTO article);
+        Task CreateArticleAsync(ArticleDTO articleDTO);
         Task<int> GetNextFreeArticleIdAsync();
     }
 }

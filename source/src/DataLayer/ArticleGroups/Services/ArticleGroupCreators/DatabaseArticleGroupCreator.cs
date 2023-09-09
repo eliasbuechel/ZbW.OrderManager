@@ -16,25 +16,25 @@ namespace DataLayer.ArticleGroups.Services.ArticleGroupCreators
             _articleGroupValidator = articleGroupValidator;
         }
 
-        public async Task CreateArticleGroupAsync(CreatedOrUpdatedArticleGroupDTO creatingArticleGroup)
+        public async Task CreateArticleGroupAsync(CreatedOrUpdatedArticleGroupDTO creatingArticleGroupDTO)
         {
             ManagerDbContext context = _dbContextFactory.CreateDbContext();
             ArticleGroup? superiorArticleGroup = null;
 
-            ValidateArticleGroup(creatingArticleGroup);
+            ValidateArticleGroup(creatingArticleGroupDTO);
             
-            if (creatingArticleGroup.SuperiorArticleGroup != null)
+            if (creatingArticleGroupDTO.SuperiorArticleGroup != null)
             {
                 superiorArticleGroup = await context.ArticleGroups
-                                                   .Where(a => a.Id == creatingArticleGroup.SuperiorArticleGroup.Id)
+                                                   .Where(a => a.Id == creatingArticleGroupDTO.SuperiorArticleGroup.Id)
                                                    .SingleOrDefaultAsync()
-                                                   ?? throw new NotContainingArticleGroupInDatabaseException("Superior article group not in database!", creatingArticleGroup.SuperiorArticleGroup);
+                                                   ?? throw new NotContainingArticleGroupInDatabaseException("Superior article group not in database!", creatingArticleGroupDTO.SuperiorArticleGroup);
             }
 
             ArticleGroup articleGroup = new ArticleGroup()
             {
-                Id = creatingArticleGroup.Id,
-                Name = creatingArticleGroup.Name,
+                Id = creatingArticleGroupDTO.Id,
+                Name = creatingArticleGroupDTO.Name,
                 SuperiorArticleGroup = superiorArticleGroup
             };
 
@@ -52,9 +52,9 @@ namespace DataLayer.ArticleGroups.Services.ArticleGroupCreators
             return maxId + 1;
         }
 
-        private void ValidateArticleGroup(CreatedOrUpdatedArticleGroupDTO creatingArticleGroup)
+        private void ValidateArticleGroup(IValidatableArticleGroup articleGroup)
         {
-            if (!_articleGroupValidator.Validate(creatingArticleGroup))
+            if (!_articleGroupValidator.Validate(articleGroup))
                 throw new ValidationException();
         }
 
