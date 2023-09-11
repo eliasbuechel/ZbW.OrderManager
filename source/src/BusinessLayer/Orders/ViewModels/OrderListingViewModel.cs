@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace BusinessLayer.Orders.ViewModels
 {
-    public class OrderListingViewModel : BaseLoadableViewModel
+    public class OrderListingViewModel : BaseLoadableViewModel, IMainNavigationViewModel
     {
         public static OrderListingViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore)
         {

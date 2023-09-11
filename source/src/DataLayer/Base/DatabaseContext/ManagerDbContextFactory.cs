@@ -4,8 +4,6 @@ namespace DataLayer.Base.DatabaseContext
 {
     public class ManagerDbContextFactory
     {
-        private readonly string _connectionString;
-
         public ManagerDbContextFactory(string connectionString)
         {
             _connectionString = connectionString;
@@ -17,5 +15,7 @@ namespace DataLayer.Base.DatabaseContext
 
             return new ManagerDbContext(options);
         }
+
+        private readonly string _connectionString;
     }
 }

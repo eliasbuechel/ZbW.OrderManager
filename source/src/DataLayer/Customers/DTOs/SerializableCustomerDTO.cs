@@ -7,7 +7,7 @@ namespace DataLayer.Customers.DTOs
     {
         public SerializableCustomerDTO()
         {}
-        public SerializableCustomerDTO(int id, string firstName, string lastName, SerializableAddressDTO address, string emailAddress, string websiteURL, string password)
+        public SerializableCustomerDTO(int id, string firstName, string lastName, SerializableAddressDTO address, string emailAddress, string websiteURL, string hasedPassword)
         {
             Id = id;
             FirstName = firstName;
@@ -15,7 +15,7 @@ namespace DataLayer.Customers.DTOs
             Address = address;
             EmailAddress = emailAddress;
             WebsiteURL = websiteURL;
-            Password = password;
+            HashedPassword = hasedPassword;
         }
 
         public int Id { get; set; }
@@ -24,6 +24,6 @@ namespace DataLayer.Customers.DTOs
         public SerializableAddressDTO Address { get; set; } = new SerializableAddressDTO();
         public string EmailAddress { get; set; } = string.Empty;
         public string WebsiteURL { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
+        public string HashedPassword { get; set; } = string.Empty;
     }
 }

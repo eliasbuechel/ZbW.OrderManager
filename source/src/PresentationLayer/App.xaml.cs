@@ -79,32 +79,40 @@ namespace PresentationLayer
 
                     services.AddSingleton<NavigationStore>();
 
-                    services.AddTransient<DashboardViewModel>();
-                    services.AddSingleton<Func<DashboardViewModel>>(s => () => s.GetRequiredService<DashboardViewModel>());
+                    services.AddTransient(s => DashboardViewModel.LoadViewModel());
+                    services.AddSingleton(GetReqiredService<DashboardViewModel>);
+
                     services.AddSingleton<NavigationService<DashboardViewModel>>();
 
-                    services.AddTransient(s => CreateCustomerListingViewModel(s));
-                    services.AddSingleton<Func<CustomerListingViewModel>>(s => () => s.GetRequiredService<CustomerListingViewModel>());
+                    services.AddSingleton(s =>
+                        new NavigationService<DashboardViewModel>(
+                            s.GetRequiredService<NavigationStore>(),
+                            s.GetRequiredService<Func<DashboardViewModel>>()
+                            )
+                        );
+
+                    services.AddTransient(CreateCustomerListingViewModel);
+                    services.AddSingleton(GetReqiredService<CustomerListingViewModel>);
                     services.AddSingleton<NavigationService<CustomerListingViewModel>>();
 
-                    services.AddTransient(s => CreateArticleGroupListingViewModel(s));
-                    services.AddSingleton<Func<ArticleGroupListingViewModel>>(s => () => s.GetRequiredService<ArticleGroupListingViewModel>());
+                    services.AddTransient(CreateArticleGroupListingViewModel);
+                    services.AddSingleton(GetReqiredService<ArticleGroupListingViewModel>);
                     services.AddSingleton<NavigationService<ArticleGroupListingViewModel>>();
 
-                    services.AddTransient(s => CreateCreateArticleGroupViewModel(s));
-                    services.AddSingleton<Func<CreateArticleGroupViewModel>>(s => () => s.GetRequiredService<CreateArticleGroupViewModel>());
+                    services.AddTransient(CreateCreateArticleGroupViewModel);
+                    services.AddSingleton(GetReqiredService<CreateArticleGroupViewModel>);
                     services.AddSingleton<NavigationService<CreateArticleGroupViewModel>>();
 
-                    services.AddTransient(s => CreateArticleListingViewModel(s));
-                    services.AddSingleton<Func<ArticleListingViewModel>>(s => () => s.GetRequiredService<ArticleListingViewModel>());
+                    services.AddTransient(CreateArticleListingViewModel);
+                    services.AddSingleton(GetReqiredService<ArticleListingViewModel>);
                     services.AddSingleton<NavigationService<ArticleListingViewModel>>();
 
-                    services.AddTransient(s => CreateCreateArticleViewModel(s));
-                    services.AddSingleton<Func<CreateArticleViewModel>>(s => () => s.GetRequiredService<CreateArticleViewModel>());
+                    services.AddTransient(CreateCreateArticleViewModel);
+                    services.AddSingleton(GetReqiredService<CreateArticleViewModel>);
                     services.AddSingleton<NavigationService<CreateArticleViewModel>>();
 
-                    services.AddTransient(s => CrateOrderListingViewModel(s));
-                    services.AddSingleton<Func<OrderListingViewModel>>(s => () => s.GetRequiredService<OrderListingViewModel>());
+                    services.AddTransient(CrateOrderListingViewModel);
+                    services.AddSingleton(GetReqiredService<OrderListingViewModel>);
                     services.AddSingleton<NavigationService<OrderListingViewModel>>();
 
                     services.AddSingleton<Manager>();
@@ -143,14 +151,18 @@ namespace PresentationLayer
             base.OnExit(e);
         }
 
-        private OrderListingViewModel CrateOrderListingViewModel(IServiceProvider s)
+        private Func<T> GetReqiredService<T>(IServiceProvider s) where T : notnull
+        {
+            return () => s.GetRequiredService<T>();
+        }
+        private static OrderListingViewModel CrateOrderListingViewModel(IServiceProvider s)
         {
             return OrderListingViewModel.LoadViewModel(
               s.GetRequiredService<ManagerStore>(),
               s.GetRequiredService<NavigationStore>()
               );
         }
-        private CreateArticleViewModel CreateCreateArticleViewModel(IServiceProvider s)
+        private static CreateArticleViewModel CreateCreateArticleViewModel(IServiceProvider s)
         {
             return CreateArticleViewModel.LoadViewModel(
               s.GetRequiredService<ManagerStore>(),
@@ -158,7 +170,7 @@ namespace PresentationLayer
               s.GetRequiredService<IArticleValidator>()
               );
         }
-        private ArticleListingViewModel CreateArticleListingViewModel(IServiceProvider s)
+        private static ArticleListingViewModel CreateArticleListingViewModel(IServiceProvider s)
         {
             return ArticleListingViewModel.LoadViewModel(
                 s.GetRequiredService<ManagerStore>(),
@@ -168,7 +180,7 @@ namespace PresentationLayer
                 s.GetRequiredService<IArticleValidator>()
                 );
         }
-        private CreateArticleGroupViewModel CreateCreateArticleGroupViewModel(IServiceProvider s)
+        private static CreateArticleGroupViewModel CreateCreateArticleGroupViewModel(IServiceProvider s)
         {
             return CreateArticleGroupViewModel.LoadViewModel(
                 s.GetRequiredService<ManagerStore>(),
@@ -176,7 +188,7 @@ namespace PresentationLayer
                 s.GetRequiredService<IArticleGroupValidator>()
                 );
         }
-        private ArticleGroupListingViewModel CreateArticleGroupListingViewModel(IServiceProvider s)
+        private static ArticleGroupListingViewModel CreateArticleGroupListingViewModel(IServiceProvider s)
         {
             return ArticleGroupListingViewModel.LoadViewModel(
                 s.GetRequiredService<ManagerStore>(),
@@ -186,7 +198,7 @@ namespace PresentationLayer
                 s.GetRequiredService<IArticleGroupValidator>()
                 );
         }
-        private CustomerListingViewModel CreateCustomerListingViewModel(IServiceProvider s)
+        private static CustomerListingViewModel CreateCustomerListingViewModel(IServiceProvider s)
         {
             return CustomerListingViewModel.LoadViewModel(
                 s.GetRequiredService<ManagerStore>(),

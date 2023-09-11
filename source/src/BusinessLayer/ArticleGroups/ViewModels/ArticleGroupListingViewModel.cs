@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace BusinessLayer.ArticleGroups.ViewModels
 {
-    public class ArticleGroupListingViewModel : BaseLoadableViewModel, IArticleGroupUpdatable
+    public class ArticleGroupListingViewModel : BaseLoadableViewModel, IArticleGroupUpdatable, IMainNavigationViewModel
     {
         public static ArticleGroupListingViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService<ArticleGroupListingViewModel> articleGroupListingViewModelNavigationService, NavigationService<CreateArticleGroupViewModel> createArticleGorupViewModelNavigationService, IArticleGroupValidator articleGroupValidator)
         {

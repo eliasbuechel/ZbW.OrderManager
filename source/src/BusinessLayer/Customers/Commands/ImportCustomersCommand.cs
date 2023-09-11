@@ -69,7 +69,7 @@ namespace BusinessLayer.Customers.Commands
                 c.Address.PostalCode,
                 c.EmailAddress,
                 c.WebsiteURL,
-                c.Password
+                c.HashedPassword
                 ));
 
             int addedCustomersCount = 0;

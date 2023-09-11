@@ -1,18 +1,16 @@
-﻿using BusinessLayer.ArticleGroups.ViewModels;
-using BusinessLayer.Base.Commands;
+﻿using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using BusinessLayer.Base.ViewModels;
 using BusinessLayer.Customers.Commands;
 using DataLayer.Customers.DTOs;
-using DataLayer.Customers.Models;
 using DataLayer.Customers.Validation;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace BusinessLayer.Customers.ViewModels
 {
-    public class CustomerListingViewModel : BaseLoadableViewModel, ICustomerUpdatable
+    public class CustomerListingViewModel : BaseLoadableViewModel, ICustomerUpdatable, IMainNavigationViewModel
     {
         public static CustomerListingViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, ICustomerValidator customerValidator, IDialogService fileDialogue)
         {
@@ -105,9 +103,8 @@ namespace BusinessLayer.Customers.ViewModels
 
         private readonly ManagerStore _managerStore;
         private readonly NavigationStore _navigationStore;
+        private readonly ICustomerValidator _customerValidator;
         private readonly FromSubNavigationService<CustomerListingViewModel> _customerListingViweModelNavigateBackService;
         private readonly ObservableCollection<CustomerViewModel> _customers = new ObservableCollection<CustomerViewModel>();
-        private readonly ICustomerValidator _customerValidator;
-
     }
 }

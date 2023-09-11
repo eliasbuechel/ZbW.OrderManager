@@ -14,6 +14,6 @@ namespace BusinessLayer.Base.Commands
             _navigationService.Navigate();
         }
 
-        private readonly INavigationService _navigationService;
+        protected readonly INavigationService _navigationService;
     }
 }

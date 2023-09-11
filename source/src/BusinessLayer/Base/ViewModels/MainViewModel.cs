@@ -19,11 +19,11 @@ namespace BusinessLayer.Base.ViewModels
             _navigationStore = navigationStore;
             _navigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
 
-            NavigateToDashboardViewCommand = new NavigateCommand(dashboardViewModelNavigationService);
-            NavigateToCustomerListingViewCommand = new NavigateCommand(customerListingViewModelNavigationService);
-            NavigateToArticleGroupListingViewCommand = new NavigateCommand(articleGroupListingViewModelNavigationService);
-            NavigateToArticleListingViewCommand = new NavigateCommand(articleListingViewModelNavigationService);
-            NavigateToOrderListingViewCommand = new NavigateCommand(orderListingViewModelNavigationService);
+            NavigateToDashboardViewCommand = new MainNavigateCommand(navigationStore, dashboardViewModelNavigationService);
+            NavigateToCustomerListingViewCommand = new MainNavigateCommand(navigationStore, customerListingViewModelNavigationService);
+            NavigateToArticleGroupListingViewCommand = new MainNavigateCommand(navigationStore, articleGroupListingViewModelNavigationService);
+            NavigateToArticleListingViewCommand = new MainNavigateCommand(navigationStore, articleListingViewModelNavigationService);
+            NavigateToOrderListingViewCommand = new MainNavigateCommand(navigationStore, orderListingViewModelNavigationService);
         }
 
         public BaseViewModel? CurrentViewModel => _navigationStore.CurrentViewModel;

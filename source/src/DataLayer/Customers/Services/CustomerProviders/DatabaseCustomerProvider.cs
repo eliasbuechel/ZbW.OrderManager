@@ -5,6 +5,7 @@ using DataLayer.Customers.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
+
 namespace DataLayer.Customers.Services.CustomerProviders
 {
     public class DatabaseCustomerProvider : ICustomerProvider
@@ -56,7 +57,7 @@ namespace DataLayer.Customers.Services.CustomerProviders
                         ),
                     c.EmailAddress,
                     c.WebsiteURL,
-                    c.Password
+                    HashCode.Combine(c.Password).ToString()
                     )
                 )
                 .ToListAsync();
