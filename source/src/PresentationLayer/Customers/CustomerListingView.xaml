@@ -27,6 +27,10 @@
                    FontSize="20" />
             <StackPanel Grid.Column="1"
                         Orientation="Horizontal">
+                <ui:TextBox Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}"
+                            Icon="Search12"
+                            Width="170"
+                            Margin="0 0 20 0"/>
                 <ui:Button Grid.Column="1"
                            Content="Improt"
                            Icon="folder16"

@@ -27,6 +27,10 @@ namespace BusinessLayer.Articles.ViewModels
             _articleListingViewModelNavigationService = articleListingViewModelNavigationService;
             _articleValidator = articleValidator;
 
+            Articles = new CollectionView<ArticleViewModel>(_articles);
+            Articles.Filter = o => o.Name.Contains(Filter, StringComparison.InvariantCultureIgnoreCase);
+            Articles.OrderKeySelector = o => Convert.ToInt32(o.Id);
+
             NavigateToCreateArticleCommand = new NavigateCommand(createArticleViewModelNavigationService);
             LoadArticlesCommand = new LoadArticlesCommand(managerStore, this);
 
@@ -34,7 +38,7 @@ namespace BusinessLayer.Articles.ViewModels
             managerStore.ArticleDeleted += OnArticleDeleted;
         }
 
-        public IEnumerable<ArticleViewModel> Articles => _articles;
+        public CollectionView<ArticleViewModel> Articles { get; }
         public ICommand NavigateToCreateArticleCommand { get; }
         public ICommand LoadArticlesCommand { get; }
 
@@ -47,11 +51,22 @@ namespace BusinessLayer.Articles.ViewModels
                 ArticleViewModel viewModel = new ArticleViewModel(_managerStore, article, CreateEditArticleNavigationService(article));
                 _articles.Add(viewModel);
             }
+            Articles.Update();
         }
         public override void Dispose(bool disposing)
         {
             _managerStore.ArticleCreated -= OnArticleCreated;
             _managerStore.ArticleDeleted -= OnArticleDeleted;
+        }
+        public string Filter
+        {
+            get => _filter;
+            set
+            {
+                _filter = value;
+                OnPropertyChanged();
+                Articles.Update();
+            }
         }
 
         private NavigationService<EditArticleViewModel> CreateEditArticleNavigationService(ArticleDTO article)
@@ -68,11 +83,13 @@ namespace BusinessLayer.Articles.ViewModels
                     return;
                 }
             }
+            Articles.Update();
         }
         private void OnArticleCreated(ArticleDTO article)
         {
             ArticleViewModel articleViewModel = new ArticleViewModel(_managerStore, article, CreateEditArticleNavigationService(article));
             _articles.Add(articleViewModel);
+            Articles.Update();
         }
 
         private readonly ManagerStore _managerStore;
@@ -80,5 +97,6 @@ namespace BusinessLayer.Articles.ViewModels
         private readonly NavigationService<ArticleListingViewModel> _articleListingViewModelNavigationService;
         private readonly ObservableCollection<ArticleViewModel> _articles = new ObservableCollection<ArticleViewModel>();
         private readonly IArticleValidator _articleValidator;
+        private string _filter = string.Empty;
     }
 }

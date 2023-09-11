@@ -23,6 +23,10 @@ namespace BusinessLayer.Orders.ViewModels
             _managerStore = managerStore;
             _navigationStore = navigationStore;
 
+            Orders = new CollectionView<OrderViewModel>(_orders);
+            Orders.Filter = o => o.Customer.FirstName.Contains(Filter, StringComparison.InvariantCultureIgnoreCase) || o.TimeStamp.Contains(Filter, StringComparison.InvariantCultureIgnoreCase);
+            Orders.OrderKeySelector = o => Convert.ToInt32(o.Id);
+
             LoadOrdersCommand = new LoadOrdersCommand(managerStore, this);
             CreateOrderCommand = new NavigateCommand(new ToSubNavigationService<CreateOrderViewModel>(navigationStore, CreateCreateOrderViewModel));
 
@@ -32,7 +36,17 @@ namespace BusinessLayer.Orders.ViewModels
 
         public ICommand CreateOrderCommand { get; }
         public ICommand LoadOrdersCommand { get; }
-        public IEnumerable<OrderViewModel> Orders => _orders;
+        public CollectionView<OrderViewModel> Orders { get; }
+        public string Filter
+        {
+            get => _filter;
+            set
+            {
+                _filter = value;
+                OnPropertyChanged();
+                Orders.Update();
+            }
+        }
 
         public void OnOrdersLoaded(IEnumerable<OrderDTO> orders)
         {
@@ -42,6 +56,7 @@ namespace BusinessLayer.Orders.ViewModels
                 OrderViewModel viewModel = new OrderViewModel(_managerStore, o);
                 _orders.Add(viewModel);
             }
+            Orders.Update();
         }
         public override void Dispose(bool disposing)
         {
@@ -53,6 +68,7 @@ namespace BusinessLayer.Orders.ViewModels
         {
             OrderViewModel orderViewModel = new OrderViewModel(_managerStore, order);
             _orders.Add(orderViewModel);
+            Orders.Update();
         }
         private void OnOrderDeleted(OrderDTO order)
         {
@@ -64,6 +80,7 @@ namespace BusinessLayer.Orders.ViewModels
                     break;
                 }
             }
+            Orders.Update();
         }
         private CreateOrderViewModel CreateCreateOrderViewModel()
         {
@@ -77,5 +94,6 @@ namespace BusinessLayer.Orders.ViewModels
         private readonly ManagerStore _managerStore;
         private readonly NavigationStore _navigationStore;
         private readonly ObservableCollection<OrderViewModel> _orders = new ObservableCollection<OrderViewModel>();
+        private string _filter = string.Empty;
     }
 }

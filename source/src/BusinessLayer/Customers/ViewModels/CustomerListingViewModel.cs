@@ -23,8 +23,12 @@ namespace BusinessLayer.Customers.ViewModels
         {
             _managerStore = managerStore;
             _navigationStore = navigationStore;
+            _customerValidator = customerValidator;
 
             _customerListingViweModelNavigateBackService = new FromSubNavigationService<CustomerListingViewModel>(_navigationStore, this);
+            Customers = new CollectionView<CustomerViewModel>(_customers);
+            Customers.Filter = x => x.Name.Contains(Filter, StringComparison.InvariantCultureIgnoreCase) || x.Location.Contains(Filter, StringComparison.InvariantCultureIgnoreCase);
+            Customers.OrderKeySelector = x => Convert.ToInt32(x.Id);
 
             NavigateToCreateCustomerCommand = new NavigateCommand(new ToSubNavigationService<CreateCustomerViewModel>(navigationStore, CreateCreateCustomerViewModel));
             LoadCustomersCommand = new LoadCustomersCommand(managerStore, this);
@@ -33,14 +37,23 @@ namespace BusinessLayer.Customers.ViewModels
 
             managerStore.CustomerCreated += OnCustomerCreated;
             managerStore.CustomerDeleted += OnCustomerDeleted;
-            _customerValidator = customerValidator;
         }
 
-        public IEnumerable<CustomerViewModel> Customers => _customers;
+        public CollectionView<CustomerViewModel> Customers { get; }
         public ICommand NavigateToCreateCustomerCommand { get; }
         public ICommand LoadCustomersCommand { get; }
         public ICommand ImportCustomersCommand { get; }
         public ICommand ExportCustomersCommand { get; }
+        public string Filter
+        {
+            get => _filter;
+            set
+            {
+                _filter = value;
+                OnPropertyChanged();
+                Customers.Update();
+            }
+        }
 
         public void UpdateCustomers(IEnumerable<CustomerDTO> customers)
         {
@@ -51,6 +64,8 @@ namespace BusinessLayer.Customers.ViewModels
                 CustomerViewModel customerViewModel = new CustomerViewModel(_managerStore, customer, CreateEditCustomerViewModelNavigationService(customer));
                 _customers.Add(customerViewModel);
             }
+
+            Customers.Update(); 
         }
         public override void Dispose(bool disposing)
         {
@@ -62,6 +77,7 @@ namespace BusinessLayer.Customers.ViewModels
         {
             CustomerViewModel customerViewModel = new CustomerViewModel(_managerStore, customer, CreateEditCustomerViewModelNavigationService(customer));
             _customers.Add(customerViewModel);
+            Customers.Update();
         }
         private void OnCustomerDeleted(CustomerDTO customer)
         {
@@ -79,6 +95,7 @@ namespace BusinessLayer.Customers.ViewModels
                 return;
 
             _customers.Remove(customerViewModel);
+            Customers.Update();
         }
         private ToSubNavigationService<EditCustomerViewModel> CreateEditCustomerViewModelNavigationService(CustomerDTO customer)
         {
@@ -106,5 +123,6 @@ namespace BusinessLayer.Customers.ViewModels
         private readonly ICustomerValidator _customerValidator;
         private readonly FromSubNavigationService<CustomerListingViewModel> _customerListingViweModelNavigateBackService;
         private readonly ObservableCollection<CustomerViewModel> _customers = new ObservableCollection<CustomerViewModel>();
+        private string _filter = string.Empty;
     }
 }
