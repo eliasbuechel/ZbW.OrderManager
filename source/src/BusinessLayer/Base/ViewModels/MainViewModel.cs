@@ -19,11 +19,11 @@ namespace BusinessLayer.Base.ViewModels
             _navigationStore = navigationStore;
             _navigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
 
-            NavigateToDashboardViewCommand = new MainNavigateCommand(navigationStore, dashboardViewModelNavigationService);
-            NavigateToCustomerListingViewCommand = new MainNavigateCommand(navigationStore, customerListingViewModelNavigationService);
-            NavigateToArticleGroupListingViewCommand = new MainNavigateCommand(navigationStore, articleGroupListingViewModelNavigationService);
-            NavigateToArticleListingViewCommand = new MainNavigateCommand(navigationStore, articleListingViewModelNavigationService);
-            NavigateToOrderListingViewCommand = new MainNavigateCommand(navigationStore, orderListingViewModelNavigationService);
+            NavigateToDashboardViewCommand = _navigateToDashboardViewCommand = new MainNavigateCommand(navigationStore, dashboardViewModelNavigationService);
+            NavigateToCustomerListingViewCommand = _navigateToCustomerListingViewCommand = new MainNavigateCommand(navigationStore, customerListingViewModelNavigationService);
+            NavigateToArticleGroupListingViewCommand = _navigateToArticleGroupListingViewCommand = new MainNavigateCommand(navigationStore, articleGroupListingViewModelNavigationService);
+            NavigateToArticleListingViewCommand = _navigateToArticleListingViewCommand = new MainNavigateCommand(navigationStore, articleListingViewModelNavigationService);
+            NavigateToOrderListingViewCommand = _navigateToOrderListingViewCommand = new MainNavigateCommand(navigationStore, orderListingViewModelNavigationService);
         }
 
         public BaseViewModel? CurrentViewModel => _navigationStore.CurrentViewModel;
@@ -40,9 +40,19 @@ namespace BusinessLayer.Base.ViewModels
         public override void Dispose(bool disposing)
         {
             _navigationStore.CurrentViewModelChanged -= OnCurrentViewModelChanged;
+
+            _navigateToDashboardViewCommand.Dispose();
+            _navigateToCustomerListingViewCommand.Dispose();
+            _navigateToArticleGroupListingViewCommand.Dispose();
+            _navigateToArticleListingViewCommand.Dispose();
+            _navigateToOrderListingViewCommand.Dispose();
         }
 
-
         private readonly NavigationStore _navigationStore;
+        private readonly MainNavigateCommand _navigateToDashboardViewCommand;
+        private readonly MainNavigateCommand _navigateToCustomerListingViewCommand;
+        private readonly MainNavigateCommand _navigateToArticleGroupListingViewCommand;
+        private readonly MainNavigateCommand _navigateToArticleListingViewCommand;
+        private readonly MainNavigateCommand _navigateToOrderListingViewCommand;
     }
 }
