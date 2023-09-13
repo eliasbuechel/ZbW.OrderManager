@@ -3,6 +3,7 @@ using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using BusinessLayer.Customers.ViewModels;
 using DataLayer.Customers.DTOs;
+using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel;
 
 namespace BusinessLayer.Customers.Commands
@@ -16,8 +17,10 @@ namespace BusinessLayer.Customers.Commands
             _editedCustomerViewModel = editCustomerViewModel;
             _customerListingViweModelNavigateBackService = customerListingViweModelNavigateBackService;
 
-            _editedCustomerViewModel.ErrorsChanged += OnHasCustomerPropertyErrorChanged;
+            _editedCustomerViewModel.ErrorsChanged += OnEditCustomerViewModelErrorsChanged;
+            _editedCustomerViewModel.PropertyChanged += OnEditCustomerViewModelPropertyChanged;
         }
+
 
         public override bool CanExecute(object? parameter)
         {
@@ -35,7 +38,7 @@ namespace BusinessLayer.Customers.Commands
                 _editedCustomerViewModel.PostalCode,
                 _editedCustomerViewModel.EmailAddress,
                 _editedCustomerViewModel.WebsiteUrl,
-                _editedCustomerViewModel.Password
+                _editedCustomerViewModel.Password.IsNullOrEmpty() ? _initialCustomer.HashedPassword : _editedCustomerViewModel.HashedPassword
                 );
 
             await _managerStore.EditCustomerAsync(_initialCustomer, editedCustomer);
@@ -43,7 +46,8 @@ namespace BusinessLayer.Customers.Commands
         }
         public void Dispose()
         {
-            _editedCustomerViewModel.ErrorsChanged -= OnHasCustomerPropertyErrorChanged;
+            _editedCustomerViewModel.ErrorsChanged -= OnEditCustomerViewModelErrorsChanged;
+            _editedCustomerViewModel.PropertyChanged -= OnEditCustomerViewModelPropertyChanged;
         }
 
         private bool CustomerDataChanged()
@@ -56,11 +60,13 @@ namespace BusinessLayer.Customers.Commands
                 _initialCustomer.PostalCode != _editedCustomerViewModel.PostalCode ||
                 _initialCustomer.EmailAddress != _editedCustomerViewModel.EmailAddress ||
                 _initialCustomer.WebsiteURL != _editedCustomerViewModel.WebsiteUrl ||
-                _initialCustomer.Password != _editedCustomerViewModel.Password;
-
-
+                _editedCustomerViewModel.Password.IsNullOrEmpty() ? false : _initialCustomer.HashedPassword != _editedCustomerViewModel.HashedPassword;
         }
-        private void OnHasCustomerPropertyErrorChanged(object? sender, DataErrorsChangedEventArgs e)
+        private void OnEditCustomerViewModelErrorsChanged(object? sender, DataErrorsChangedEventArgs e)
+        {
+            OnCanExecuteChanged();
+        }
+        private void OnEditCustomerViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             OnCanExecuteChanged();
         }

@@ -1,4 +1,5 @@
 ﻿using DataLayer.Base.DataValidators;
+using System.Security;
 
 namespace DataLayer.Customers.Validation
 {
@@ -13,8 +14,7 @@ namespace DataLayer.Customers.Validation
                 && ValidatePostalCode(customer.PostalCode)
                 && ValidateCity(customer.City)
                 && ValidateEmailAddress(customer.EmailAddress)
-                && ValidateWebsiteUrl(customer.WebsiteURL)
-                && ValidatePassword(customer.Password);
+                && ValidateWebsiteUrl(customer.WebsiteURL);
 
             return isValide;
         }
@@ -45,7 +45,7 @@ namespace DataLayer.Customers.Validation
         }
         public bool ValidatePassword(string password)
         {
-            bool isValide = StringValidator.Validate(password, PASSWORD_VALIDATION_PATTERN);
+            bool isValide = StringValidator.Validate(password, POSTAL_CODE_VALIDATION_PATTERN);
             return isValide;
         }
         public bool ValidatePostalCode(string postalCode)

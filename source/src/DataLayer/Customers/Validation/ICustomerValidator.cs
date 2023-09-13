@@ -1,4 +1,6 @@
-﻿namespace DataLayer.Customers.Validation
+﻿using System.Security;
+
+namespace DataLayer.Customers.Validation
 {
     public interface ICustomerValidator
     {

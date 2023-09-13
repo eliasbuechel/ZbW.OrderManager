@@ -10,6 +10,6 @@
         string PostalCode { get; }
         string EmailAddress { get; }
         string WebsiteURL { get; }
-        string Password { get; }
+        string HashedPassword { get; }
     }
 }

@@ -37,7 +37,7 @@ namespace BusinessLayer.Customers.Commands
                     _createCustomerViewModel.PostalCode,
                     _createCustomerViewModel.EmailAddress,
                     _createCustomerViewModel.WebsiteUrl,
-                    _createCustomerViewModel.Password
+                    _createCustomerViewModel.HashedPassword
                     );
 
                 await _managerStore.CreateCustomerAsync(customer);

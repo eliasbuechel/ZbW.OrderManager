@@ -57,7 +57,7 @@ namespace DataLayer.Customers.Services.CustomerCreators
                 },
                 EmailAddress = customerDTO.EmailAddress,
                 WebsiteURL = customerDTO.WebsiteURL,
-                Password = customerDTO.Password
+                Password = customerDTO.HashedPassword
             };
         }
 

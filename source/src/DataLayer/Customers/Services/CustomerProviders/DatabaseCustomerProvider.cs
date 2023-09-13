@@ -57,7 +57,7 @@ namespace DataLayer.Customers.Services.CustomerProviders
                         ),
                     c.EmailAddress,
                     c.WebsiteURL,
-                    HashCode.Combine(c.Password).ToString()
+                    c.Password
                     )
                 )
                 .ToListAsync();

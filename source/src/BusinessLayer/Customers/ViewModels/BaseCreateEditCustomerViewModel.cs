@@ -1,6 +1,10 @@
 ﻿using BusinessLayer.Base.ViewModels;
 using DataLayer.Customers.Validation;
+using Microsoft.IdentityModel.Tokens;
 using System.Net.Mail;
+using System.Security;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace BusinessLayer.Customers.ViewModels
 {
@@ -18,8 +22,8 @@ namespace BusinessLayer.Customers.ViewModels
             PostalCode = string.Empty;
             EmailAddress = string.Empty;
             WebsiteUrl = string.Empty;
-            Password = string.Empty;
         }
+
 
         public string FirstName
         {
@@ -197,28 +201,8 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(ValidationErrorMessage());
             }
         }
-        public string Password
-        {
-            get
-            {
-                return _password;
-            }
-            set
-            {
-                _password = value;
-                OnPropertyChanged();
 
-                const int maxCharacterSize = 255;
-
-                ClearErrors();
-                if (string.IsNullOrEmpty(Password))
-                    AddError(EMPTY_MESSAGE);
-                if (Password.Length > maxCharacterSize)
-                    AddError(ToLongErrorMessage(maxCharacterSize));
-                if (!_customerValidator.ValidatePassword(Password))
-                    AddError(ValidationErrorMessage());
-            }
-        }
+        public string HashedPassword => BitConverter.ToString(SHA256.HashData(Encoding.UTF8.GetBytes(_password))).Replace("-", "").ToLower();
 
         private string _firstName = string.Empty;
         private string _lastName = string.Empty;
@@ -228,8 +212,8 @@ namespace BusinessLayer.Customers.ViewModels
         private string _postalCode = string.Empty;
         private string _emailAddress = string.Empty;
         private string _websiteUrl = string.Empty;
-        private string _password = string.Empty;
+        protected string _password = string.Empty;
 
-        private readonly ICustomerValidator _customerValidator;
+        protected readonly ICustomerValidator _customerValidator;
     }
 }

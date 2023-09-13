@@ -15,7 +15,7 @@ namespace DataLayer.Customers.DTOs
             PostalCode = postalCode;
             EmailAddress = emailAddress;
             WebsiteURL = websiteURL;
-            Password = password;
+            HashedPassword = password;
         }
 
         public int Id { get; }
@@ -27,6 +27,6 @@ namespace DataLayer.Customers.DTOs
         public string PostalCode { get; }
         public string EmailAddress { get; }
         public string WebsiteURL { get; }
-        public string Password { get; }
+        public string HashedPassword { get; }
     }
 }

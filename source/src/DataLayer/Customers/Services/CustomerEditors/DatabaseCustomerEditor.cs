@@ -33,7 +33,7 @@ namespace DataLayer.Customers.Services.CustomerEditors
                     c.Address.City == initialCustomerDTO.City &&
                     c.EmailAddress == initialCustomerDTO.EmailAddress &&
                     c.WebsiteURL == initialCustomerDTO.WebsiteURL &&
-                    c.Password == initialCustomerDTO.Password)
+                    c.Password == initialCustomerDTO.HashedPassword)
                 .FirstOrDefaultAsync()
                 ?? throw new NotContainingCustomerInDatabaseException(initialCustomerDTO);
 
@@ -56,7 +56,7 @@ namespace DataLayer.Customers.Services.CustomerEditors
             customer.Address.City = editedCustomerDTO.City;
             customer.EmailAddress = editedCustomerDTO.EmailAddress;
             customer.WebsiteURL = editedCustomerDTO.WebsiteURL;
-            customer.Password = editedCustomerDTO.Password;
+            customer.Password = editedCustomerDTO.HashedPassword;
         }
 
         private readonly ManagerDbContextFactory _orderDbContextFactory;

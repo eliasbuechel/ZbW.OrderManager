@@ -58,8 +58,8 @@
                             PlaceholderText="WebsiteUrl"
                             Icon="Globe20"
                             Margin="10" />
-                <ui:TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
-                            PlaceholderText="Password"
+                <ui:PasswordBox Password="{Binding Password, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            PlaceholderText="pw not changing"
                             Icon="LockClosed12"
                             Margin="10" />
             </WrapPanel>
