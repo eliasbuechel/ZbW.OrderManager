@@ -13,8 +13,16 @@ namespace BusinessLayer.Base.Stores
         public ManagerStore(Manager manager)
         {
             _manager = manager;
-            _inizializeLazy = new Lazy<Task>(Inizialize);
+
+            //_inizializeLazy = new Lazy<Task>(Inizialize);
+
+            _inizializeCustomersLazy = new Lazy<Task>(InizializeCustomers);
+            _inizializeArticleGroupsLazy = new Lazy<Task>(InizializeArticleGroups);
+            _inizializeArticlesLazy = new Lazy<Task>(InizializeArticles);
+            _inizializeOrdersLazy = new Lazy<Task>(InizializeOrders);
+
         }
+
 
         public event Action<CustomerDTO>? CustomerCreated;
         public event Action<CustomerDTO>? CustomerDeleted;
@@ -32,18 +40,68 @@ namespace BusinessLayer.Base.Stores
         public IEnumerable<ArticleDTO> Articles => _articles;
         public IEnumerable<OrderDTO> Orders => _orders;
 
-        public async Task Load()
+        //public async Task Load()
+        //{
+        //    try
+        //    {
+        //        await _inizializeLazy.Value;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        _inizializeLazy = new Lazy<Task>(Inizialize);
+        //        throw;
+        //    }
+        //}
+
+        public async Task LoadCustomers()
         {
             try
             {
-                await _inizializeLazy.Value;
+                await _inizializeCustomersLazy.Value;
             }
             catch (Exception)
             {
-                _inizializeLazy = new Lazy<Task>(Inizialize);
+                _inizializeCustomersLazy = new Lazy<Task>(Inizialize);
                 throw;
             }
         }
+        public async Task LoadArticleGroups()
+        {
+            try
+            {
+                await _inizializeArticleGroupsLazy.Value;
+            }
+            catch (Exception)
+            {
+                _inizializeArticleGroupsLazy = new Lazy<Task>(Inizialize);
+                throw;
+            }
+        }
+        public async Task LoadArticles()
+        {
+            try
+            {
+                await _inizializeArticlesLazy.Value;
+            }
+            catch (Exception)
+            {
+                _inizializeArticlesLazy = new Lazy<Task>(Inizialize);
+                throw;
+            }
+        }
+        public async Task LoadOrders()
+        {
+            try
+            {
+                await _inizializeOrdersLazy.Value;
+            }
+            catch (Exception)
+            {
+                _inizializeOrdersLazy = new Lazy<Task>(Inizialize);
+                throw;
+            }
+        }
+
 
         public async Task<IEnumerable<SerializableCustomerDTO>> GetAllSerializableCustomersAsync()
         {
@@ -252,10 +310,38 @@ namespace BusinessLayer.Base.Stores
             _orders.Clear();
             _orders.AddRange(orders);
         }
+        private async Task InizializeOrders()
+        {
+            IEnumerable<OrderDTO> orders = await _manager.GetAllOrdersAsync();
+            _orders.Clear();
+            _orders.AddRange(orders);
+        }
+        private async Task InizializeArticles()
+        {
+            IEnumerable<ArticleDTO> articles = await _manager.GetAllArticlesAsync();
+            _articles.Clear();
+            _articles.AddRange(articles);
+        }
+        private async Task InizializeArticleGroups()
+        {
+            IEnumerable<ArticleGroupDTO> articleGroups = await _manager.GetAllArticleGroupsAsync();
+            _articleGroups.Clear();
+            _articleGroups.AddRange(articleGroups);
+        }
+        private async Task InizializeCustomers()
+        {
+            IEnumerable<CustomerDTO> customers = await _manager.GetAllCustomersAsync();
+            _customers.Clear();
+            _customers.AddRange(customers);
+        }
 
 
+        //private Lazy<Task> _inizializeLazy;
+        private Lazy<Task> _inizializeCustomersLazy;
+        private Lazy<Task> _inizializeArticleGroupsLazy;
+        private Lazy<Task> _inizializeArticlesLazy;
+        private Lazy<Task> _inizializeOrdersLazy;
         private readonly Manager _manager;
-        private Lazy<Task> _inizializeLazy;
         private readonly List<CustomerDTO> _customers = new List<CustomerDTO>();
         private readonly List<ArticleGroupDTO> _articleGroups = new List<ArticleGroupDTO>();
         private readonly List<ArticleDTO> _articles = new List<ArticleDTO>();

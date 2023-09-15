@@ -18,14 +18,14 @@ namespace BusinessLayer.Orders.ViewModels
         public ICommand EditOrderCommand { get; }
         public ICommand DeleteOrderCommand { get; }
         public int Id => _order.Id;
-        public string TimeStamp => _order.TimeStamp.ToString("dd-MM-yyyy");
-        public CustomerDTO Customer => _order.Customer;
+        public string TimeStamp => _order.TimeStamp.ToString("yyyy-MM-dd HH:mm");
+        public string Customer => $"{_order.Customer.FirstName} {_order.Customer.LastName}";
+        public string Positions => $"Positions: {_order.Positions.Count()}";
 
         public OrderDTO GetOrder()
         {
             return _order;
         }
-
 
         private readonly OrderDTO _order;
     }

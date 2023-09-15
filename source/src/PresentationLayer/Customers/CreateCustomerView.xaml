@@ -54,10 +54,10 @@
                         Icon="Globe20"
                         Margin="10" />
             <ui:PasswordBox Password="{Binding Password, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                        PlaceholderText="Password"
-                        Icon="LockClosed12"
-                        ClearButtonEnabled="False"
-                        Margin="10" />
+                            PlaceholderText="Password"
+                            Icon="LockClosed12"
+                            ClearButtonEnabled="False"
+                            Margin="10" />
         </WrapPanel>
         <StackPanel Grid.Row="4"
                     Orientation="Horizontal"

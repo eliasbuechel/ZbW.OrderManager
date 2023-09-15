@@ -4,7 +4,6 @@ using BusinessLayer.Base.Stores;
 using BusinessLayer.Base.ViewModels;
 using BusinessLayer.Orders.Commands;
 using DataLayer.Orders.DTOs;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -24,8 +23,8 @@ namespace BusinessLayer.Orders.ViewModels
             _navigationStore = navigationStore;
 
             Orders = new CollectionView<OrderViewModel>(_orders);
-            Orders.Filter = o => o.Customer.FirstName.Contains(Filter, StringComparison.InvariantCultureIgnoreCase) || o.TimeStamp.Contains(Filter, StringComparison.InvariantCultureIgnoreCase);
-            Orders.OrderKeySelector = o => Convert.ToInt32(o.Id);
+            Orders.Filter = OrderCollectionViewFilter;
+            Orders.OrderKeySelector = OrderCollectionViewOrder;
 
             LoadOrdersCommand = new LoadOrdersCommand(managerStore, this);
             CreateOrderCommand = new NavigateCommand(new ToSubNavigationService<CreateOrderViewModel>(navigationStore, CreateCreateOrderViewModel));
@@ -89,6 +88,17 @@ namespace BusinessLayer.Orders.ViewModels
                 _navigationStore,
                 new FromSubNavigationService<OrderListingViewModel>(_navigationStore, this)
                 );
+        }
+        private bool OrderCollectionViewFilter(OrderViewModel orderViewModel)
+        {
+            return orderViewModel.Customer.Contains(Filter, StringComparison.InvariantCultureIgnoreCase)
+                || orderViewModel.TimeStamp.Contains(Filter, StringComparison.InvariantCultureIgnoreCase)
+                || orderViewModel.Customer.Contains(Filter, StringComparison.InvariantCultureIgnoreCase)
+                || orderViewModel.Positions.Contains(Filter, StringComparison.InvariantCultureIgnoreCase);
+        }
+        private static object OrderCollectionViewOrder(OrderViewModel orderViewModel)
+        {
+            return Convert.ToInt32(orderViewModel.Id);
         }
 
         private readonly ManagerStore _managerStore;

@@ -17,7 +17,7 @@ namespace BusinessLayer.Orders.Commands
             _orderListingViewModel.IsLoading = true;
             try
             {
-                await _managerStore.Load();
+                await _managerStore.LoadOrders();
                 _orderListingViewModel.OnOrdersLoaded(_managerStore.Orders);
             }
             catch (Exception e)

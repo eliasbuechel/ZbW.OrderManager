@@ -19,7 +19,7 @@ namespace BusinessLayer.Articles.Commands
 
             try
             {
-                await _managerStore.Load();
+                await _managerStore.LoadArticles();
 
                 _articleUpdatable.UpdateArticles(_managerStore.Articles);
             }

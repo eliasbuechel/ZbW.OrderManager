@@ -30,7 +30,7 @@
                 <ui:TextBox Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}"
                             Icon="Search12"
                             Width="170"
-                            Margin="0 0 20 0"/>
+                            Margin="0 0 20 0" />
                 <ui:Button Grid.Column="1"
                            Content="Improt"
                            Icon="folder16"
@@ -47,42 +47,53 @@
                            Command="{Binding NavigateToCreateCustomerCommand}" />
             </StackPanel>
         </Grid>
-        <Grid Grid.Row="2"
-              Margin="20">
+        <Grid Grid.Row="2">
             <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
                   VerticalAlignment="Center"
                   HorizontalAlignment="Center">
                 <ui:LoadingScreen />
             </Grid>
-            <Grid Visibility="{Binding IsLoading, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Top">
+            <Grid Visibility="{Binding IsLoading, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                 <TextBlock Text="{Binding ErrorMessage}"
                            Visibility="{Binding HasErrorMessage, Converter={StaticResource BooleanToVisibilityConverter}}"
                            Foreground="Red"
                            FontSize="14" />
-                <ListView ItemsSource="{Binding Customers}">
+                <ListView Name="customerListView"
+                          ItemsSource="{Binding Customers}"
+                          ScrollViewer.CanContentScroll="True">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center">
                                 <TextBlock Text="{Binding Id}"
                                            Width="30"
                                            VerticalAlignment="Center" />
                                 <TextBlock Text="{Binding Name}"
-                                           Width="170"
+                                           Width="125"
+                                           Margin="10 0 0 0"
                                            VerticalAlignment="Center" />
                                 <TextBlock Text="{Binding Location}"
-                                           Width="200"
+                                           Width="140"
+                                           Margin="10 0 0 0"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding Street}"
+                                           Width="150"
+                                           Margin="10 0 0 0"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding ContactData}"
+                                           Width="220"
+                                           Margin="10 0 0 0"
                                            VerticalAlignment="Center" />
                                 <ui:Button Icon="Edit16"
                                            IconForeground="#757de8"
+                                           Margin="10 0 0 0"
                                            Command="{Binding NavigateToEditCustomerCommand}"
                                            VerticalAlignment="Center" />
                                 <ui:Button Icon="Delete16"
                                            IconForeground="#f4433f"
+                                           Margin="5 0 0 0"
                                            Command="{Binding DeleteCustomerCommand}"
-                                           VerticalAlignment="Center"
-                                           Margin="5 0 0 0" />
+                                           VerticalAlignment="Center" />
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>

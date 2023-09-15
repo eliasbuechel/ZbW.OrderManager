@@ -46,7 +46,6 @@ namespace BusinessLayer.Base.ViewModels
                 OnPropertyChanged(nameof(HasErrorMessage));
             }
         }
-
         protected static string ToLongErrorMessage(int maxSize)
         {
             return $"Cannot be larger than {maxSize} characters!";

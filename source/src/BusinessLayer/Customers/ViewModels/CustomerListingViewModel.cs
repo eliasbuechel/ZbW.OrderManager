@@ -27,8 +27,8 @@ namespace BusinessLayer.Customers.ViewModels
 
             _customerListingViweModelNavigateBackService = new FromSubNavigationService<CustomerListingViewModel>(_navigationStore, this);
             Customers = new CollectionView<CustomerViewModel>(_customers);
-            Customers.Filter = x => x.Name.Contains(Filter, StringComparison.InvariantCultureIgnoreCase) || x.Location.Contains(Filter, StringComparison.InvariantCultureIgnoreCase);
-            Customers.OrderKeySelector = x => Convert.ToInt32(x.Id);
+            Customers.Filter = CustomerCollectionViewFilter;
+            Customers.OrderKeySelector = CustomerCollectionViewOrder;
 
             NavigateToCreateCustomerCommand = new NavigateCommand(new ToSubNavigationService<CreateCustomerViewModel>(navigationStore, CreateCreateCustomerViewModel));
             LoadCustomersCommand = new LoadCustomersCommand(managerStore, this);
@@ -38,6 +38,7 @@ namespace BusinessLayer.Customers.ViewModels
             managerStore.CustomerCreated += OnCustomerCreated;
             managerStore.CustomerDeleted += OnCustomerDeleted;
         }
+
 
         public CollectionView<CustomerViewModel> Customers { get; }
         public ICommand NavigateToCreateCustomerCommand { get; }
@@ -117,12 +118,24 @@ namespace BusinessLayer.Customers.ViewModels
                 _customerValidator
                 );
         }
+        private static object CustomerCollectionViewOrder(CustomerViewModel customerViewModel)
+        {
+            return Convert.ToInt32(customerViewModel.Id);
+        }
+        private bool CustomerCollectionViewFilter(CustomerViewModel customerViewModel)
+        {
+            return customerViewModel.Name.Contains(Filter, StringComparison.InvariantCultureIgnoreCase)
+                || customerViewModel.Location.Contains(Filter, StringComparison.InvariantCultureIgnoreCase)
+                || customerViewModel.Location.Contains(Filter, StringComparison.InvariantCultureIgnoreCase)
+                || customerViewModel.Street.Contains(Filter, StringComparison.InvariantCultureIgnoreCase)
+                || customerViewModel.ContactData.Contains(Filter, StringComparison.InvariantCultureIgnoreCase);
+        }
 
+        private string _filter = string.Empty;
         private readonly ManagerStore _managerStore;
         private readonly NavigationStore _navigationStore;
         private readonly ICustomerValidator _customerValidator;
         private readonly FromSubNavigationService<CustomerListingViewModel> _customerListingViweModelNavigateBackService;
         private readonly ObservableCollection<CustomerViewModel> _customers = new ObservableCollection<CustomerViewModel>();
-        private string _filter = string.Empty;
     }
 }

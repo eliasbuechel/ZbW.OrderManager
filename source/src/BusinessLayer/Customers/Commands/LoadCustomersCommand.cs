@@ -19,7 +19,7 @@ namespace BusinessLayer.Customers.Commands
 
             try
             {
-                await _managerStore.Load();
+                await _managerStore.LoadCustomers();
 
                 _customerUpdatable.UpdateCustomers(_managerStore.Customers);
             }

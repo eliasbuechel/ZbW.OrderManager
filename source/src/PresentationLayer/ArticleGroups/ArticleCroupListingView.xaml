@@ -27,10 +27,16 @@
                    FontSize="20" />
             <StackPanel Orientation="Horizontal"
                         Grid.Column="1">
-                <ui:Button Content="Create article group"
-                           Icon="Add12"
-                           Command="{Binding NavigateToCreateArticleGroup}"
-                           Margin="10 0 0 0" />
+                <StackPanel Orientation="Horizontal">
+                    <ui:TextBox Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}"
+                                Icon="Search12"
+                                Width="170"
+                                />
+                    <ui:Button Content="Create article group"
+                               Icon="Add12"
+                               Command="{Binding NavigateToCreateArticleGroup}"
+                               Margin="20 0 0 0" />
+                </StackPanel>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="2"

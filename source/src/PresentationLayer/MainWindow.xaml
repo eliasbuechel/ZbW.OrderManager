@@ -57,10 +57,10 @@
                                        PageTag="listingView" />
                 </ui:NavigationStore.Items>
             </ui:NavigationStore>
-            <Border Grid.Column="1"
+            <Border
+                Grid.Column="1"
                     Background="{ui:ThemeResource ControlFillColorDefaultBrush}"
                     CornerRadius="8,0,0,0">
-                <ScrollViewer>
                     <Grid Margin="15">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -122,7 +122,6 @@
                             </Grid.Resources>
                         </Grid>
                     </Grid>
-                </ScrollViewer>
             </Border>
         </Grid>
         <ui:TitleBar Title="Manager"

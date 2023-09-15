@@ -60,7 +60,10 @@
                                 <TextBlock Text="{Binding TimeStamp}"
                                            Width="170"
                                            VerticalAlignment="Center" />
-                                <TextBlock Text="{Binding Customer.FirstName}"
+                                <TextBlock Text="{Binding Customer}"
+                                           Width="200"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding Positions}"
                                            Width="200"
                                            VerticalAlignment="Center" />
                                 <ui:Button Icon="Edit16"

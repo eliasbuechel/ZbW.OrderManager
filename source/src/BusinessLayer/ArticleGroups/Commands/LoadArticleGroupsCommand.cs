@@ -18,7 +18,7 @@ namespace BusinessLayer.ArticleGroups.Commands
             _articleGroupListingViewModel.IsLoading = true;
             try
             {
-                await _managerStore.Load();
+                await _managerStore.LoadArticleGroups();
 
                 _articleGroupListingViewModel.UpdateArticleGroups(_managerStore.ArticleGroups);
             }
