@@ -37,8 +37,8 @@ namespace BusinessLayer.Customers.ViewModels
 
             managerStore.CustomerCreated += OnCustomerCreated;
             managerStore.CustomerDeleted += OnCustomerDeleted;
+            managerStore.CustomerUpdated += OnCustomerUpdated;
         }
-
 
         public CollectionView<CustomerViewModel> Customers { get; }
         public ICommand NavigateToCreateCustomerCommand { get; }
@@ -72,6 +72,7 @@ namespace BusinessLayer.Customers.ViewModels
         {
             _managerStore.CustomerCreated -= OnCustomerCreated;
             _managerStore.CustomerDeleted -= OnCustomerDeleted;
+            _managerStore.CustomerUpdated -= OnCustomerUpdated;
         }
 
         private void OnCustomerCreated(CustomerDTO customer)
@@ -96,6 +97,21 @@ namespace BusinessLayer.Customers.ViewModels
                 return;
 
             _customers.Remove(customerViewModel);
+            Customers.Update();
+        }
+        private void OnCustomerUpdated(CustomerDTO customer)
+        {
+            foreach (CustomerViewModel c in _customers)
+            {
+                if (c.RepresentsCustomer(customer))
+                {
+                    _customers.Remove(c);
+                    break;
+                }
+            }
+
+            CustomerViewModel customerViewModel = new CustomerViewModel(_managerStore, customer, CreateEditCustomerViewModelNavigationService(customer));
+            _customers.Add(customerViewModel);
             Customers.Update();
         }
         private ToSubNavigationService<EditCustomerViewModel> CreateEditCustomerViewModelNavigationService(CustomerDTO customer)

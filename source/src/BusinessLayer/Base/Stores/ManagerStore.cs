@@ -23,9 +23,9 @@ namespace BusinessLayer.Base.Stores
 
         }
 
-
         public event Action<CustomerDTO>? CustomerCreated;
         public event Action<CustomerDTO>? CustomerDeleted;
+        public event Action<CustomerDTO>? CustomerUpdated;
         public event Action<ArticleGroupDTO>? RootArticleGroupCreated;
         public event Action<ArticleGroupDTO, ArticleGroupDTO>? SubordinateArticleGroupCreated;
         public event Action<ArticleGroupDTO>? RootArticleGroupDeleted;
@@ -39,19 +39,6 @@ namespace BusinessLayer.Base.Stores
         public IEnumerable<ArticleGroupDTO> ArticleGroups => _articleGroups;
         public IEnumerable<ArticleDTO> Articles => _articles;
         public IEnumerable<OrderDTO> Orders => _orders;
-
-        //public async Task Load()
-        //{
-        //    try
-        //    {
-        //        await _inizializeLazy.Value;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        _inizializeLazy = new Lazy<Task>(Inizialize);
-        //        throw;
-        //    }
-        //}
 
         public async Task LoadCustomers()
         {
@@ -128,6 +115,7 @@ namespace BusinessLayer.Base.Stores
             await _manager.EditCustomerAsync(initialCustomer, editedCustomer);
             int initialCustomerIndex = _customers.IndexOf(initialCustomer);
             _customers[initialCustomerIndex] = editedCustomer;
+            OnCustomerUpdated(editedCustomer);
         }
 
         public async Task CreateRootArticleGroupAsync(CreatedOrUpdatedArticleGroupDTO articleGroup)
@@ -260,6 +248,10 @@ namespace BusinessLayer.Base.Stores
         {
             CustomerDeleted?.Invoke(customer);
         }
+        private void OnCustomerUpdated(CustomerDTO customer)
+        {
+            CustomerUpdated?.Invoke(customer);
+        }
         private void OnSubordinateArticleGroupCreated(ArticleGroupDTO createdArticleGroup, ArticleGroupDTO superiorArticleGroup)
         {
             SubordinateArticleGroupCreated?.Invoke(createdArticleGroup, superiorArticleGroup);
@@ -335,8 +327,6 @@ namespace BusinessLayer.Base.Stores
             _customers.AddRange(customers);
         }
 
-
-        //private Lazy<Task> _inizializeLazy;
         private Lazy<Task> _inizializeCustomersLazy;
         private Lazy<Task> _inizializeArticleGroupsLazy;
         private Lazy<Task> _inizializeArticlesLazy;

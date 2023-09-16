@@ -8,9 +8,9 @@ using System.ComponentModel;
 
 namespace BusinessLayer.Customers.Commands
 {
-    public sealed class SaveChangesToCustomerCommand : BaseAsyncCommand, IDisposable
+    public sealed class UpdateCustomerCommand : BaseAsyncCommand, IDisposable
     {
-        public SaveChangesToCustomerCommand(ManagerStore managerStore, CustomerDTO initialCustomer, EditCustomerViewModel editCustomerViewModel, FromSubNavigationService<CustomerListingViewModel> customerListingViweModelNavigateBackService)
+        public UpdateCustomerCommand(ManagerStore managerStore, CustomerDTO initialCustomer, EditCustomerViewModel editCustomerViewModel, FromSubNavigationService<CustomerListingViewModel> customerListingViweModelNavigateBackService)
         {
             _managerStore = managerStore;
             _initialCustomer = initialCustomer;
@@ -24,7 +24,11 @@ namespace BusinessLayer.Customers.Commands
 
         public override bool CanExecute(object? parameter)
         {
-            return !_editedCustomerViewModel.HasErrors && CustomerDataChanged() && base.CanExecute(parameter);
+            bool baseCanExecute = base.CanExecute(parameter);
+            bool hasNoErrors = !_editedCustomerViewModel.HasErrors;
+            bool dataChanged = CustomerDataChanged();
+
+            return baseCanExecute && hasNoErrors && dataChanged;
         }
         public async override Task ExecuteAsync(object? parameter)
         {
@@ -52,15 +56,15 @@ namespace BusinessLayer.Customers.Commands
 
         private bool CustomerDataChanged()
         {
-            return _initialCustomer.FirstName != _editedCustomerViewModel.FirstName ||
-                _initialCustomer.LastName != _editedCustomerViewModel.LastName ||
-                _initialCustomer.StreetName != _editedCustomerViewModel.StreetName ||
-                _initialCustomer.HouseNumber != _editedCustomerViewModel.HouseNumber ||
-                _initialCustomer.City != _editedCustomerViewModel.City ||
-                _initialCustomer.PostalCode != _editedCustomerViewModel.PostalCode ||
-                _initialCustomer.EmailAddress != _editedCustomerViewModel.EmailAddress ||
-                _initialCustomer.WebsiteURL != _editedCustomerViewModel.WebsiteUrl ||
-                _editedCustomerViewModel.Password.IsNullOrEmpty() ? false : _initialCustomer.HashedPassword != _editedCustomerViewModel.HashedPassword;
+            return _initialCustomer.FirstName != _editedCustomerViewModel.FirstName
+                || _initialCustomer.LastName != _editedCustomerViewModel.LastName
+                || _initialCustomer.StreetName != _editedCustomerViewModel.StreetName
+                || _initialCustomer.HouseNumber != _editedCustomerViewModel.HouseNumber
+                || _initialCustomer.City != _editedCustomerViewModel.City
+                || _initialCustomer.PostalCode != _editedCustomerViewModel.PostalCode
+                || _initialCustomer.EmailAddress != _editedCustomerViewModel.EmailAddress
+                || _initialCustomer.WebsiteURL != _editedCustomerViewModel.WebsiteUrl
+                || (_editedCustomerViewModel.Password.IsNullOrEmpty() ? false : _initialCustomer.HashedPassword != _editedCustomerViewModel.HashedPassword);
         }
         private void OnEditCustomerViewModelErrorsChanged(object? sender, DataErrorsChangedEventArgs e)
         {

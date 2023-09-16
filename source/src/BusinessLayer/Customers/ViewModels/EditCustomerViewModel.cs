@@ -13,7 +13,7 @@ namespace BusinessLayer.Customers.ViewModels
         public EditCustomerViewModel(ManagerStore managerStore, CustomerDTO customer, FromSubNavigationService<CustomerListingViewModel> customerListingViweModelNavigateBackService, ICustomerValidator customerValidator)
             : base(customerValidator)
         {
-            SaveChangedToCustomerCommand = _saveChangedToCustomerCommand = new SaveChangesToCustomerCommand(managerStore, customer, this, customerListingViweModelNavigateBackService);
+            SaveChangedToCustomerCommand = _saveChangedToCustomerCommand = new UpdateCustomerCommand(managerStore, customer, this, customerListingViweModelNavigateBackService);
             CancelEditCustomerCommand = new NavigateCommand(customerListingViweModelNavigateBackService);
 
             Id = customer.Id.ToString();
@@ -62,6 +62,6 @@ namespace BusinessLayer.Customers.ViewModels
             _saveChangedToCustomerCommand.Dispose();
         }
 
-        private readonly SaveChangesToCustomerCommand _saveChangedToCustomerCommand;
+        private readonly UpdateCustomerCommand _saveChangedToCustomerCommand;
     }
 }

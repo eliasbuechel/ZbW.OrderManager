@@ -25,7 +25,7 @@ namespace BusinessLayer.Customers.ViewModels
         public string ContactData => $"{_customer.EmailAddress}{Environment.NewLine}{_customer.WebsiteURL}";
         public bool RepresentsCustomer(CustomerDTO customer)
         {
-            return ReferenceEquals(_customer, customer);
+            return customer.Id == _customer.Id;
         }
 
         private readonly CustomerDTO _customer;
