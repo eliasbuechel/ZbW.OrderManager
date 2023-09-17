@@ -5,41 +5,34 @@ namespace DataLayer.Customers.Models
 {
     public class Customer
     {
-        public Customer()
-        {
-            FirstName = string.Empty;
-            LastName = string.Empty;
-            Address = new Address();
-            EmailAddress = string.Empty;
-            WebsiteURL = string.Empty;
-            Password = string.Empty;
-        }
-
-
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(100)]
-        public string FirstName { get; set; }
+        [StringLength(7)]
+        public string CustomerNr { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(100)]
-        public string LastName { get; set; }
+        public string FirstName { get; set; } = string.Empty;
 
         [Required]
-        public virtual Address Address { get; set; }
+        [MaxLength(100)]
+        public string LastName { get; set; } = string.Empty;
+
+        [Required]
+        public virtual Address Address { get; set; } = new Address();
 
         [Required]
         [MaxLength(200)]
-        public string EmailAddress { get; set; }
+        public string EmailAddress { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(255)]
-        public string WebsiteURL { get; set; }
+        public string WebsiteURL { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(255)]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
     }
 }

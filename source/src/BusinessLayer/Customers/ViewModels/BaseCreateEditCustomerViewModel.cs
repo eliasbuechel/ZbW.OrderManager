@@ -1,8 +1,5 @@
 ﻿using BusinessLayer.Base.ViewModels;
 using DataLayer.Customers.Validation;
-using Microsoft.IdentityModel.Tokens;
-using System.Net.Mail;
-using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -14,6 +11,7 @@ namespace BusinessLayer.Customers.ViewModels
         public BaseCreateEditCustomerViewModel(ICustomerValidator customerValidator)
         {
             _customerValidator = customerValidator;
+            CustomerNr = string.Empty;
             FirstName = string.Empty;
             LastName = string.Empty;
             StreetName = string.Empty;
@@ -24,7 +22,20 @@ namespace BusinessLayer.Customers.ViewModels
             WebsiteUrl = string.Empty;
         }
 
+        public string CustomerNr
+        {
+            get => _customerNr;
+            set
+            {
+                _customerNr = value;
 
+                OnPropertyChanged();
+
+                ClearErrors();
+                if (!_customerValidator.ValidateCustomerNr(_customerNr))
+                    AddError("Customer does not match the patter 'CUXXXXX'");
+            }
+        }
         public string FirstName
         {
             get
@@ -213,7 +224,7 @@ namespace BusinessLayer.Customers.ViewModels
         private string _emailAddress = string.Empty;
         private string _websiteUrl = string.Empty;
         protected string _password = string.Empty;
-
+        private string _customerNr = string.Empty;
         protected readonly ICustomerValidator _customerValidator;
     }
 }

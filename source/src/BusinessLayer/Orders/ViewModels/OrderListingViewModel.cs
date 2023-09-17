@@ -3,6 +3,7 @@ using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using BusinessLayer.Base.ViewModels;
 using BusinessLayer.Orders.Commands;
+using DataLayer.Customers.DTOs;
 using DataLayer.Orders.DTOs;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -31,7 +32,9 @@ namespace BusinessLayer.Orders.ViewModels
 
             managerStore.OrderCreated += OnOrderCreated;
             managerStore.OrderDeleted += OnOrderDeleted;
+            managerStore.OrderUpdated += OnOrderUpdated;
         }
+
 
         public ICommand CreateOrderCommand { get; }
         public ICommand LoadOrdersCommand { get; }
@@ -61,6 +64,7 @@ namespace BusinessLayer.Orders.ViewModels
         {
             _managerStore.OrderCreated -= OnOrderCreated;
             _managerStore.OrderDeleted -= OnOrderDeleted;
+            _managerStore.OrderUpdated -= OnOrderUpdated;
         }
 
         private void OnOrderCreated(OrderDTO order)
@@ -79,6 +83,20 @@ namespace BusinessLayer.Orders.ViewModels
                     break;
                 }
             }
+            Orders.Update();
+        }
+        private void OnOrderUpdated(OrderDTO order)
+        {
+            foreach (OrderViewModel orderViewModel in _orders)
+            {
+                if (orderViewModel.GetOrder().Id == order.Id)
+                {
+                    _orders.Remove(orderViewModel);
+                    break;
+                }
+            }
+
+            OrderViewModel updatedOrderViewModel = new OrderViewModel(_managerStore, order);
             Orders.Update();
         }
         private CreateOrderViewModel CreateCreateOrderViewModel()

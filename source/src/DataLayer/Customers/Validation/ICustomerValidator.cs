@@ -5,6 +5,7 @@ namespace DataLayer.Customers.Validation
     public interface ICustomerValidator
     {
         bool Validate(IValidatableCustomer customer);
+        bool ValidateCustomerNr(string customerNr);
         bool ValidateFirstName(string firstName);
         bool ValidateLastName(string lastName);
         bool ValidateStreetName(string streetName);

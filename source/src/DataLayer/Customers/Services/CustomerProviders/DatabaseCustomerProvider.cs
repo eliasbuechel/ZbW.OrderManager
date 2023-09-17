@@ -46,7 +46,7 @@ namespace DataLayer.Customers.Services.CustomerProviders
             return await context.Customers
                 .Include(c => c.Address)
                 .Select(c => new SerializableCustomerDTO(
-                    c.Id,
+                    c.CustomerNr,
                     c.FirstName,
                     c.LastName,
                     new SerializableAddressDTO(
@@ -67,6 +67,7 @@ namespace DataLayer.Customers.Services.CustomerProviders
         {
             return c => new CustomerDTO(
                                 c.Id,
+                                c.CustomerNr,
                                 c.FirstName,
                                 c.LastName,
                                 c.Address.StreetName,

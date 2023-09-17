@@ -65,8 +65,8 @@
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal"
                                         HorizontalAlignment="Center">
-                                <TextBlock Text="{Binding Id}"
-                                           Width="30"
+                                <TextBlock Text="{Binding CustomerNr}"
+                                           Width="70"
                                            VerticalAlignment="Center" />
                                 <TextBlock Text="{Binding Name}"
                                            Width="125"

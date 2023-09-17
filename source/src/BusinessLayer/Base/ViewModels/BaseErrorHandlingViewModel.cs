@@ -9,6 +9,8 @@ namespace BusinessLayer.Base.ViewModels
     {
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
+        public Dictionary<string, List<string>> ValidationErrors => _propertyNameToErrorsDictionary;
+
         public bool HasErrors => _propertyNameToErrorsDictionary.Any();
         public IEnumerable GetErrors(string? propertyName)
         {
@@ -29,6 +31,7 @@ namespace BusinessLayer.Base.ViewModels
         protected void OnErrorsChanged(string propertyName)
         {
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+            OnPropertyChanged(nameof(ValidationErrors));
         }
         protected void ClearErrors([CallerMemberName] string propertyName = "")
         {

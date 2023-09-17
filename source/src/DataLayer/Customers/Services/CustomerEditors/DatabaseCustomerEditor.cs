@@ -48,6 +48,7 @@ namespace DataLayer.Customers.Services.CustomerEditors
         }
         private static void EditCustomer(CustomerDTO editedCustomerDTO, Customer customer)
         {
+            customer.CustomerNr = editedCustomerDTO.CustomerNr;
             customer.FirstName = editedCustomerDTO.FirstName;
             customer.LastName = editedCustomerDTO.LastName;
             customer.Address.StreetName = editedCustomerDTO.StreetName;

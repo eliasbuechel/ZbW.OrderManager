@@ -1,5 +1,6 @@
 ﻿using DataLayer.Base.DatabaseContext;
 using DataLayer.Customers.DTOs;
+using DataLayer.Customers.Exceptions;
 using DataLayer.Customers.Models;
 using DataLayer.Customers.Validation;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,9 @@ namespace DataLayer.Customers.Services.CustomerCreators
             using ManagerDbContext context = _dbContextFactory.CreateDbContext();
 
             ValidateCustomer(customerDTO);
+            if (context.Customers.Where(c => c.CustomerNr == customerDTO.CustomerNr).Any())
+                throw new AlreadyInDatabaseException($"Customer with the customerNr '{customerDTO.CustomerNr}' already in database!");
+
             Customer customer = ToCustomerDTO(customerDTO);
 
             context.Customers.Add(customer);
@@ -46,6 +50,7 @@ namespace DataLayer.Customers.Services.CustomerCreators
             return new Customer()
             {
                 Id = customerDTO.Id,
+                CustomerNr = customerDTO.CustomerNr,
                 FirstName = customerDTO.FirstName,
                 LastName = customerDTO.LastName,
                 Address = new Address()

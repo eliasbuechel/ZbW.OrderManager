@@ -19,6 +19,7 @@ namespace BusinessLayer.Customers.ViewModels
         public ICommand DeleteCustomerCommand { get; }
         public ICommand NavigateToEditCustomerCommand { get; }
         public string Id => _customer.Id.ToString();
+        public string CustomerNr => _customer.CustomerNr;
         public string Name => _customer.FirstName + " " + _customer.LastName;
         public string Location => $"{_customer.PostalCode} {_customer.City}";
         public string Street => $"{_customer.StreetName} {_customer.HouseNumber}";

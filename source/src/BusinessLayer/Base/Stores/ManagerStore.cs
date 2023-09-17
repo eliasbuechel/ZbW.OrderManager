@@ -30,10 +30,12 @@ namespace BusinessLayer.Base.Stores
         public event Action<ArticleGroupDTO, ArticleGroupDTO>? SubordinateArticleGroupCreated;
         public event Action<ArticleGroupDTO>? RootArticleGroupDeleted;
         public event Action<ArticleGroupDTO, ArticleGroupDTO>? SubordinateArticleGroupDeleted;
+        public event Action<ArticleGroupDTO>? ArticleGroupUpdated;
         public event Action<ArticleDTO>? ArticleCreated;
         public event Action<ArticleDTO>? ArticleDeleted;
         public event Action<OrderDTO>? OrderCreated;
         public event Action<OrderDTO>? OrderDeleted;
+        public event Action<OrderDTO>? OrderUpdated;
 
         public IEnumerable<CustomerDTO> Customers => _customers;
         public IEnumerable<ArticleGroupDTO> ArticleGroups => _articleGroups;
@@ -232,6 +234,7 @@ namespace BusinessLayer.Base.Stores
         public async Task CreateOrderAsync(CreatingOrderDTO order)
         {
             OrderDTO orderDTO = await _manager.CreateOrderAsync(order);
+            _orders.Add(orderDTO);
             OnOrderCreated(orderDTO);
         }
         public async Task DeleteOrderAsync(OrderDTO order)
@@ -251,6 +254,15 @@ namespace BusinessLayer.Base.Stores
         private void OnCustomerUpdated(CustomerDTO customer)
         {
             CustomerUpdated?.Invoke(customer);
+
+            foreach (var order in _orders)
+            {
+                if (order.Customer.Id == customer.Id)
+                {
+                    order.UpdateCustomer(customer);
+                    OnOrderUpdated(order);
+                }
+            }
         }
         private void OnSubordinateArticleGroupCreated(ArticleGroupDTO createdArticleGroup, ArticleGroupDTO superiorArticleGroup)
         {
@@ -268,6 +280,26 @@ namespace BusinessLayer.Base.Stores
         {
             SubordinateArticleGroupDeleted?.Invoke(articleGroup, superiorArticleGroup);
         }
+        private void OnArticleGroupUpdated(ArticleGroupDTO articleGroup)
+        {
+            ArticleGroupUpdated?.Invoke(articleGroup);
+
+
+            foreach (ArticleGroupDTO a in _articleGroups)
+            {
+            }
+        }
+        private void UpdateArticleGroupsRec(IEnumerable<ArticleGroupDTO>? subordinateArticleGroups)
+        {
+            if (subordinateArticleGroups == null || !subordinateArticleGroups.Any())
+                return;
+
+            foreach (var subordinateArticleGroup in subordinateArticleGroups)
+            {
+
+            }
+        }
+        
         private void OnArticleCreated(ArticleDTO article)
         {
             ArticleCreated?.Invoke(article);
@@ -283,6 +315,10 @@ namespace BusinessLayer.Base.Stores
         private void OnOrderDeleted(OrderDTO order)
         {
             OrderDeleted?.Invoke(order);
+        }
+        private void OnOrderUpdated(OrderDTO order)
+        {
+            OrderUpdated?.Invoke(order);
         }
         private async Task Inizialize()
         {

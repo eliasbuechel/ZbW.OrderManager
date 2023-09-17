@@ -34,6 +34,7 @@ namespace BusinessLayer.Customers.Commands
         {
             CustomerDTO editedCustomer = new CustomerDTO(
                 _initialCustomer.Id,
+                _editedCustomerViewModel.CustomerNr,
                 _editedCustomerViewModel.FirstName,
                 _editedCustomerViewModel.LastName,
                 _editedCustomerViewModel.StreetName,
@@ -56,7 +57,8 @@ namespace BusinessLayer.Customers.Commands
 
         private bool CustomerDataChanged()
         {
-            return _initialCustomer.FirstName != _editedCustomerViewModel.FirstName
+            return _initialCustomer.CustomerNr != _editedCustomerViewModel.CustomerNr
+                || _initialCustomer.FirstName != _editedCustomerViewModel.FirstName
                 || _initialCustomer.LastName != _editedCustomerViewModel.LastName
                 || _initialCustomer.StreetName != _editedCustomerViewModel.StreetName
                 || _initialCustomer.HouseNumber != _editedCustomerViewModel.HouseNumber

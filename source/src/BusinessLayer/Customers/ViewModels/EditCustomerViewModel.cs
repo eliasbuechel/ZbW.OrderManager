@@ -17,6 +17,7 @@ namespace BusinessLayer.Customers.ViewModels
             CancelEditCustomerCommand = new NavigateCommand(customerListingViweModelNavigateBackService);
 
             Id = customer.Id.ToString();
+            CustomerNr = customer.CustomerNr;
             FirstName = customer.FirstName;
             LastName = customer.LastName;
             StreetName = customer.StreetName;

@@ -29,6 +29,7 @@ namespace BusinessLayer.Customers.Commands
             {
                 CustomerDTO customer = new CustomerDTO(
                     await _managerStore.GetNextFreeCustomerIdAsync(),
+                    _createCustomerViewModel.CustomerNr,
                     _createCustomerViewModel.FirstName,
                     _createCustomerViewModel.LastName,
                     _createCustomerViewModel.StreetName,

@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Base.Commands;
+using BusinessLayer.Base.Exceptions;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
 using DataLayer.Customers.DTOs;
@@ -59,36 +60,47 @@ namespace BusinessLayer.Customers.Commands
                 return;
             }
 
-            IEnumerable<CustomerDTO> addableCustomers = customers.Select(c => new CustomerDTO(
-                c.Id,
-                c.FirstName,
-                c.LastName,
-                c.Address.StreetName,
-                c.Address.HouseNumber,
-                c.Address.City,
-                c.Address.PostalCode,
-                c.EmailAddress,
-                c.WebsiteURL,
-                c.HashedPassword
-                ));
-
             int addedCustomersCount = 0;
 
-            foreach (var c in addableCustomers)
+            List<string> errors = new List<string>();
+
+            foreach (var c in customers)
             {
                 try
                 {
-                    await _managerStore.CreateCustomerAsync(c);
+                    CustomerDTO customer = new CustomerDTO(
+                    await _managerStore.GetNextFreeCustomerIdAsync(),
+                    c.CustomerNr,
+                    c.FirstName,
+                    c.LastName,
+                    c.Address.StreetName,
+                    c.Address.HouseNumber,
+                    c.Address.City,
+                    c.Address.PostalCode,
+                    c.EmailAddress,
+                    c.WebsiteURL,
+                    c.HashedPassword
+                    );
+
+                    await _managerStore.CreateCustomerAsync(customer);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    errors.Add(e.Message);
                     continue;
                 }
 
                 addedCustomersCount++;
             }
 
-            _dialogService.MessageBoxDialog($"Successfully added {addedCustomersCount}/{addableCustomers.Count()} customers!");
+            string message = $"Successfully added {addedCustomersCount}/{customers.Count()} customers! Additional info:{Environment.NewLine}";
+
+            foreach (var error in errors)
+            {
+                message += error + Environment.NewLine;
+            }
+
+            _dialogService.MessageBoxDialog(message);
         }
 
         private readonly ManagerStore _managerStore;

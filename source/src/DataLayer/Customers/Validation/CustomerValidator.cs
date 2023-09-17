@@ -7,17 +7,26 @@ namespace DataLayer.Customers.Validation
     {
         public bool Validate(IValidatableCustomer customer)
         {
-            bool isValide = ValidateFirstName(customer.FirstName)
+            bool isValide = ValidateCustomerNr(customer.CustomerNr)
+                && ValidateFirstName(customer.FirstName)
                 && ValidateLastName(customer.LastName)
                 && ValidateStreetName(customer.StreetName)
                 && ValidateHouseNumer(customer.HouseNumber)
                 && ValidatePostalCode(customer.PostalCode)
                 && ValidateCity(customer.City)
                 && ValidateEmailAddress(customer.EmailAddress)
-                && ValidateWebsiteUrl(customer.WebsiteURL);
+                && ValidateWebsiteUrl(customer.WebsiteURL)
+                && ValidateHashedPassword(customer.HashedPassword);
 
             return isValide;
         }
+
+        public bool ValidateCustomerNr(string customerNr)
+        {
+            bool isValide = StringValidator.Validate(customerNr, CUSTOMER_NR_VALIDATION_PATTERN);
+            return isValide;
+        }
+
         public bool ValidateCity(string city)
         {
             bool isValide = StringValidator.Validate(city, CITY_VALIDATION_PATTERN);
@@ -45,9 +54,15 @@ namespace DataLayer.Customers.Validation
         }
         public bool ValidatePassword(string password)
         {
-            bool isValide = StringValidator.Validate(password, POSTAL_CODE_VALIDATION_PATTERN);
+            bool isValide = StringValidator.Validate(password, PASSWORD_VALIDATION_PATTERN);
             return isValide;
         }
+        public bool ValidateHashedPassword(string hashedPassword)
+        {
+            bool isValide = StringValidator.Validate(hashedPassword, HASHED_PASSWORD_VALIDATION_PATTERN);
+            return isValide;
+        }
+
         public bool ValidatePostalCode(string postalCode)
         {
             bool isValide = StringValidator.Validate(postalCode, POSTAL_CODE_VALIDATION_PATTERN);
@@ -64,6 +79,7 @@ namespace DataLayer.Customers.Validation
             return isValide;
         }
 
+        private const string CUSTOMER_NR_VALIDATION_PATTERN = @"^CU\d{5}$";
         private const string FIRST_NAME_VALIDATION_PATTERN = @"^.+$";
         private const string LAST_NAME_VALIDATION_PATTERN = @"^.+$";
         private const string STREET_NAME_VALIDATION_PATTERN = @"^.+$";
@@ -73,5 +89,6 @@ namespace DataLayer.Customers.Validation
         private const string EMAIL_ADDRESS_VALIDATION_PATTERN = @"^.+$";
         private const string WEBSITE_URL_VALIDATION_PATTERN = @"^.+$";
         private const string PASSWORD_VALIDATION_PATTERN = @"^.+$";
+        private const string HASHED_PASSWORD_VALIDATION_PATTERN = @"^.+$";
     }
 }

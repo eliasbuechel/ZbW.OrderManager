@@ -26,6 +26,10 @@
             <WrapPanel Orientation="Horizontal"
                        HorizontalAlignment="Center"
                        ItemWidth="200">
+                <ui:TextBox Text="{Binding CustomerNr, UpdateSourceTrigger=PropertyChanged}"
+                            PlaceholderText="CustomerNr"
+                            Icon="Person20"
+                            Margin="10" />
                 <ui:TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"
                             PlaceholderText="Firstname"
                             Icon="Person20"
@@ -59,9 +63,9 @@
                             Icon="Globe20"
                             Margin="10" />
                 <ui:PasswordBox Password="{Binding Password, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                            PlaceholderText="pw not changing"
-                            Icon="LockClosed12"
-                            Margin="10" />
+                                PlaceholderText="pw not changing"
+                                Icon="LockClosed12"
+                                Margin="10" />
             </WrapPanel>
         </StackPanel>
         <StackPanel Grid.Row="4"
