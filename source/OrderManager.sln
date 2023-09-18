@@ -9,9 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer", "src\DataLayer\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLayer", "src\BusinessLayer\BusinessLayer.csproj", "{D3A70903-4DD2-47DD-9BF8-BE80FCC18A7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayer.Tests", "DataLayer.Tests\DataLayer.Tests.csproj", "{86662BAE-D366-4AD5-B419-9C3AB2E891C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer.Tests", "DataLayer.Tests\DataLayer.Tests.csproj", "{86662BAE-D366-4AD5-B419-9C3AB2E891C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLayer.Tests", "BusinessLayer.Tests\BusinessLayer.Tests.csproj", "{CB0F7403-3F88-4326-A207-84EB42D53440}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLayer.Tests", "BusinessLayer.Tests\BusinessLayer.Tests.csproj", "{CB0F7403-3F88-4326-A207-84EB42D53440}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D3A70903-4DD2-47DD-9BF8-BE80FCC18A7C} = {D3A70903-4DD2-47DD-9BF8-BE80FCC18A7C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
