@@ -10,7 +10,7 @@ namespace BusinessLayer.Articles.ViewModels
 {
     public class ArticleViewModel : BaseViewModel
     {
-        public ArticleViewModel(ManagerStore managerStore, ArticleDTO article, NavigationService editArticleViewModelNavigationService)
+        public ArticleViewModel(ManagerStore managerStore, ArticleDTO article, NavigationService<EditArticleViewModel> editArticleViewModelNavigationService)
         {
             _article = article;
             NavigateToEditArticleCommand = new NavigateCommand(editArticleViewModelNavigationService);

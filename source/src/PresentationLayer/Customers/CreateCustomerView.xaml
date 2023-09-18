@@ -21,6 +21,10 @@
                    Orientation="Horizontal"
                    HorizontalAlignment="Center"
                    ItemWidth="200">
+            <ui:TextBox Text="{Binding CustomerNr, UpdateSourceTrigger=PropertyChanged}"
+                        PlaceholderText="CUxxxxx"
+                        Icon="Person20"
+                        Margin="10"/>
             <ui:TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"
                         PlaceholderText="Firstname"
                         Icon="Person20"
@@ -53,10 +57,11 @@
                         PlaceholderText="WebsiteUrl"
                         Icon="Globe20"
                         Margin="10" />
-            <ui:TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
-                        PlaceholderText="Password"
-                        Icon="LockClosed12"
-                        Margin="10" />
+            <ui:PasswordBox Password="{Binding Password, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            PlaceholderText="Password"
+                            Icon="LockClosed12"
+                            ClearButtonEnabled="False"
+                            Margin="10" />
         </WrapPanel>
         <StackPanel Grid.Row="4"
                     Orientation="Horizontal"

@@ -1,5 +1,6 @@
 ﻿using DataLayer.Base.DatabaseContext;
 using DataLayer.Customers.DTOs;
+using DataLayer.Customers.Exceptions;
 using DataLayer.Customers.Models;
 using DataLayer.Customers.Validation;
 using Microsoft.EntityFrameworkCore;
@@ -15,14 +16,17 @@ namespace DataLayer.Customers.Services.CustomerCreators
             _customerValidator = customerValidator;
         }
 
-        public async Task CreateCustomerAsync(CustomerDTO customer)
+        public async Task CreateCustomerAsync(CustomerDTO customerDTO)
         {
             using ManagerDbContext context = _dbContextFactory.CreateDbContext();
 
-            ValidateCustomer(customer);
-            Customer customerDTO = ToCustomerDTO(customer);
+            ValidateCustomer(customerDTO);
+            if (context.Customers.Where(c => c.CustomerNr == customerDTO.CustomerNr).Any())
+                throw new AlreadyInDatabaseException($"Customer with the customerNr '{customerDTO.CustomerNr}' already in database!");
 
-            context.Customers.Add(customerDTO);
+            Customer customer = ToCustomerDTO(customerDTO);
+
+            context.Customers.Add(customer);
             await context.SaveChangesAsync();
         }
         public async Task<int> GetNextFreeCustomerIdAsync()
@@ -36,28 +40,29 @@ namespace DataLayer.Customers.Services.CustomerCreators
             return maxId + 1;
         }
 
-        private void ValidateCustomer(CustomerDTO customer)
+        private void ValidateCustomer(IValidatableCustomer customer)
         {
             if (!_customerValidator.Validate(customer))
                 throw new ValidationException();
         }
-        private static Customer ToCustomerDTO(CustomerDTO customer)
+        private static Customer ToCustomerDTO(CustomerDTO customerDTO)
         {
             return new Customer()
             {
-                Id = customer.Id,
-                FirstName = customer.FirstName,
-                LastName = customer.LastName,
+                Id = customerDTO.Id,
+                CustomerNr = customerDTO.CustomerNr,
+                FirstName = customerDTO.FirstName,
+                LastName = customerDTO.LastName,
                 Address = new Address()
                 {
-                    StreetName = customer.StreetName,
-                    HouseNumber = customer.HouseNumber,
-                    City = customer.City,
-                    PostalCode = customer.PostalCode
+                    StreetName = customerDTO.StreetName,
+                    HouseNumber = customerDTO.HouseNumber,
+                    City = customerDTO.City,
+                    PostalCode = customerDTO.PostalCode
                 },
-                EmailAddress = customer.EmailAddress,
-                WebsiteURL = customer.WebsiteURL,
-                Password = customer.Password
+                EmailAddress = customerDTO.EmailAddress,
+                WebsiteURL = customerDTO.WebsiteURL,
+                Password = customerDTO.HashedPassword
             };
         }
 

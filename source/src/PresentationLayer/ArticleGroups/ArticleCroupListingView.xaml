@@ -30,7 +30,7 @@
                 <ui:Button Content="Create article group"
                            Icon="Add12"
                            Command="{Binding NavigateToCreateArticleGroup}"
-                           Margin="10 0 0 0" />
+                           Margin="20 0 0 0" />
             </StackPanel>
         </Grid>
         <Grid Grid.Row="2"

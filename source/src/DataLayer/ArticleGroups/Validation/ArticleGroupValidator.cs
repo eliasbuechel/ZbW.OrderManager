@@ -14,6 +14,6 @@ namespace DataLayer.ArticleGroups.Validation
             return StringValidator.Validate(name, NAME_VALIDATION_PATTERN);
         }
 
-        private const string NAME_VALIDATION_PATTERN = "/^[^\\s].{0,39}$";
+        private const string NAME_VALIDATION_PATTERN = @"^.+$";
     }
 }

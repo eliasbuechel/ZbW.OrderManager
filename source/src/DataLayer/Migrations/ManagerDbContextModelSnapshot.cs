@@ -62,7 +62,7 @@ namespace DataLayer.Migrations
                     b.ToTable("Articles");
                 });
 
-            modelBuilder.Entity("DataLayer.Customers.DTOs.AddressDTO", b =>
+            modelBuilder.Entity("DataLayer.Customers.Models.Address", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -95,13 +95,18 @@ namespace DataLayer.Migrations
                     b.ToTable("Address");
                 });
 
-            modelBuilder.Entity("DataLayer.Customers.DTOs.CustomerDTO", b =>
+            modelBuilder.Entity("DataLayer.Customers.Models.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<int>("AddressId")
                         .HasColumnType("int");
+
+                    b.Property<string>("CustomerNr")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
 
                     b.Property<string>("EmailAddress")
                         .IsRequired()
@@ -135,6 +140,56 @@ namespace DataLayer.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("DataLayer.Orders.Models.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("DataLayer.Orders.Models.Position", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Ammount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ArticleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArticleId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Positions");
+                });
+
             modelBuilder.Entity("DataLayer.ArticleGroups.Models.ArticleGroup", b =>
                 {
                     b.HasOne("DataLayer.ArticleGroups.Models.ArticleGroup", "SuperiorArticleGroup")
@@ -155,9 +210,9 @@ namespace DataLayer.Migrations
                     b.Navigation("ArticleGroup");
                 });
 
-            modelBuilder.Entity("DataLayer.Customers.DTOs.CustomerDTO", b =>
+            modelBuilder.Entity("DataLayer.Customers.Models.Customer", b =>
                 {
-                    b.HasOne("DataLayer.Customers.DTOs.AddressDTO", "Address")
+                    b.HasOne("DataLayer.Customers.Models.Address", "Address")
                         .WithMany()
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -166,9 +221,44 @@ namespace DataLayer.Migrations
                     b.Navigation("Address");
                 });
 
+            modelBuilder.Entity("DataLayer.Orders.Models.Order", b =>
+                {
+                    b.HasOne("DataLayer.Customers.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("DataLayer.Orders.Models.Position", b =>
+                {
+                    b.HasOne("DataLayer.Articles.Models.Article", "Article")
+                        .WithMany()
+                        .HasForeignKey("ArticleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataLayer.Orders.Models.Order", "Order")
+                        .WithMany("Positions")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Article");
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("DataLayer.ArticleGroups.Models.ArticleGroup", b =>
                 {
                     b.Navigation("SubordinateArticleGroups");
+                });
+
+            modelBuilder.Entity("DataLayer.Orders.Models.Order", b =>
+                {
+                    b.Navigation("Positions");
                 });
 #pragma warning restore 612, 618
         }

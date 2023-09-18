@@ -2,21 +2,21 @@
 
 namespace DataLayer.Customers.Exceptions
 {
-    class NotContainingCustomerInDatabaseException : Exception
+    public class NotContainingCustomerInDatabaseException : Exception
     {
-        public CustomerDTO customer { get; }
-
         public NotContainingCustomerInDatabaseException(CustomerDTO lookingForCutomer)
         {
-            customer = lookingForCutomer;
+            Customer = lookingForCutomer;
         }
         public NotContainingCustomerInDatabaseException(string? message, CustomerDTO lookingForCutomer) : base(message)
         {
-            customer = lookingForCutomer;
+            Customer = lookingForCutomer;
         }
         public NotContainingCustomerInDatabaseException(string? message, Exception? innerException, CustomerDTO lookingForCutomer) : base(message, innerException)
         {
-            customer = lookingForCutomer;
+            Customer = lookingForCutomer;
         }
+
+        public CustomerDTO Customer { get; }
     }
 }

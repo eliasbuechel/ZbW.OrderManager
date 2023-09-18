@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Base.ViewModels;
 using DataLayer.Customers.Validation;
-using System.Net.Mail;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace BusinessLayer.Customers.ViewModels
 {
@@ -10,6 +11,7 @@ namespace BusinessLayer.Customers.ViewModels
         public BaseCreateEditCustomerViewModel(ICustomerValidator customerValidator)
         {
             _customerValidator = customerValidator;
+            CustomerNr = string.Empty;
             FirstName = string.Empty;
             LastName = string.Empty;
             StreetName = string.Empty;
@@ -18,9 +20,22 @@ namespace BusinessLayer.Customers.ViewModels
             PostalCode = string.Empty;
             EmailAddress = string.Empty;
             WebsiteUrl = string.Empty;
-            Password = string.Empty;
         }
 
+        public string CustomerNr
+        {
+            get => _customerNr;
+            set
+            {
+                _customerNr = value;
+
+                OnPropertyChanged();
+
+                ClearErrors();
+                if (!_customerValidator.ValidateCustomerNr(_customerNr))
+                    AddError("Customer does not match the patter 'CUXXXXX'");
+            }
+        }
         public string FirstName
         {
             get
@@ -39,7 +54,7 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (FirstName.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidateFirstName(FirstName))
+                if (!_customerValidator.ValidateFirstName(FirstName))
                     AddError(ValidationErrorMessage());
             }
         }
@@ -61,7 +76,7 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (LastName.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidateLastName(LastName))
+                if (!_customerValidator.ValidateLastName(LastName))
                     AddError(ValidationErrorMessage());
             }
         }
@@ -83,7 +98,7 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (StreetName.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidateStreetName(StreetName))
+                if (!_customerValidator.ValidateStreetName(StreetName))
                     AddError(ValidationErrorMessage());
             }
         }
@@ -105,7 +120,7 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (HouseNumber.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidateHouseNumer(HouseNumber))
+                if (!_customerValidator.ValidateHouseNumer(HouseNumber))
                     AddError(ValidationErrorMessage());
             }
         }
@@ -127,7 +142,7 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (City.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidateCity(City))
+                if (!_customerValidator.ValidateCity(City))
                     AddError(ValidationErrorMessage());
             }
         }
@@ -149,7 +164,7 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (PostalCode.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidatePostalCode(PostalCode))
+                if (!_customerValidator.ValidatePostalCode(PostalCode))
                     AddError(ValidationErrorMessage());
             }
         }
@@ -171,7 +186,7 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (EmailAddress.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidateEmailAddress(EmailAddress))
+                if (!_customerValidator.ValidateEmailAddress(EmailAddress))
                     AddError(ValidationErrorMessage());
             }
         }
@@ -193,32 +208,12 @@ namespace BusinessLayer.Customers.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (WebsiteUrl.Length > maxCharacterSize)
                     AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidateWebsiteUrl(WebsiteUrl))
+                if (!_customerValidator.ValidateWebsiteUrl(WebsiteUrl))
                     AddError(ValidationErrorMessage());
             }
         }
-        public string Password
-        {
-            get
-            {
-                return _password;
-            }
-            set
-            {
-                _password = value;
-                OnPropertyChanged();
 
-                const int maxCharacterSize = 255;
-
-                ClearErrors();
-                if (string.IsNullOrEmpty(Password))
-                    AddError(EMPTY_MESSAGE);
-                if (Password.Length > maxCharacterSize)
-                    AddError(ToLongErrorMessage(maxCharacterSize));
-                if (_customerValidator.ValidatePassword(Password))
-                    AddError(ValidationErrorMessage());
-            }
-        }
+        public string HashedPassword => BitConverter.ToString(SHA256.HashData(Encoding.UTF8.GetBytes(_password))).Replace("-", "").ToLower();
 
         private string _firstName = string.Empty;
         private string _lastName = string.Empty;
@@ -228,8 +223,8 @@ namespace BusinessLayer.Customers.ViewModels
         private string _postalCode = string.Empty;
         private string _emailAddress = string.Empty;
         private string _websiteUrl = string.Empty;
-        private string _password = string.Empty;
-
-        private readonly ICustomerValidator _customerValidator;
+        protected string _password = string.Empty;
+        private string _customerNr = string.Empty;
+        protected readonly ICustomerValidator _customerValidator;
     }
 }

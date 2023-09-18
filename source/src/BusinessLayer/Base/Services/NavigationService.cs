@@ -3,21 +3,21 @@ using BusinessLayer.Base.ViewModels;
 
 namespace BusinessLayer.Base.Services
 {
-    public class NavigationService
+    public class NavigationService<TViewModel> : INavigationService where TViewModel : BaseViewModel
     {
-        public NavigationService(NavigationStore navigationStore, Func<BaseViewModel> createViewModel)
+        public NavigationService(NavigationStore navigationStore, Func<TViewModel> createViewModel)
         {
-            _NavigationStore = navigationStore;
+            _navigationStore = navigationStore;
             _createViewModel = createViewModel;
         }
 
         public void Navigate()
         {
-            _NavigationStore.CurrentViewModel.Dispose();
-            _NavigationStore.CurrentViewModel = _createViewModel();
+            _navigationStore.CurrentViewModel?.Dispose();
+            _navigationStore.CurrentViewModel = _createViewModel();
         }
 
-        private readonly NavigationStore _NavigationStore;
-        private readonly Func<BaseViewModel> _createViewModel;
+        private readonly NavigationStore _navigationStore;
+        private readonly Func<TViewModel> _createViewModel;
     }
 }

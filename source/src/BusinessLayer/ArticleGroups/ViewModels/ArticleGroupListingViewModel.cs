@@ -1,5 +1,4 @@
 ﻿using BusinessLayer.ArticleGroups.Commands;
-using BusinessLayer.Articles.ViewModels;
 using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
@@ -11,16 +10,16 @@ using System.Windows.Input;
 
 namespace BusinessLayer.ArticleGroups.ViewModels
 {
-    public class ArticleGroupListingViewModel : BaseLoadableViewModel, IArticleGroupUpdatable
+    public class ArticleGroupListingViewModel : BaseLoadableViewModel, IArticleGroupUpdatable, IMainNavigationViewModel
     {
-        public static ArticleGroupListingViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService articleGroupListingViewModelNavigationService, NavigationService createArticleGorupViewModelNavigationService, IArticleGroupValidator articleGroupValidator)
+        public static ArticleGroupListingViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService<ArticleGroupListingViewModel> articleGroupListingViewModelNavigationService, NavigationService<CreateArticleGroupViewModel> createArticleGorupViewModelNavigationService, IArticleGroupValidator articleGroupValidator)
         {
             ArticleGroupListingViewModel viewModel = new ArticleGroupListingViewModel(managerStore, navigationStore, articleGroupListingViewModelNavigationService, createArticleGorupViewModelNavigationService, articleGroupValidator);
             viewModel.LoadArticleGroupsCommand.Execute(null);
             return viewModel;
         }
 
-        private ArticleGroupListingViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService articleGroupListingViewModelNavigationService, NavigationService createArticleGorupViewModelNavigationService, IArticleGroupValidator articleGroupValidator)
+        private ArticleGroupListingViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService<ArticleGroupListingViewModel> articleGroupListingViewModelNavigationService, NavigationService<CreateArticleGroupViewModel> createArticleGorupViewModelNavigationService, IArticleGroupValidator articleGroupValidator)
         {
             _managerStore = managerStore;
             _navigationStore = navigationStore;
@@ -37,13 +36,6 @@ namespace BusinessLayer.ArticleGroups.ViewModels
         public ICommand LoadArticleGroupsCommand { get; }
         public IEnumerable<ArticleGroupViewModel> ArticleGroups => _articleGroups;
 
-        public override void Dispose()
-        {
-            _managerStore.RootArticleGroupCreated -= OnRootArticleGroupCreated;
-            _managerStore.RootArticleGroupDeleted -= OnRootArticleGroupDeleted;
-
-            base.Dispose();
-        }
         public void UpdateArticleGroups(IEnumerable<ArticleGroupDTO> articleGroups)
         {
             _articleGroups.Clear();
@@ -58,6 +50,11 @@ namespace BusinessLayer.ArticleGroups.ViewModels
 
                 _articleGroups.Add(articleGropViewModel);
             }
+        }
+        public override void Dispose(bool disposing)
+        {
+            _managerStore.RootArticleGroupCreated -= OnRootArticleGroupCreated;
+            _managerStore.RootArticleGroupDeleted -= OnRootArticleGroupDeleted;
         }
 
         private void OnRootArticleGroupCreated(ArticleGroupDTO createdArticleGroup)
@@ -86,7 +83,7 @@ namespace BusinessLayer.ArticleGroups.ViewModels
 
         private readonly ManagerStore _managerStore;
         private readonly NavigationStore _navigationStore;
-        private readonly NavigationService _articleGroupListingViewModelNavigationService;
+        private readonly NavigationService<ArticleGroupListingViewModel> _articleGroupListingViewModelNavigationService;
         private readonly ObservableCollection<ArticleGroupViewModel> _articleGroups = new ObservableCollection<ArticleGroupViewModel>();
         private readonly IArticleGroupValidator _articleGroupValidator;
     }

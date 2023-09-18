@@ -10,13 +10,14 @@ namespace BusinessLayer.Customers.ViewModels
 {
     public class EditCustomerViewModel : BaseCreateEditCustomerViewModel
     {
-        public EditCustomerViewModel(ManagerStore managerStore, CustomerDTO customer, NavigationService createCustomerListingViewModelNavigationService, ICustomerValidator customerValidator)
+        public EditCustomerViewModel(ManagerStore managerStore, CustomerDTO customer, FromSubNavigationService<CustomerListingViewModel> customerListingViweModelNavigateBackService, ICustomerValidator customerValidator)
             : base(customerValidator)
         {
-            SaveChangedToCustomerCommand = new SaveChangesToCustomerCommand(managerStore, customer, this, createCustomerListingViewModelNavigationService);
-            CancelEditCustomerCommand = new NavigateCommand(createCustomerListingViewModelNavigationService);
+            SaveChangedToCustomerCommand = _saveChangedToCustomerCommand = new UpdateCustomerCommand(managerStore, customer, this, customerListingViweModelNavigateBackService);
+            CancelEditCustomerCommand = new NavigateCommand(customerListingViweModelNavigateBackService);
 
             Id = customer.Id.ToString();
+            CustomerNr = customer.CustomerNr;
             FirstName = customer.FirstName;
             LastName = customer.LastName;
             StreetName = customer.StreetName;
@@ -25,11 +26,43 @@ namespace BusinessLayer.Customers.ViewModels
             City = customer.City;
             EmailAddress = customer.EmailAddress;
             WebsiteUrl = customer.WebsiteURL;
-            Password = customer.Password;
+            Password = string.Empty;
         }
 
         public string Id { get; }
         public ICommand SaveChangedToCustomerCommand { get; }
         public ICommand CancelEditCustomerCommand { get; }
+        public string Password
+        {
+            get => _password;
+            set
+            {
+                _password = value;
+
+
+                OnPropertyChanged();
+
+                const int maxCharacterSize = 255;
+                const int minCharacterSize = 8;
+
+                ClearErrors();
+
+                if (string.IsNullOrEmpty(value))
+                    return;
+                if (value.Length < minCharacterSize)
+                    AddError($"Has to be at least 8 characters!");
+                if (value.Length > maxCharacterSize)
+                    AddError(ToLongErrorMessage(maxCharacterSize));
+                if (!_customerValidator.ValidatePassword(value))
+                    AddError(ValidationErrorMessage());
+            }
+        }
+
+        public override void Dispose(bool disposing)
+        {
+            _saveChangedToCustomerCommand.Dispose();
+        }
+
+        private readonly UpdateCustomerCommand _saveChangedToCustomerCommand;
     }
 }

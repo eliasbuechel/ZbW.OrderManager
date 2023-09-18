@@ -6,17 +6,17 @@ namespace DataLayer.Articles.Exceptions
     {
         public NotContainingArticleInDatabaseException(ArticleDTO article)
         {
-            _article = article;
+            Article = article;
         }
         public NotContainingArticleInDatabaseException(string? message, ArticleDTO article) : base(message)
         {
-            _article = article;
+            Article = article;
         }
         public NotContainingArticleInDatabaseException(string? message, Exception? innerException, ArticleDTO article) : base(message, innerException)
         {
-            _article = article;
+            Article = article;
         }
 
-        private readonly ArticleDTO _article;
+        public ArticleDTO Article { get; }
     }
 }

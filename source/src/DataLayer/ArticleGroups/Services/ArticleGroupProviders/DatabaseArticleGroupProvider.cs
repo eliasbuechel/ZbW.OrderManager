@@ -1,13 +1,14 @@
 ﻿using DataLayer.ArticleGroups.DTOs;
 using DataLayer.ArticleGroups.Models;
 using DataLayer.Base.DatabaseContext;
+using DataLayer.Customers.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.ArticleGroups.Services.ArticleGroupProviders
 {
-    public class DatabaseArticleGroupProviders : IArticleGroupProvider
+    public class DatabaseArticleGroupProvider : IArticleGroupProvider
     {
-        public DatabaseArticleGroupProviders(ManagerDbContextFactory dbContextFactory)
+        public DatabaseArticleGroupProvider(ManagerDbContextFactory dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
         }
@@ -26,6 +27,20 @@ namespace DataLayer.ArticleGroups.Services.ArticleGroupProviders
 
             return articleGroupsDTOs;
         }
+        public ArticleGroupDTO GetArticleGroup(int id)
+        {
+            using ManagerDbContext context = _dbContextFactory.CreateDbContext();
+
+            ArticleGroupDTO articleGroupDTO = context.ArticleGroups
+                .Where(a => a.SuperiorArticleGroup == null)
+                .Select(a => new ArticleGroupDTO(a.Id, a.Name))
+                .FirstOrDefault()
+                ?? throw new NotInDatabaseException($"Not found article group with id '{id}' in database!");
+
+            AddSubordinateArticleGroupRec(context, articleGroupDTO);
+
+            return articleGroupDTO;
+        }
 
         private static IEnumerable<ArticleGroup> IncludeArticleGroupRec(ArticleGroup articleGroup)
         {
@@ -38,7 +53,6 @@ namespace DataLayer.ArticleGroups.Services.ArticleGroupProviders
 
             return subordinateArticleGroups;
         }
-
         private static void AddSubordinateArticleGroupRec(ManagerDbContext context, ArticleGroupDTO articleGroup)
         {
             IEnumerable<ArticleGroup> subordinateArticleGroups = context.ArticleGroups.Where(a => a.SuperiorArticleGroup != null && a.SuperiorArticleGroup.Id == articleGroup.Id).ToList();

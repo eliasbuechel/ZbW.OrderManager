@@ -8,13 +8,13 @@ using System.ComponentModel;
 
 namespace BusinessLayer.Customers.Commands
 {
-    public class CreateCustomerCommand : BaseAsyncCommand
+    public sealed class CreateCustomerCommand : BaseAsyncCommand, IDisposable
     {
-        public CreateCustomerCommand(ManagerStore managerStore, CreateCustomerViewModel createCustomerViewModel, NavigationService customerListingViewModelNavigationService)
+        public CreateCustomerCommand(ManagerStore managerStore, CreateCustomerViewModel createCustomerViewModel, FromSubNavigationService<CustomerListingViewModel> customerListingViweModelNavigateBackService)
         {
             _managerStore = managerStore;
             _createCustomerViewModel = createCustomerViewModel;
-            _customerListingViewModelNavigationService = customerListingViewModelNavigationService;
+            _customerListingViweModelNavigateBackService = customerListingViweModelNavigateBackService;
 
             _createCustomerViewModel.ErrorsChanged += OnHasCustomerPropertyErrorChanged;
         }
@@ -29,6 +29,7 @@ namespace BusinessLayer.Customers.Commands
             {
                 CustomerDTO customer = new CustomerDTO(
                     await _managerStore.GetNextFreeCustomerIdAsync(),
+                    _createCustomerViewModel.CustomerNr,
                     _createCustomerViewModel.FirstName,
                     _createCustomerViewModel.LastName,
                     _createCustomerViewModel.StreetName,
@@ -37,7 +38,7 @@ namespace BusinessLayer.Customers.Commands
                     _createCustomerViewModel.PostalCode,
                     _createCustomerViewModel.EmailAddress,
                     _createCustomerViewModel.WebsiteUrl,
-                    _createCustomerViewModel.Password
+                    _createCustomerViewModel.HashedPassword
                     );
 
                 await _managerStore.CreateCustomerAsync(customer);
@@ -47,9 +48,13 @@ namespace BusinessLayer.Customers.Commands
                 _createCustomerViewModel.ErrorMessage = $"Failed to create customer! {e.Message}";
             }
 
-            _customerListingViewModelNavigationService.Navigate();
+            _customerListingViweModelNavigateBackService.Navigate();
         }
-        
+        public void Dispose()
+        {
+            _createCustomerViewModel.ErrorsChanged -= OnHasCustomerPropertyErrorChanged;
+        }
+
         private void OnHasCustomerPropertyErrorChanged(object? sender, DataErrorsChangedEventArgs e)
         {
             OnCanExecuteChanged();
@@ -57,6 +62,6 @@ namespace BusinessLayer.Customers.Commands
 
         private readonly ManagerStore _managerStore;
         private readonly CreateCustomerViewModel _createCustomerViewModel;
-        private readonly NavigationService _customerListingViewModelNavigationService;
+        private readonly FromSubNavigationService<CustomerListingViewModel> _customerListingViweModelNavigateBackService;
     }
 }

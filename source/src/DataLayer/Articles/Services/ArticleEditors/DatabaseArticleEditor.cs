@@ -18,32 +18,32 @@ namespace DataLayer.Articles.Services.ArticleEditors
             _managerDbContextFactory = managerDbContextFactory;
             _articleValidator = articleValidator;
         }
-        public async Task SaveChangesToArticleAsync(ArticleDTO initialArticle, ArticleDTO editedArticle)
+        public async Task SaveChangesToArticleAsync(ArticleDTO initialArticleDTO, ArticleDTO editedArticleDTO)
         {
             ManagerDbContext context = _managerDbContextFactory.CreateDbContext();
 
-            ValidateArticle(editedArticle);
+            ValidateArticle(editedArticleDTO);
 
-            Article? articleDTO = await context.Articles
-                .Where(a => a.Id == initialArticle.Id)
+            Article? article = await context.Articles
+                .Where(a => a.Id == initialArticleDTO.Id)
                 .FirstOrDefaultAsync()
-                ?? throw new NotContainingArticleInDatabaseException(initialArticle);
+                ?? throw new NotContainingArticleInDatabaseException(initialArticleDTO);
 
-            articleDTO.Name = editedArticle.Name;
+            article.Name = editedArticleDTO.Name;
 
-            ArticleGroup? articleGroupDTO = await context.ArticleGroups
-                .Where(ag => ag.Id == editedArticle.ArticleGroup.Id)
+            ArticleGroup? articleGroup = await context.ArticleGroups
+                .Where(ag => ag.Id == editedArticleDTO.ArticleGroup.Id)
                 .FirstOrDefaultAsync()
-                ?? throw new NotContainingArticleGroupInDatabaseException(editedArticle.ArticleGroup);
+                ?? throw new NotContainingArticleGroupInDatabaseException(editedArticleDTO.ArticleGroup);
 
-            articleDTO.ArticleGroup = articleGroupDTO;
+            article.ArticleGroup = articleGroup;
 
             await context.SaveChangesAsync();
         }
 
-        private void ValidateArticle(ArticleDTO editedArticle)
+        private void ValidateArticle(IValidatableArticle article)
         {
-            if (!_articleValidator.Validate(editedArticle))
+            if (!_articleValidator.Validate(article))
                 throw new ValidationException();
         }
 

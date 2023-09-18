@@ -4,6 +4,6 @@ namespace DataLayer.Articles.Services.ArticleDeletors
 {
     public interface IArticleDeletor
     {
-        Task DeleteArticleAsync(ArticleDTO article);
+        Task DeleteArticleAsync(ArticleDTO articleDTO);
     }
 }

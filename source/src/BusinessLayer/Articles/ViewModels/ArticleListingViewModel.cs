@@ -10,9 +10,9 @@ using System.Windows.Input;
 
 namespace BusinessLayer.Articles.ViewModels
 {
-    public class ArticleListingViewModel : BaseLoadableViewModel
+    public class ArticleListingViewModel : BaseLoadableViewModel, IArticleUpdatable, IMainNavigationViewModel
     {
-        public static ArticleListingViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService articleListingViewModelNavigationService,  NavigationService createArticleViewModelNavigationService, IArticleValidator articleValidator)
+        public static ArticleListingViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService<ArticleListingViewModel> articleListingViewModelNavigationService,  NavigationService<CreateArticleViewModel> createArticleViewModelNavigationService, IArticleValidator articleValidator)
         {
             ArticleListingViewModel viewModel = new ArticleListingViewModel(managerStore,navigationStore, articleListingViewModelNavigationService, createArticleViewModelNavigationService, articleValidator);
             viewModel.LoadArticlesCommand?.Execute(null);
@@ -20,19 +20,25 @@ namespace BusinessLayer.Articles.ViewModels
             return viewModel;
         }
 
-        private ArticleListingViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService articleListingViewModelNavigationService, NavigationService createArticleViewModelNavigationService, IArticleValidator articleValidator)
+        private ArticleListingViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService<ArticleListingViewModel> articleListingViewModelNavigationService, NavigationService<CreateArticleViewModel> createArticleViewModelNavigationService, IArticleValidator articleValidator)
         {
-            NavigateToCreateArticleCommand = new NavigateCommand(createArticleViewModelNavigationService);
-            LoadArticlesCommand = new LoadArticlesCommand(managerStore, this);
             _managerStore = managerStore;
             _navigationStore = navigationStore;
             _articleListingViewModelNavigationService = articleListingViewModelNavigationService;
+            _articleValidator = articleValidator;
+
+            Articles = new CollectionView<ArticleViewModel>(_articles);
+            Articles.Filter = o => o.Name.Contains(Filter, StringComparison.InvariantCultureIgnoreCase);
+            Articles.OrderKeySelector = o => Convert.ToInt32(o.Id);
+
+            NavigateToCreateArticleCommand = new NavigateCommand(createArticleViewModelNavigationService);
+            LoadArticlesCommand = new LoadArticlesCommand(managerStore, this);
+
             managerStore.ArticleCreated += OnArticleCreated;
             managerStore.ArticleDeleted += OnArticleDeleted;
-            _articleValidator = articleValidator;
         }
 
-        public IEnumerable<ArticleViewModel> Articles => _articles;
+        public CollectionView<ArticleViewModel> Articles { get; }
         public ICommand NavigateToCreateArticleCommand { get; }
         public ICommand LoadArticlesCommand { get; }
 
@@ -45,18 +51,27 @@ namespace BusinessLayer.Articles.ViewModels
                 ArticleViewModel viewModel = new ArticleViewModel(_managerStore, article, CreateEditArticleNavigationService(article));
                 _articles.Add(viewModel);
             }
+            Articles.Update();
         }
-        public override void Dispose()
+        public override void Dispose(bool disposing)
         {
             _managerStore.ArticleCreated -= OnArticleCreated;
             _managerStore.ArticleDeleted -= OnArticleDeleted;
-
-            base.Dispose();
+        }
+        public string Filter
+        {
+            get => _filter;
+            set
+            {
+                _filter = value;
+                OnPropertyChanged();
+                Articles.Update();
+            }
         }
 
-        private NavigationService CreateEditArticleNavigationService(ArticleDTO article)
+        private NavigationService<EditArticleViewModel> CreateEditArticleNavigationService(ArticleDTO article)
         {
-            return new NavigationService(_navigationStore, () => EditArticleViewModel.LoadViewModel(_managerStore, article, _articleListingViewModelNavigationService, _articleValidator));
+            return new NavigationService<EditArticleViewModel>(_navigationStore, () => EditArticleViewModel.LoadViewModel(_managerStore, article, _articleListingViewModelNavigationService, _articleValidator));
         }
         private void OnArticleDeleted(ArticleDTO article)
         {
@@ -68,17 +83,20 @@ namespace BusinessLayer.Articles.ViewModels
                     return;
                 }
             }
+            Articles.Update();
         }
         private void OnArticleCreated(ArticleDTO article)
         {
             ArticleViewModel articleViewModel = new ArticleViewModel(_managerStore, article, CreateEditArticleNavigationService(article));
             _articles.Add(articleViewModel);
+            Articles.Update();
         }
 
         private readonly ManagerStore _managerStore;
         private readonly NavigationStore _navigationStore;
-        private readonly NavigationService _articleListingViewModelNavigationService;
+        private readonly NavigationService<ArticleListingViewModel> _articleListingViewModelNavigationService;
         private readonly ObservableCollection<ArticleViewModel> _articles = new ObservableCollection<ArticleViewModel>();
         private readonly IArticleValidator _articleValidator;
+        private string _filter = string.Empty;
     }
 }

@@ -9,22 +9,24 @@ namespace BusinessLayer.Customers.ViewModels
 {
     public class CustomerViewModel
     {
-        public CustomerViewModel(ManagerStore managerStore, CustomerDTO customer, NavigationService editCustomerViewModelNavigationService)
+        public CustomerViewModel(ManagerStore managerStore, CustomerDTO customer, ToSubNavigationService<EditCustomerViewModel> editCustomerViewModelToSubNavigationService)
         {
             _customer = customer;
             DeleteCustomerCommand = new DeleteCustomeCommand(managerStore, _customer);
-            NavigateToEditCustomerCommand = new NavigateCommand(editCustomerViewModelNavigationService);
+            NavigateToEditCustomerCommand = new NavigateCommand(editCustomerViewModelToSubNavigationService);
         }
 
         public ICommand DeleteCustomerCommand { get; }
         public ICommand NavigateToEditCustomerCommand { get; }
         public string Id => _customer.Id.ToString();
+        public string CustomerNr => _customer.CustomerNr;
         public string Name => _customer.FirstName + " " + _customer.LastName;
-        public string Location => _customer.PostalCode + " " + _customer.City;
-
+        public string Location => $"{_customer.PostalCode} {_customer.City}";
+        public string Street => $"{_customer.StreetName} {_customer.HouseNumber}";
+        public string ContactData => $"{_customer.EmailAddress}{Environment.NewLine}{_customer.WebsiteURL}";
         public bool RepresentsCustomer(CustomerDTO customer)
         {
-            return ReferenceEquals(_customer, customer);
+            return customer.Id == _customer.Id;
         }
 
         private readonly CustomerDTO _customer;

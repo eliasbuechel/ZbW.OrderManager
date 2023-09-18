@@ -10,32 +10,51 @@ using System.Windows.Input;
 
 namespace BusinessLayer.Customers.ViewModels
 {
-    public class CustomerListingViewModel : BaseLoadableViewModel
+    public class CustomerListingViewModel : BaseLoadableViewModel, ICustomerUpdatable, IMainNavigationViewModel
     {
-        public static CustomerListingViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService createCustomerViewModelNavigationService, NavigationService customerListingViewModelNavigationService, ICustomerValidator customerValidator)
+        public static CustomerListingViewModel LoadViewModel(ManagerStore managerStore, NavigationStore navigationStore, ICustomerValidator customerValidator, IDialogService fileDialogue)
         {
-            CustomerListingViewModel viewModel = new CustomerListingViewModel(managerStore, navigationStore, createCustomerViewModelNavigationService, customerListingViewModelNavigationService, customerValidator);
+            CustomerListingViewModel viewModel = new CustomerListingViewModel(managerStore, navigationStore, customerValidator, fileDialogue);
             viewModel.LoadCustomersCommand.Execute(null);
             return viewModel;
         }
 
-        private CustomerListingViewModel(ManagerStore managerStore, NavigationStore navigationStore, NavigationService createCustomerViewModelNavigationService, NavigationService customerListingViewModelNavigationService, ICustomerValidator customerValidator)
+        private CustomerListingViewModel(ManagerStore managerStore, NavigationStore navigationStore, ICustomerValidator customerValidator, IDialogService fileDialogue)
         {
             _managerStore = managerStore;
             _navigationStore = navigationStore;
-            _customerListingViewModelNavigationService = customerListingViewModelNavigationService;
+            _customerValidator = customerValidator;
 
-            NavigateToCreateCustomerCommand = new NavigateCommand(createCustomerViewModelNavigationService);
+            _customerListingViweModelNavigateBackService = new FromSubNavigationService<CustomerListingViewModel>(_navigationStore, this);
+            Customers = new CollectionView<CustomerViewModel>(_customers);
+            Customers.Filter = CustomerCollectionViewFilter;
+            Customers.OrderKeySelector = CustomerCollectionViewOrder;
+
+            NavigateToCreateCustomerCommand = new NavigateCommand(new ToSubNavigationService<CreateCustomerViewModel>(navigationStore, CreateCreateCustomerViewModel));
             LoadCustomersCommand = new LoadCustomersCommand(managerStore, this);
+            ImportCustomersCommand = new ImportCustomersCommand(managerStore, fileDialogue);
+            ExportCustomersCommand = new ExportCustomersCommand(managerStore, fileDialogue);
 
             managerStore.CustomerCreated += OnCustomerCreated;
             managerStore.CustomerDeleted += OnCustomerDeleted;
-            _customerValidator = customerValidator;
+            managerStore.CustomerUpdated += OnCustomerUpdated;
         }
 
-        public IEnumerable<CustomerViewModel> Customers => _customers;
+        public CollectionView<CustomerViewModel> Customers { get; }
         public ICommand NavigateToCreateCustomerCommand { get; }
         public ICommand LoadCustomersCommand { get; }
+        public ICommand ImportCustomersCommand { get; }
+        public ICommand ExportCustomersCommand { get; }
+        public string Filter
+        {
+            get => _filter;
+            set
+            {
+                _filter = value;
+                OnPropertyChanged();
+                Customers.Update();
+            }
+        }
 
         public void UpdateCustomers(IEnumerable<CustomerDTO> customers)
         {
@@ -46,19 +65,21 @@ namespace BusinessLayer.Customers.ViewModels
                 CustomerViewModel customerViewModel = new CustomerViewModel(_managerStore, customer, CreateEditCustomerViewModelNavigationService(customer));
                 _customers.Add(customerViewModel);
             }
+
+            Customers.Update(); 
         }
-        public override void Dispose()
+        public override void Dispose(bool disposing)
         {
             _managerStore.CustomerCreated -= OnCustomerCreated;
             _managerStore.CustomerDeleted -= OnCustomerDeleted;
-
-            base.Dispose();
+            _managerStore.CustomerUpdated -= OnCustomerUpdated;
         }
 
         private void OnCustomerCreated(CustomerDTO customer)
         {
             CustomerViewModel customerViewModel = new CustomerViewModel(_managerStore, customer, CreateEditCustomerViewModelNavigationService(customer));
             _customers.Add(customerViewModel);
+            Customers.Update();
         }
         private void OnCustomerDeleted(CustomerDTO customer)
         {
@@ -76,16 +97,61 @@ namespace BusinessLayer.Customers.ViewModels
                 return;
 
             _customers.Remove(customerViewModel);
+            Customers.Update();
         }
-        private NavigationService CreateEditCustomerViewModelNavigationService(CustomerDTO customer)
+        private void OnCustomerUpdated(CustomerDTO customer)
         {
-            return new NavigationService(_navigationStore, () => new EditCustomerViewModel(_managerStore, customer, _customerListingViewModelNavigationService, _customerValidator));
+            foreach (CustomerViewModel c in _customers)
+            {
+                if (c.RepresentsCustomer(customer))
+                {
+                    _customers.Remove(c);
+                    break;
+                }
+            }
+
+            CustomerViewModel customerViewModel = new CustomerViewModel(_managerStore, customer, CreateEditCustomerViewModelNavigationService(customer));
+            _customers.Add(customerViewModel);
+            Customers.Update();
+        }
+        private ToSubNavigationService<EditCustomerViewModel> CreateEditCustomerViewModelNavigationService(CustomerDTO customer)
+        {
+            return new ToSubNavigationService<EditCustomerViewModel>(
+                _navigationStore,
+                () => new EditCustomerViewModel(
+                    _managerStore,
+                    customer,
+                    _customerListingViweModelNavigateBackService,
+                    _customerValidator
+                    )
+                );
+        }
+        private CreateCustomerViewModel CreateCreateCustomerViewModel()
+        {
+            return new CreateCustomerViewModel(
+                _managerStore,
+                _customerListingViweModelNavigateBackService,
+                _customerValidator
+                );
+        }
+        private static object CustomerCollectionViewOrder(CustomerViewModel customerViewModel)
+        {
+            return Convert.ToInt32(customerViewModel.Id);
+        }
+        private bool CustomerCollectionViewFilter(CustomerViewModel customerViewModel)
+        {
+            return customerViewModel.Name.Contains(Filter, StringComparison.InvariantCultureIgnoreCase)
+                || customerViewModel.Location.Contains(Filter, StringComparison.InvariantCultureIgnoreCase)
+                || customerViewModel.Location.Contains(Filter, StringComparison.InvariantCultureIgnoreCase)
+                || customerViewModel.Street.Contains(Filter, StringComparison.InvariantCultureIgnoreCase)
+                || customerViewModel.ContactData.Contains(Filter, StringComparison.InvariantCultureIgnoreCase);
         }
 
+        private string _filter = string.Empty;
         private readonly ManagerStore _managerStore;
         private readonly NavigationStore _navigationStore;
-        private readonly NavigationService _customerListingViewModelNavigationService;
-        private readonly ObservableCollection<CustomerViewModel> _customers = new ObservableCollection<CustomerViewModel>();
         private readonly ICustomerValidator _customerValidator;
+        private readonly FromSubNavigationService<CustomerListingViewModel> _customerListingViweModelNavigateBackService;
+        private readonly ObservableCollection<CustomerViewModel> _customers = new ObservableCollection<CustomerViewModel>();
     }
 }

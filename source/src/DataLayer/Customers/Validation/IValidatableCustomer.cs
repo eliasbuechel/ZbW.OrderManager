@@ -2,6 +2,7 @@
 {
     public interface IValidatableCustomer
     {
+        string CustomerNr { get; }
         string FirstName { get; }
         string LastName { get; }
         string StreetName { get; }
@@ -10,6 +11,6 @@
         string PostalCode { get; }
         string EmailAddress { get; }
         string WebsiteURL { get; }
-        string Password { get; }
+        string HashedPassword { get; }
     }
 }

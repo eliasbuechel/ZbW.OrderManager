@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.ArticleGroups.ViewModels;
+using BusinessLayer.Articles.ViewModels;
 using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Services;
 using BusinessLayer.Base.Stores;
@@ -9,9 +10,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BusinessLayer.ArticleGroups.Commands
 {
-    public class CreateArticleGroupCommand : BaseAsyncCommand, IDisposable
+    public sealed class CreateArticleGroupCommand : BaseAsyncCommand, IDisposable
     {
-        public CreateArticleGroupCommand(ManagerStore managerStore, CreateArticleGroupViewModel createArticleGroupViewModel, NavigationService articleGroupListingViewModelNavigationService)
+        public CreateArticleGroupCommand(ManagerStore managerStore, CreateArticleGroupViewModel createArticleGroupViewModel, NavigationService<ArticleGroupListingViewModel> articleGroupListingViewModelNavigationService)
         {
             _managerStore = managerStore;
             _createArticleGroupViewModel = createArticleGroupViewModel;
@@ -20,12 +21,14 @@ namespace BusinessLayer.ArticleGroups.Commands
             _createArticleGroupViewModel.ErrorsChanged += OnCreateArticleGroupViewModelHasErrorsChanged;
         }
 
-
+        public void Dispose()
+        {
+            _createArticleGroupViewModel.ErrorsChanged -= OnCreateArticleGroupViewModelHasErrorsChanged;
+        }
         public override bool CanExecute(object? parameter)
         {
             return base.CanExecute(parameter) && !_createArticleGroupViewModel.HasErrors;
         }
-
         public override async Task ExecuteAsync(object? parameter)
         {
             try
@@ -80,13 +83,9 @@ namespace BusinessLayer.ArticleGroups.Commands
             OnCanExecuteChanged();
         }
 
-        public void Dispose()
-        {
-            _createArticleGroupViewModel.ErrorsChanged -= OnCreateArticleGroupViewModelHasErrorsChanged;
-        }
-
+        
         private readonly ManagerStore _managerStore;
         private readonly CreateArticleGroupViewModel _createArticleGroupViewModel;
-        private readonly NavigationService _articleGroupListingViewModelNavigationService;
+        private readonly NavigationService<ArticleGroupListingViewModel> _articleGroupListingViewModelNavigationService;
     }
 }

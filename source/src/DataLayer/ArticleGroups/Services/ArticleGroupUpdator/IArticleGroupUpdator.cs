@@ -4,6 +4,6 @@ namespace DataLayer.ArticleGroups.Services.ArticleGroupUpdator
 {
     public interface IArticleGroupUpdator
     {
-        Task UpdateArticleGroupAsync(CreatedOrUpdatedArticleGroupDTO articleGroup);
+        Task UpdateArticleGroupAsync(CreatedOrUpdatedArticleGroupDTO updatingArticleGroupDTO);
     }
 }

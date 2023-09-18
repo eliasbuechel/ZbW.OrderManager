@@ -8,9 +8,9 @@ using System.ComponentModel;
 
 namespace BusinessLayer.Articles.Commands
 {
-    public class CreateArticleCommand : BaseAsyncCommand, IDisposable
+    public sealed class CreateArticleCommand : BaseAsyncCommand, IDisposable
     {
-        public CreateArticleCommand(ManagerStore managerStore, CreateArticleViewModel createArticleViewModel, NavigationService articleListingViewMoelNavigationService)
+        public CreateArticleCommand(ManagerStore managerStore, CreateArticleViewModel createArticleViewModel, NavigationService<ArticleListingViewModel> articleListingViewMoelNavigationService)
         {
             _managerStore = managerStore;
             _createArticleViewModel = createArticleViewModel;
@@ -18,7 +18,6 @@ namespace BusinessLayer.Articles.Commands
 
             createArticleViewModel.ErrorsChanged += OnCreateArticleViewModelErrorsChanged;
         }
-
 
         public override bool CanExecute(object? parameter)
         {
@@ -63,6 +62,6 @@ namespace BusinessLayer.Articles.Commands
 
         private readonly ManagerStore _managerStore;
         private readonly CreateArticleViewModel _createArticleViewModel;
-        private readonly NavigationService _articleListingViewMoelNavigationService;
+        private readonly NavigationService<ArticleListingViewModel> _articleListingViewMoelNavigationService;
     }
 }

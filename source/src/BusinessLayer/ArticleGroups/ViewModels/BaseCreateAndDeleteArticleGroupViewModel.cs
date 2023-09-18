@@ -1,5 +1,4 @@
-﻿using BusinessLayer.Articles.ViewModels;
-using BusinessLayer.Base.Stores;
+﻿using BusinessLayer.Base.Stores;
 using DataLayer.ArticleGroups.DTOs;
 using DataLayer.ArticleGroups.Validation;
 
@@ -31,7 +30,7 @@ namespace BusinessLayer.ArticleGroups.ViewModels
                     AddError(EMPTY_MESSAGE);
                 if (Name.Length > maxPropertyLength)
                     AddError(ToLongErrorMessage(maxPropertyLength));
-                if (_articleGroupValidator.ValidateName(Name))
+                if (!_articleGroupValidator.ValidateName(Name))
                     AddError(ValidationErrorMessage());
             }
         }

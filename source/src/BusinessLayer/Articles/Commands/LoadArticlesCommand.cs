@@ -6,34 +6,34 @@ namespace BusinessLayer.Articles.Commands
 {
     public class LoadArticlesCommand : BaseAsyncCommand
     {
-        private readonly ManagerStore _managerStore;
-        private ArticleListingViewModel _articleListingViewModel;
-
-        public LoadArticlesCommand(ManagerStore managerStore, ArticleListingViewModel articleListingViewModel)
+        public LoadArticlesCommand(ManagerStore managerStore, IArticleUpdatable articleUpdatable)
         {
             _managerStore = managerStore;
-            _articleListingViewModel = articleListingViewModel;
+            _articleUpdatable = articleUpdatable;
         }
 
         public override async Task ExecuteAsync(object? parameter)
         {
-            _articleListingViewModel.ErrorMessage = string.Empty;
-            _articleListingViewModel.IsLoading = true;
+            _articleUpdatable.ErrorMessage = string.Empty;
+            _articleUpdatable.IsLoading = true;
 
             try
             {
-                await _managerStore.Load();
+                await _managerStore.LoadArticles();
 
-                _articleListingViewModel.UpdateArticles(_managerStore.Articles);
+                _articleUpdatable.UpdateArticles(_managerStore.Articles);
             }
             catch (Exception)
             {
-                _articleListingViewModel.ErrorMessage = "Failed to load articles.";
+                _articleUpdatable.ErrorMessage = "Failed to load articles.";
             }
             finally
             {
-                _articleListingViewModel.IsLoading = false;
+                _articleUpdatable.IsLoading = false;
             }
         }
+
+        private readonly ManagerStore _managerStore;
+        private readonly IArticleUpdatable _articleUpdatable;
     }
 }

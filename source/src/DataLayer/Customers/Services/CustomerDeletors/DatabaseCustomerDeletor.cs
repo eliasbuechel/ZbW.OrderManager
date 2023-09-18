@@ -8,32 +8,21 @@ namespace DataLayer.Customers.Services.CustomerDeletors
 {
     public class DatabaseCustomerDeletor : ICustomerDeletor
     {
-        public async Task DeleteCustomerAsync(CustomerDTO customer)
-        {
-            ManagerDbContext context = _dbContextFactory.CreateDbContext();
-
-            Customer? toDeleteCustomer = await context.Customers.Include(c => c.Address).SingleOrDefaultAsync(c =>
-                c.FirstName == customer.FirstName &&
-                c.LastName == customer.LastName &&
-                c.Address.StreetName == customer.StreetName &&
-                c.Address.City == customer.City &&
-                c.Address.PostalCode == customer.PostalCode &&
-                c.Address.City == customer.City &&
-                c.EmailAddress == customer.EmailAddress &&
-                c.WebsiteURL == customer.WebsiteURL &&
-                c.Password == customer.Password
-            );
-
-            if (toDeleteCustomer == null)
-                throw new NotContainingCustomerInDatabaseException(customer);
-
-            context.Customers.Remove(toDeleteCustomer);
-            await context.SaveChangesAsync();
-        }
-
         public DatabaseCustomerDeletor(ManagerDbContextFactory dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
+        }
+
+        public async Task DeleteCustomerAsync(CustomerDTO customerDTO)
+        {
+            using ManagerDbContext context = _dbContextFactory.CreateDbContext();
+
+            Customer customer = await context.Set<Customer>()
+                .SingleOrDefaultAsync(c => c.Id == customerDTO.Id)
+                ?? throw new NotContainingCustomerInDatabaseException(customerDTO);
+
+            context.Customers.Remove(customer);
+            await context.SaveChangesAsync();
         }
 
         private readonly ManagerDbContextFactory _dbContextFactory;

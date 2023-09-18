@@ -1,5 +1,4 @@
 ﻿using BusinessLayer.ArticleGroups.ViewModels;
-using BusinessLayer.Articles.ViewModels;
 using BusinessLayer.Base.Commands;
 using BusinessLayer.Base.Stores;
 
@@ -19,7 +18,7 @@ namespace BusinessLayer.ArticleGroups.Commands
             _articleGroupListingViewModel.IsLoading = true;
             try
             {
-                await _managerStore.Load();
+                await _managerStore.LoadArticleGroups();
 
                 _articleGroupListingViewModel.UpdateArticleGroups(_managerStore.ArticleGroups);
             }

@@ -1,24 +1,31 @@
 ﻿using BusinessLayer.ArticleGroups.Models;
 using BusinessLayer.Articles.Models;
 using BusinessLayer.Customers.Models;
+using BusinessLayer.Orders.Models;
 using DataLayer.ArticleGroups.DTOs;
 using DataLayer.Articles.DTOs;
 using DataLayer.Customers.DTOs;
+using DataLayer.Orders.DTOs;
 
 namespace BusinessLayer.Base.Models
 {
     public class Manager
     {
-        public Manager(CustomerList customerList, ArticleGroups.Models.ArticleGroupList articleGroupList, ArticleList articleList)
+        public Manager(CustomerList customerList, ArticleGroups.Models.ArticleGroupList articleGroupList, ArticleList articleList, OrderList orderList)
         {
             _customerList = customerList;
             _articleGroupList = articleGroupList;
             _articleList = articleList;
+            _orderList = orderList;
         }
 
         public async Task<IEnumerable<CustomerDTO>> GetAllCustomersAsync()
         {
             return await _customerList.GetAllCustomersAsync();
+        }
+        public async Task<IEnumerable<SerializableCustomerDTO>> GetAllSerializableCustomersAsync()
+        {
+            return await _customerList.GetAllSerializableCustomersAsync();
         }
         public async Task CreateCustomerAsync(CustomerDTO customer)
         {
@@ -79,8 +86,22 @@ namespace BusinessLayer.Base.Models
             await _articleList.SaveChangesToArticleAsync(initialArticle, editedArticle);
         }
 
+        public async Task<IEnumerable<OrderDTO>> GetAllOrdersAsync()
+        {
+            return await _orderList.GetAllOrdersAsync();
+        }
+        public async Task<OrderDTO> CreateOrderAsync(CreatingOrderDTO order)
+        {
+            return await _orderList.CreateOrderAsync(order);
+        }
+        public async Task DeleteOrderAsync(OrderDTO order)
+        {
+            await _orderList.DeleteOrderAsync(order);
+        }
+
         private readonly CustomerList _customerList;
         private readonly ArticleGroupList _articleGroupList;
         private readonly ArticleList _articleList;
+        private readonly OrderList _orderList;
     }
 }

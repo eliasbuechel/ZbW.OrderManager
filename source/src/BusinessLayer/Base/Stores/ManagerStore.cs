@@ -3,6 +3,8 @@ using DataLayer.ArticleGroups.DTOs;
 using DataLayer.ArticleGroups.Exceptions;
 using DataLayer.Articles.DTOs;
 using DataLayer.Customers.DTOs;
+using DataLayer.Orders.DTOs;
+using System.Net.Http.Headers;
 
 namespace BusinessLayer.Base.Stores
 {
@@ -12,39 +14,88 @@ namespace BusinessLayer.Base.Stores
         {
             _manager = manager;
 
-            _customers = new List<CustomerDTO>();
-            _articleGroups = new List<ArticleGroupDTO>();
-            _articles = new List<ArticleDTO>();
+            //_inizializeLazy = new Lazy<Task>(Inizialize);
 
-            _inizializeLazy = new Lazy<Task>(Inizialize);
+            _inizializeCustomersLazy = new Lazy<Task>(InizializeCustomers);
+            _inizializeArticleGroupsLazy = new Lazy<Task>(InizializeArticleGroups);
+            _inizializeArticlesLazy = new Lazy<Task>(InizializeArticles);
+            _inizializeOrdersLazy = new Lazy<Task>(InizializeOrders);
+
         }
 
         public event Action<CustomerDTO>? CustomerCreated;
         public event Action<CustomerDTO>? CustomerDeleted;
+        public event Action<CustomerDTO>? CustomerUpdated;
         public event Action<ArticleGroupDTO>? RootArticleGroupCreated;
         public event Action<ArticleGroupDTO, ArticleGroupDTO>? SubordinateArticleGroupCreated;
         public event Action<ArticleGroupDTO>? RootArticleGroupDeleted;
         public event Action<ArticleGroupDTO, ArticleGroupDTO>? SubordinateArticleGroupDeleted;
+        public event Action<ArticleGroupDTO>? ArticleGroupUpdated;
         public event Action<ArticleDTO>? ArticleCreated;
         public event Action<ArticleDTO>? ArticleDeleted;
+        public event Action<OrderDTO>? OrderCreated;
+        public event Action<OrderDTO>? OrderDeleted;
+        public event Action<OrderDTO>? OrderUpdated;
 
         public IEnumerable<CustomerDTO> Customers => _customers;
         public IEnumerable<ArticleGroupDTO> ArticleGroups => _articleGroups;
         public IEnumerable<ArticleDTO> Articles => _articles;
+        public IEnumerable<OrderDTO> Orders => _orders;
 
-        public async Task Load()
+        public async Task LoadCustomers()
         {
             try
             {
-                await _inizializeLazy.Value;
+                await _inizializeCustomersLazy.Value;
             }
             catch (Exception)
             {
-                _inizializeLazy = new Lazy<Task>(Inizialize);
+                _inizializeCustomersLazy = new Lazy<Task>(Inizialize);
+                throw;
+            }
+        }
+        public async Task LoadArticleGroups()
+        {
+            try
+            {
+                await _inizializeArticleGroupsLazy.Value;
+            }
+            catch (Exception)
+            {
+                _inizializeArticleGroupsLazy = new Lazy<Task>(Inizialize);
+                throw;
+            }
+        }
+        public async Task LoadArticles()
+        {
+            try
+            {
+                await _inizializeArticlesLazy.Value;
+            }
+            catch (Exception)
+            {
+                _inizializeArticlesLazy = new Lazy<Task>(Inizialize);
+                throw;
+            }
+        }
+        public async Task LoadOrders()
+        {
+            try
+            {
+                await _inizializeOrdersLazy.Value;
+            }
+            catch (Exception)
+            {
+                _inizializeOrdersLazy = new Lazy<Task>(Inizialize);
                 throw;
             }
         }
 
+
+        public async Task<IEnumerable<SerializableCustomerDTO>> GetAllSerializableCustomersAsync()
+        {
+            return await _manager.GetAllSerializableCustomersAsync();
+        }
         public async Task CreateCustomerAsync(CustomerDTO customer)
         {
             await _manager.CreateCustomerAsync(customer);
@@ -66,6 +117,7 @@ namespace BusinessLayer.Base.Stores
             await _manager.EditCustomerAsync(initialCustomer, editedCustomer);
             int initialCustomerIndex = _customers.IndexOf(initialCustomer);
             _customers[initialCustomerIndex] = editedCustomer;
+            OnCustomerUpdated(editedCustomer);
         }
 
         public async Task CreateRootArticleGroupAsync(CreatedOrUpdatedArticleGroupDTO articleGroup)
@@ -96,7 +148,14 @@ namespace BusinessLayer.Base.Stores
             if (articleGroup.SubordinateArticleGroups.Count > 0)
                 throw new DeletingNonLeaveArticleGroupException(articleGroup);
 
-            await _manager.DeleteArticleGroupAsync(articleGroup);
+            try
+            {
+                await _manager.DeleteArticleGroupAsync(articleGroup);
+            }
+            catch
+            {
+                return;
+            }
 
             if (articleGroup.SuperiorArticleGroup == null)
             {
@@ -108,25 +167,6 @@ namespace BusinessLayer.Base.Stores
             ArticleGroupDTO superiorArticleGroup = articleGroup.SuperiorArticleGroup;
             articleGroup.SuperiorArticleGroup = null;
             OnSubordinateArticleGroupDeleted(articleGroup, superiorArticleGroup);
-
-            //foreach (ArticleGroupDTO rootArticleGroup in _articleGroups)
-            //{
-            //    if (rootArticleGroup.Id == articleGroup.Id)
-            //    {
-            //        _articleGroups.Remove(articleGroup);
-            //        OnRootArticleGroupDeleted(articleGroup);
-            //        return;
-            //    }
-
-            //    ArticleGroupDTO? superiorArticleGroup = GetSuperiorArticleGroupRecursive(rootArticleGroup, articleGroup);
-
-            //    if (superiorArticleGroup != null)
-            //    {
-            //        superiorArticleGroup.SubordinateArticleGroups.Remove(articleGroup);
-            //        OnSubordinateArticleGroupDeleted(articleGroup, superiorArticleGroup);
-            //        return;
-            //    }
-            //}
         }
         public async Task UpdateArticleGroupAsync(CreatedOrUpdatedArticleGroupDTO modifiedArticleGroup, ArticleGroupDTO initialArticleGroup)
         {
@@ -191,6 +231,18 @@ namespace BusinessLayer.Base.Stores
             _articles[articleIndex] = editedArticle;
         }
 
+        public async Task CreateOrderAsync(CreatingOrderDTO order)
+        {
+            OrderDTO orderDTO = await _manager.CreateOrderAsync(order);
+            _orders.Add(orderDTO);
+            OnOrderCreated(orderDTO);
+        }
+        public async Task DeleteOrderAsync(OrderDTO order)
+        {
+            await _manager.DeleteOrderAsync(order);
+            OnOrderDeleted(order);
+        }
+
         private void OnCustomerCreated(CustomerDTO customer)
         {
             CustomerCreated?.Invoke(customer);
@@ -198,6 +250,19 @@ namespace BusinessLayer.Base.Stores
         private void OnCustomerDeleted(CustomerDTO customer)
         {
             CustomerDeleted?.Invoke(customer);
+        }
+        private void OnCustomerUpdated(CustomerDTO customer)
+        {
+            CustomerUpdated?.Invoke(customer);
+
+            foreach (var order in _orders)
+            {
+                if (order.Customer.Id == customer.Id)
+                {
+                    order.UpdateCustomer(customer);
+                    OnOrderUpdated(order);
+                }
+            }
         }
         private void OnSubordinateArticleGroupCreated(ArticleGroupDTO createdArticleGroup, ArticleGroupDTO superiorArticleGroup)
         {
@@ -215,6 +280,26 @@ namespace BusinessLayer.Base.Stores
         {
             SubordinateArticleGroupDeleted?.Invoke(articleGroup, superiorArticleGroup);
         }
+        private void OnArticleGroupUpdated(ArticleGroupDTO articleGroup)
+        {
+            ArticleGroupUpdated?.Invoke(articleGroup);
+
+
+            foreach (ArticleGroupDTO a in _articleGroups)
+            {
+            }
+        }
+        private void UpdateArticleGroupsRec(IEnumerable<ArticleGroupDTO>? subordinateArticleGroups)
+        {
+            if (subordinateArticleGroups == null || !subordinateArticleGroups.Any())
+                return;
+
+            foreach (var subordinateArticleGroup in subordinateArticleGroups)
+            {
+
+            }
+        }
+        
         private void OnArticleCreated(ArticleDTO article)
         {
             ArticleCreated?.Invoke(article);
@@ -222,6 +307,18 @@ namespace BusinessLayer.Base.Stores
         private void OnArticleDeleted(ArticleDTO article)
         {
             ArticleDeleted?.Invoke(article);
+        }
+        private void OnOrderCreated(OrderDTO order)
+        {
+            OrderCreated?.Invoke(order);
+        }
+        private void OnOrderDeleted(OrderDTO order)
+        {
+            OrderDeleted?.Invoke(order);
+        }
+        private void OnOrderUpdated(OrderDTO order)
+        {
+            OrderUpdated?.Invoke(order);
         }
         private async Task Inizialize()
         {
@@ -236,12 +333,44 @@ namespace BusinessLayer.Base.Stores
             IEnumerable<ArticleDTO> articles = await _manager.GetAllArticlesAsync();
             _articles.Clear();
             _articles.AddRange(articles);
+
+            IEnumerable<OrderDTO> orders = await _manager.GetAllOrdersAsync();
+            _orders.Clear();
+            _orders.AddRange(orders);
+        }
+        private async Task InizializeOrders()
+        {
+            IEnumerable<OrderDTO> orders = await _manager.GetAllOrdersAsync();
+            _orders.Clear();
+            _orders.AddRange(orders);
+        }
+        private async Task InizializeArticles()
+        {
+            IEnumerable<ArticleDTO> articles = await _manager.GetAllArticlesAsync();
+            _articles.Clear();
+            _articles.AddRange(articles);
+        }
+        private async Task InizializeArticleGroups()
+        {
+            IEnumerable<ArticleGroupDTO> articleGroups = await _manager.GetAllArticleGroupsAsync();
+            _articleGroups.Clear();
+            _articleGroups.AddRange(articleGroups);
+        }
+        private async Task InizializeCustomers()
+        {
+            IEnumerable<CustomerDTO> customers = await _manager.GetAllCustomersAsync();
+            _customers.Clear();
+            _customers.AddRange(customers);
         }
 
-        private Lazy<Task> _inizializeLazy;
+        private Lazy<Task> _inizializeCustomersLazy;
+        private Lazy<Task> _inizializeArticleGroupsLazy;
+        private Lazy<Task> _inizializeArticlesLazy;
+        private Lazy<Task> _inizializeOrdersLazy;
         private readonly Manager _manager;
-        private readonly List<CustomerDTO> _customers;
-        private readonly List<ArticleGroupDTO> _articleGroups;
-        private readonly List<ArticleDTO> _articles;
+        private readonly List<CustomerDTO> _customers = new List<CustomerDTO>();
+        private readonly List<ArticleGroupDTO> _articleGroups = new List<ArticleGroupDTO>();
+        private readonly List<ArticleDTO> _articles = new List<ArticleDTO>();
+        private readonly List<OrderDTO> _orders = new List<OrderDTO>();
     }
 }

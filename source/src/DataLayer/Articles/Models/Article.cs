@@ -6,6 +6,12 @@ namespace DataLayer.Articles.Models
 {
     public class Article
     {
+        public Article()
+        {
+            Name = string.Empty;
+            ArticleGroup = new ArticleGroup();
+        }
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 

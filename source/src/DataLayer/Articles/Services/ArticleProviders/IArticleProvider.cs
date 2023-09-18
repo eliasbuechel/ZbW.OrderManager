@@ -5,5 +5,6 @@ namespace DataLayer.Articles.Services.ArticleProviders
     public interface IArticleProvider
     {
         public Task<IEnumerable<ArticleDTO>> GetAllArticlesAsync();
+        ArticleDTO GetArticle(int id);
     }
 }

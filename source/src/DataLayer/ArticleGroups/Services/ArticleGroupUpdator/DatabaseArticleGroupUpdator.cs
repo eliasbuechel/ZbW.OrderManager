@@ -16,30 +16,30 @@ namespace DataLayer.ArticleGroups.Services.ArticleGroupUpdator
             _articleGroupValidator = articleGroupValidator;
         }
 
-        public async Task UpdateArticleGroupAsync(CreatedOrUpdatedArticleGroupDTO updatingArticleGroup)
+        public async Task UpdateArticleGroupAsync(CreatedOrUpdatedArticleGroupDTO updatingArticleGroupDTO)
         {
             ManagerDbContext context = _managerDbContextFactory.CreateDbContext();
 
-            ValidateArticleGroup(updatingArticleGroup);
+            ValidateArticleGroup(updatingArticleGroupDTO);
 
-            ArticleGroup? databseArticleGroup =
+            ArticleGroup? articleGroup =
                 await context.ArticleGroups
-                    .Where(a => a.Id == updatingArticleGroup.Id)
+                    .Where(a => a.Id == updatingArticleGroupDTO.Id)
                     .Include(a => a.SuperiorArticleGroup)
                     .FirstOrDefaultAsync()
-                ?? throw new NotContainingUpdatingArticleGroupInDatabaseException("Not containing the updating article group in the database.", updatingArticleGroup);
+                ?? throw new NotContainingUpdatingArticleGroupInDatabaseException("Not containing the updating article group in the database.", updatingArticleGroupDTO);
 
-            if (!HasDataChanged(databseArticleGroup, updatingArticleGroup))
-                throw new NoChangesMadeException<CreatedOrUpdatedArticleGroupDTO>(updatingArticleGroup);
+            if (!HasDataChanged(articleGroup, updatingArticleGroupDTO))
+                throw new NoChangesMadeException<CreatedOrUpdatedArticleGroupDTO>(updatingArticleGroupDTO);
 
-            UpdateArticleGroupData(databseArticleGroup, updatingArticleGroup, context);
+            UpdateArticleGroupData(articleGroup, updatingArticleGroupDTO, context);
 
             await context.SaveChangesAsync();
         }
 
-        private void ValidateArticleGroup(CreatedOrUpdatedArticleGroupDTO updatingArticleGroup)
+        private void ValidateArticleGroup(IValidatableArticleGroup articleGroup)
         {
-            if (!_articleGroupValidator.Validate(updatingArticleGroup))
+            if (!_articleGroupValidator.Validate(articleGroup))
                 throw new ValidationException();
         }
         private static bool HasDataChanged(ArticleGroup databaseArticleGroup, CreatedOrUpdatedArticleGroupDTO updatedArticleGroup)
