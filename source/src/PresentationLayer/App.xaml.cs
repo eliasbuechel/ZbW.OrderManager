@@ -133,8 +133,16 @@ namespace PresentationLayer
             _host.Start();
 
             ManagerDbContextFactory managerDbContextFactory = _host.Services.GetRequiredService<ManagerDbContextFactory>();
-            using ManagerDbContext dbContext = managerDbContextFactory.CreateDbContext();
-            dbContext.Database.Migrate();
+            try
+            {
+                using ManagerDbContext dbContext = managerDbContextFactory.CreateDbContext();
+                dbContext.Database.Migrate();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"No running SQL-Server found!\r\nAdditional info: {ex.Message}");
+                return;
+            }
 
             NavigationService<DashboardViewModel> dashboardViewModelNavigationService = _host.Services.GetRequiredService<NavigationService<DashboardViewModel>>();
             dashboardViewModelNavigationService.Navigate();
